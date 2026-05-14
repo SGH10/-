@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>开发信系统 | 一分钟科技</title>
+    <meta
+      name="description"
+      content="参考图风格的 AI 开发信工作区，支持客户选择、草稿生成、模板展示和跟进建议。"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="site-body">
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">1F</span>
+        <span class="brand-label">
+          <strong>一分钟科技</strong>
+          <span>AI 外贸获客工作台</span>
+        </span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="/" data-nav="/">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 3.5 3 10.5v9a1 1 0 0 0 1 1h5.5v-6h5v6H20a1 1 0 0 0 1-1v-9l-9-7z" />
+          </svg>
+          <span>首页</span>
+        </a>
+        <a href="/customer-search" data-nav="/customer-search">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m20 20-4.2-4.2"></path>
+          </svg>
+          <span>客户搜索</span>
+        </a>
+        <a href="/ai-outreach" data-nav="/ai-outreach">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
+          </svg>
+          <span>开发信</span>
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="locale-switch" aria-label="语言">
+          <span class="is-active">中文</span>
+          <span>EN</span>
+        </div>
+        <a class="icon-button" href="/ai-settings" title="AI 设置">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="m19.43 12.98.04-.48-.04-.48 2.03-1.58a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 9.62a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="workspace-page">
+      <section class="notice-strip">
+        <div>
+          <strong>当前模式：AI 草稿生成 + 模拟发送</strong>
+          <p class="summary-copy">保留了你现有的接口联动和本地缓存流程，同时把前端排版调整成参考图的工作台结构。</p>
+        </div>
+        <a class="action-button ghost" href="/customer-search">回到客户搜索</a>
+      </section>
+
+      <div class="workspace-shell">
+        <aside class="workspace-sidebar">
+          <div class="sidebar-panel">
+            <span class="sidebar-kicker">目标客户</span>
+            <h2 class="sidebar-title">已接收客户</h2>
+            <p class="helper-text">这里会读取从客户搜索页带过来的已选客户，也可以直接使用最近一次搜索缓存。</p>
+            <div class="selection-chip" style="margin-top: 14px;">
+              当前收件人
+              <strong id="recipient-count">0</strong>
+            </div>
+          </div>
+
+          <article class="sidebar-panel">
+            <div class="panel-heading">
+              <h2>目标客户列表</h2>
+              <p>你可以继续勾选或取消需要发送开发信的客户。</p>
+            </div>
+            <div id="recipient-list" class="recipient-list">
+              <div class="results-empty">还没有接收到客户，请先去客户搜索页筛选客户。</div>
+            </div>
+          </article>
+
+          <div class="sidebar-block">
+            <span class="sidebar-kicker">模板提醒</span>
+            <ul class="tips-list">
+              <li>先生成草稿，再检查客户名称、产品价值点和 CTA 是否自然。</li>
+              <li>批量发送前建议先挑 3 到 5 个客户试发，观察回复率再扩大。</li>
+              <li>发送后可按“24 小时 - 3 天 - 1 周”的节奏安排下一轮跟进。</li>
+            </ul>
+          </div>
+        </aside>
+
+        <section class="workspace-main">
+          <article class="editor-panel">
+            <div class="editor-panel-head">
+              <div class="editor-toolbar">
+                <div>
+                  <h2>开发信编辑</h2>
+                  <p class="summary-copy">左侧选择客户，右侧填写参数并由 AI 生成草稿。</p>
+                </div>
+                <div class="topbar-actions">
+                  <a class="action-button ghost" href="#template-library">保存模板</a>
+                  <a class="action-button ghost" href="#follow-up-plan">跟进建议</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="editor-panel-body">
+              <form id="compose-form" class="form-stack">
+                <div class="setting-field-grid">
+                  <label class="input-group">
+                    <span>公司名称</span>
+                    <input class="text-input" type="text" name="companyName" value="LeadFlow Studio" required />
+                  </label>
+                  <label class="input-group">
+                    <span>主推产品</span>
+                    <input class="text-input" type="text" name="productName" value="AI Lead Generation Workflow" required />
+                  </label>
+                  <label class="input-group">
+                    <span>开发信语言</span>
+                    <select class="select-input" name="language">
+                      <option value="zh-CN">中文</option>
+                      <option value="en" selected>English</option>
+                      <option value="de">Deutsch</option>
+                      <option value="fr">Francais</option>
+                      <option value="es">Espanol</option>
+                      <option value="ru">Русский</option>
+                      <option value="ar">العربية</option>
+                    </select>
+                  </label>
+                  <label class="input-group">
+                    <span>语气风格</span>
+                    <select class="select-input" name="tone">
+                      <option value="professional" selected>专业稳重</option>
+                      <option value="warm">友好自然</option>
+                      <option value="direct">直接高效</option>
+                      <option value="consultative">顾问式建议</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label class="input-group">
+                  <span>核心价值点</span>
+                  <textarea class="textarea-input" name="valueProposition" rows="4" required>我们帮助外贸团队把客户搜索、开发信生成和批量触达放到同一套工作流里，减少人工整理时间并提升回复率。</textarea>
+                </label>
+
+                <label class="input-group">
+                  <span>行动号召</span>
+                  <textarea class="textarea-input" name="callToAction" rows="3">Would you be open to a short 15-minute call next week to see whether this workflow fits your team?</textarea>
+                </label>
+
+                <div class="setting-field-grid">
+                  <label class="input-group">
+                    <span>发件人姓名</span>
+                    <input class="text-input" type="text" name="senderName" value="Zijian" required />
+                  </label>
+                  <label class="input-group">
+                    <span>发件邮箱</span>
+                    <input class="text-input" type="email" name="senderEmail" value="zijian@example.com" required />
+                  </label>
+                </div>
+
+                <div class="topbar-actions">
+                  <button id="generate-draft" class="action-button orange" type="submit">AI 生成开发信</button>
+                  <button id="send-email" class="action-button green" type="button" disabled>发送给已选客户</button>
+                </div>
+              </form>
+            </div>
+          </article>
+
+          <article class="editor-panel">
+            <div class="editor-panel-head">
+              <div class="editor-toolbar">
+                <div>
+                  <h2>草稿预览</h2>
+                  <p class="summary-copy">AI 返回的主题、正文和跟进建议会优先展示在这里。</p>
+                </div>
+                <div class="topbar-actions">
+                  <span class="soft-badge">支持手动微调</span>
+                </div>
+              </div>
+            </div>
+            <div class="editor-panel-body">
+              <div class="draft-fields">
+                <label class="input-group">
+                  <span>邮件主题</span>
+                  <input id="draft-subject" class="text-input" type="text" value="" placeholder="点击“AI 生成开发信”后自动填充" />
+                </label>
+                <label class="input-group">
+                  <span>邮件正文</span>
+                  <textarea id="draft-body" class="textarea-input" rows="12" placeholder="这里会显示 AI 生成的开发信正文"></textarea>
+                </label>
+              </div>
+
+              <div class="sidebar-panel" style="margin-top: 20px;">
+                <div class="panel-heading">
+                  <h2>AI 分析建议</h2>
+                  <p id="analysis-text">生成草稿后，这里会显示发送建议和注意事项。</p>
+                </div>
+                <ul id="follow-up-list" class="compact-list">
+                  <li>建议先生成开发信草稿，再检查目标客户是否正确。</li>
+                </ul>
+              </div>
+
+              <div id="send-result" class="helper-note"></div>
+            </div>
+          </article>
+
+          <article id="template-library" class="workspace-main-card">
+            <div class="results-toolbar">
+              <div>
+                <h2>邮件模板库</h2>
+                <p>按照你参考图的样式，先做成一组可浏览的模板卡片。</p>
+              </div>
+              <a class="action-button ghost" href="/ai-settings">新建模板</a>
+            </div>
+            <div class="template-grid">
+              <article class="template-card">
+                <span class="template-badge">热门</span>
+                <h3>初次接触（中文）</h3>
+                <p class="feature-copy">zh · 初次开发</p>
+                <div class="template-meta">
+                  <span>浏览 2,341</span>
+                  <span>转化 89%</span>
+                </div>
+              </article>
+              <article class="template-card">
+                <span class="template-badge">Popular</span>
+                <h3>First Contact (English)</h3>
+                <p class="feature-copy">en · 初次开发</p>
+                <div class="template-meta">
+                  <span>浏览 1,982</span>
+                  <span>转化 85%</span>
+                </div>
+              </article>
+              <article class="template-card">
+                <span class="template-badge">常用</span>
+                <h3>Follow-up Email</h3>
+                <p class="feature-copy">en · 跟进</p>
+                <div class="template-meta">
+                  <span>浏览 1,543</span>
+                  <span>转化 72%</span>
+                </div>
+              </article>
+              <article class="template-card">
+                <span class="template-badge">Popular</span>
+                <h3>Primer Contacto (Español)</h3>
+                <p class="feature-copy">es · 初次开发</p>
+                <div class="template-meta">
+                  <span>浏览 721</span>
+                  <span>转化 80%</span>
+                </div>
+              </article>
+            </div>
+          </article>
+
+          <article id="follow-up-plan" class="workspace-main-card">
+            <div class="panel-heading">
+              <h2>跟进策略建议</h2>
+              <p>把参考图里的“三段式跟进建议”也补到了开发信工作区里。</p>
+            </div>
+            <div class="follow-grid">
+              <article class="follow-card">
+                <span class="follow-index">1</span>
+                <div>
+                  <h3>首次接触</h3>
+                  <p class="feature-copy">发送开发信后 24 小时内，如未回复，可通过 LinkedIn 增加曝光度。</p>
+                  <div class="chip-row">
+                    <span class="chip">24 小时内</span>
+                    <span class="chip">LinkedIn</span>
+                  </div>
+                </div>
+              </article>
+              <article class="follow-card">
+                <span class="follow-index">2</span>
+                <div>
+                  <h3>二次跟进</h3>
+                  <p class="feature-copy">3 天后发送跟进邮件，补充案例、报价或更明确的价值点。</p>
+                  <div class="chip-row">
+                    <span class="chip">3 天后</span>
+                    <span class="chip">邮件</span>
+                  </div>
+                </div>
+              </article>
+              <article class="follow-card is-highlight">
+                <span class="follow-index">3</span>
+                <div>
+                  <h3>深度沟通</h3>
+                  <p class="feature-copy">一周后尝试电话或会议沟通，了解客户需求并提供定制化方案。</p>
+                  <div class="chip-row">
+                    <span class="chip">1 周后</span>
+                    <span class="chip">电话 / 会议</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <script src="/main.js"></script>
+    <script src="/ai-outreach.js"></script>
+  </body>
+</html>

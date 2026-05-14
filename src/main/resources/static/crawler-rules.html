@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>爬虫配置 | 一分钟科技</title>
+    <meta name="description" content="配置候选抓取规则、过滤策略和运行参数。" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="site-body">
+    <header class="system-header">
+      <a class="back-link" href="/">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+        返回首页
+      </a>
+
+      <div class="brand-label" style="margin-right: auto;">
+        <strong>系统配置</strong>
+        <span>爬虫与过滤规则中心</span>
+      </div>
+
+      <div class="locale-switch" aria-label="语言">
+        <span class="is-active">中文</span>
+        <span>EN</span>
+      </div>
+    </header>
+
+    <main class="system-page">
+      <div class="settings-shell">
+        <aside class="settings-sidebar">
+          <div class="settings-nav-group">
+            <h3>AI 模型</h3>
+            <a class="settings-link" data-settings-path="/ai-settings" href="/ai-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2 4 6v12l8 4 8-4V6l-8-4Zm0 2.2 5.8 2.9L12 10 6.2 7.1 12 4.2Zm-6 4.7 5 2.5v6.4l-5-2.5V8.9Zm7 8.9v-6.4l5-2.5v6.4l-5 2.5Z" />
+              </svg>
+              模型配置
+            </a>
+          </div>
+
+          <div class="settings-nav-group">
+            <h3>搜索引擎</h3>
+            <a class="settings-link" data-settings-path="/crawler-settings" href="/crawler-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="6"></circle>
+                <path d="m20 20-4.2-4.2"></path>
+              </svg>
+              搜索 API
+            </a>
+            <a class="settings-link" data-settings-path="/crawler-rules" href="/crawler-rules">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Z" />
+              </svg>
+              爬虫配置
+            </a>
+          </div>
+
+          <div class="settings-nav-group">
+            <h3>邮件服务</h3>
+            <a class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
+              </svg>
+              邮箱配置
+            </a>
+          </div>
+
+          <div class="settings-nav-group">
+            <h3>系统</h3>
+            <a class="settings-link" data-settings-path="/general-settings" href="/general-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M19.43 12.98 21.46 11.4a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 10.58a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58.04-.48-.04-.48ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
+              </svg>
+              通用设置
+            </a>
+          </div>
+        </aside>
+
+        <section class="settings-main">
+          <div class="settings-hero">
+            <h1>爬虫配置</h1>
+            <p>把抓取规则、过滤规则和运行参数从搜索 API 页面拆出来，让左侧每个入口都对应一个明确的配置主题。</p>
+          </div>
+
+          <div class="settings-stack">
+            <article class="setting-section">
+              <div class="settings-section-head">
+                <div class="section-title-row">
+                  <span class="section-icon">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M7 4a1 1 0 0 1 1 1v2h8V5a1 1 0 1 1 2 0v2h1a3 3 0 0 1 3 3v1h-2v-1a1 1 0 0 0-1-1h-1v2a1 1 0 1 1-2 0V9H8v2a1 1 0 1 1-2 0V9H5a1 1 0 0 0-1 1v1H2v-1a3 3 0 0 1 3-3h1V5a1 1 0 0 1 1-1Zm-1 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm12 0a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM9 15h6v2H9v-2Z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="settings-section-title">候选抓取策略</h2>
+                    <p class="summary-copy">定义搜索结果进入候选列表的基本条件。</p>
+                  </div>
+                </div>
+                <span class="section-status green">已启用</span>
+              </div>
+              <div class="setting-body">
+                <div class="dual-cards">
+                  <article class="setting-card">
+                    <h3>优先抓取</h3>
+                    <ul class="compact-list">
+                      <li>企业官网首页、产品页、关于页、联系页。</li>
+                      <li>目标市场域名和对应语言页面。</li>
+                      <li>带企业主体词、行业词和同域邮箱的站点。</li>
+                    </ul>
+                  </article>
+                  <article class="setting-card">
+                    <h3>排除站点</h3>
+                    <ul class="compact-list">
+                      <li>新闻站、百科、论坛、博客、聚合目录站。</li>
+                      <li>搜索引擎跳转页、验证码页、登录校验页。</li>
+                      <li>明显不是公司主体官网的广告或中转链接。</li>
+                    </ul>
+                  </article>
+                </div>
+              </div>
+            </article>
+
+            <article class="setting-section">
+              <div class="settings-section-head">
+                <div class="section-title-row">
+                  <span class="section-icon">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M5 3h14v4H5zM4 9h16v12H4zM8 13h3v4H8z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="settings-section-title">运行参数</h2>
+                    <p class="summary-copy">统一控制抓取速度、超时和结果数量。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-body">
+                <div class="setting-field-grid">
+                  <label class="input-group">
+                    <span>请求超时</span>
+                    <input class="text-input" type="text" value="5000 ms" />
+                  </label>
+                  <label class="input-group">
+                    <span>候选上限</span>
+                    <input class="text-input" type="text" value="6" />
+                  </label>
+                  <label class="input-group">
+                    <span>邮箱提取深度</span>
+                    <select class="select-input">
+                      <option>仅首页</option>
+                      <option selected>首页 + 联系页</option>
+                      <option>全站扫描</option>
+                    </select>
+                  </label>
+                  <label class="input-group">
+                    <span>日志模式</span>
+                    <select class="select-input">
+                      <option selected>摘要</option>
+                      <option>详细</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+            </article>
+
+            <article class="setting-section">
+              <div class="settings-section-head">
+                <div class="section-title-row">
+                  <span class="section-icon">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M4 4h16v4H4zm0 6h16v10H4zm3 2h10v2H7zm0 4h6v2H7z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="settings-section-title">结果评分</h2>
+                    <p class="summary-copy">控制高匹配客户的判断依据。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-body">
+                <div class="settings-card-grid">
+                  <article class="mini-card">
+                    <span class="stat-label">同域邮箱加权</span>
+                    <strong class="stat-value" style="font-size: 1.9rem;">高</strong>
+                  </article>
+                  <article class="mini-card">
+                    <span class="stat-label">市场匹配权重</span>
+                    <strong class="stat-value" style="font-size: 1.9rem;">高</strong>
+                  </article>
+                  <article class="mini-card">
+                    <span class="stat-label">行业词匹配</span>
+                    <strong class="stat-value" style="font-size: 1.9rem;">中</strong>
+                  </article>
+                  <article class="mini-card">
+                    <span class="stat-label">公司主体信号</span>
+                    <strong class="stat-value" style="font-size: 1.9rem;">高</strong>
+                  </article>
+                </div>
+              </div>
+              <div class="footer-actions right">
+                <button class="action-button neutral" type="button">恢复默认</button>
+                <button class="action-button orange" type="button">保存爬虫配置</button>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="/main.js"></script>
+  </body>
+</html>

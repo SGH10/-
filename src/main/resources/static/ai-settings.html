@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 配置 | 一分钟科技</title>
+    <meta name="description" content="参考图风格的 AI 模型、模板与发送策略配置页。" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="site-body">
+    <header class="system-header">
+      <a class="back-link" href="/">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+        返回首页
+      </a>
+
+      <div class="brand-label" style="margin-right: auto;">
+        <strong>系统配置</strong>
+        <span>AI 模型与发送设置中心</span>
+      </div>
+
+      <div class="locale-switch" aria-label="语言">
+        <span class="is-active">中文</span>
+        <span>EN</span>
+      </div>
+    </header>
+
+    <main class="system-page">
+      <div class="settings-shell">
+        <aside class="settings-sidebar">
+          <div class="settings-nav-group">
+            <h3>AI 模型</h3>
+            <a class="settings-link" data-settings-path="/ai-settings" href="/ai-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2 4 6v12l8 4 8-4V6l-8-4Zm0 2.2 5.8 2.9L12 10 6.2 7.1 12 4.2Zm-6 4.7 5 2.5v6.4l-5-2.5V8.9Zm7 8.9v-6.4l5-2.5v6.4l-5 2.5Z" />
+              </svg>
+              模型配置
+            </a>
+          </div>
+
+          <div class="settings-nav-group">
+            <h3>搜索引擎</h3>
+            <a class="settings-link" data-settings-path="/crawler-settings" href="/crawler-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="6"></circle>
+                <path d="m20 20-4.2-4.2"></path>
+              </svg>
+              搜索 API
+            </a>
+            <a class="settings-link" data-settings-path="/crawler-rules" href="/crawler-rules">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Z" />
+              </svg>
+              爬虫配置
+            </a>
+          </div>
+
+          <div class="settings-nav-group">
+            <h3>邮件服务</h3>
+            <a id="mail-service" class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
+              </svg>
+              邮箱配置
+            </a>
+          </div>
+
+          <div class="settings-nav-group">
+            <h3>系统</h3>
+            <a class="settings-link" data-settings-path="/general-settings" href="/general-settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M19.43 12.98 21.46 11.4a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 10.58a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58.04-.48-.04-.48ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
+              </svg>
+              通用设置
+            </a>
+          </div>
+        </aside>
+
+        <section class="settings-main">
+          <div class="settings-hero">
+            <h1>AI 模型配置</h1>
+            <p>配置模型供应商、默认模型、语言策略和发送前规则，用于客户分析和邮件草稿生成。</p>
+          </div>
+
+          <div class="settings-stack">
+            <article class="setting-section">
+              <div class="settings-section-head">
+                <div class="section-title-row">
+                  <span class="section-icon">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M11 2h2v4h-2zM4.93 4.93l1.41-1.41 2.83 2.83-1.41 1.41zM2 11h4v2H2zm2.93 8.07 2.83-2.83 1.41 1.41-2.83 2.83zM11 18h2v4h-2zm6.83-1.76 1.41-1.41 2.83 2.83-1.41 1.41zM18 11h4v2h-4zm-1.76-4.66 2.83-2.83 1.41 1.41-2.83 2.83zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="settings-section-title">API 密钥配置</h2>
+                    <p class="summary-copy">选择默认供应商并维护对应的 API 连接参数。</p>
+                  </div>
+                </div>
+                <span class="section-status green">已配置</span>
+              </div>
+              <div class="setting-body">
+                <div class="setting-field-grid">
+                  <label class="input-group setting-field full">
+                    <span>API 服务商</span>
+                    <select class="select-input">
+                      <option>OpenAI (GPT-4, GPT-3.5)</option>
+                      <option>Azure OpenAI</option>
+                      <option>Anthropic (Claude)</option>
+                      <option>DeepSeek</option>
+                      <option selected>阿里云通义千问 (Qwen)</option>
+                      <option>智谱 AI (GLM)</option>
+                      <option>自定义 API</option>
+                    </select>
+                  </label>
+                  <label class="input-group setting-field full">
+                    <span>API KEY</span>
+                    <input class="text-input" type="password" value="••••••••••••••••••••••••••••••••••••••" />
+                  </label>
+                </div>
+              </div>
+            </article>
+
+            <article class="setting-section">
+              <div class="settings-section-head">
+                <div class="section-title-row">
+                  <span class="section-icon">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M5 5h14v4H5zm0 5h14v4H5zm0 5h8v4H5z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="settings-section-title">模型选择</h2>
+                    <p class="summary-copy">按业务场景区分默认模型，便于后续接真实配置。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-body">
+                <div class="model-pill-group">
+                  <span class="model-pill is-active">qwen-max</span>
+                  <span class="model-pill">qwen-plus</span>
+                  <span class="model-pill">qwen-turbo</span>
+                  <span class="model-pill">gpt-4o</span>
+                  <span class="model-pill">gpt-4.1</span>
+                </div>
+                <div class="dual-cards">
+                  <article class="setting-card">
+                    <h3>客户分析</h3>
+                    <p class="setting-note">优先使用长文本能力更强的模型，生成行业判断和跟进建议。</p>
+                  </article>
+                  <article class="setting-card">
+                    <h3>邮件生成</h3>
+                    <p class="setting-note">优先使用速度更稳、语气更自然的模型，适合批量草稿生成。</p>
+                  </article>
+                </div>
+              </div>
+            </article>
+
+            <article class="setting-section">
+              <div class="settings-section-head">
+                <div class="section-title-row">
+                  <span class="section-icon">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M3 5h18v4H3zm0 6h18v8H3zm4 2v4h4v-4H7Z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="settings-section-title">生成与发送策略</h2>
+                    <p class="summary-copy">统一管理语言、语气、模板逻辑和发送前检查项。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-body">
+                <div class="dual-cards">
+                  <article class="setting-card">
+                    <h3>默认生成策略</h3>
+                    <ul class="compact-list">
+                      <li>首封邮件默认专业稳重，必要时切换为顾问式或直接型表达。</li>
+                      <li>默认英语，支持中文、德语、法语、西语、俄语与阿语。</li>
+                      <li>优先引用国家、行业和产品关键词，再决定 CTA 强度。</li>
+                    </ul>
+                  </article>
+                  <article class="setting-card">
+                    <h3>发送前检查</h3>
+                    <ul class="compact-list">
+                      <li>先检查客户是否重复触达，避免重复发送。</li>
+                      <li>优先发送给高匹配客户和同域企业邮箱客户。</li>
+                      <li>发送后记录批次号，为二次跟进和 CRM 同步做准备。</li>
+                    </ul>
+                  </article>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>客户搜索 | 一分钟科技</title>
+    <meta
+      name="description"
+      content="参考图风格的 AI 客户搜索工作区，支持搜索条件配置、进度面板、日志和结果表格。"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="site-body">
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">1F</span>
+        <span class="brand-label">
+          <strong>一分钟科技</strong>
+          <span>AI 外贸获客工作台</span>
+        </span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="/" data-nav="/">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 3.5 3 10.5v9a1 1 0 0 0 1 1h5.5v-6h5v6H20a1 1 0 0 0 1-1v-9l-9-7z" />
+          </svg>
+          <span>首页</span>
+        </a>
+        <a href="/customer-search" data-nav="/customer-search">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m20 20-4.2-4.2"></path>
+          </svg>
+          <span>客户搜索</span>
+        </a>
+        <a href="/ai-outreach" data-nav="/ai-outreach">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
+          </svg>
+          <span>开发信</span>
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="locale-switch" aria-label="语言">
+          <span class="is-active">中文</span>
+          <span>EN</span>
+        </div>
+        <a class="icon-button" href="/crawler-settings" title="系统配置">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="m19.43 12.98.04-.48-.04-.48 2.03-1.58a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 9.62a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="workspace-page">
+      <section class="notice-strip">
+        <div>
+          <strong>爬虫模式：公开网页抓取 + 结果过滤</strong>
+          <p class="summary-copy">当前版本优先展示真实抓取命中的结果，不再自动混入演示客户。</p>
+        </div>
+        <a class="action-button orange" href="/crawler-settings">升级配置</a>
+      </section>
+
+      <div class="workspace-shell">
+        <aside class="workspace-sidebar">
+          <div class="sidebar-panel">
+            <span class="sidebar-kicker">搜索配置</span>
+            <h2 class="sidebar-title">目标客户描述</h2>
+            <p class="helper-text">在左侧配置搜索条件，右侧会同步展示实时进度、日志摘要和客户结果。</p>
+          </div>
+
+          <form id="search-form" class="form-stack">
+            <label class="input-group">
+              <span>目标行业</span>
+              <input class="text-input" type="text" name="industry" value="工业设备" required />
+            </label>
+            <label class="input-group">
+              <span>目标市场</span>
+              <input class="text-input" type="text" name="market" value="德国" required />
+            </label>
+            <label class="input-group">
+              <span>搜索关键词</span>
+              <input class="text-input" type="text" name="keywords" value="industrial automation importer" required />
+            </label>
+            <label class="input-group">
+              <span>公司规模</span>
+              <select class="select-input" name="companySize">
+                <option>10-50人</option>
+                <option selected>50-200人</option>
+                <option>200-500人</option>
+                <option>500人以上</option>
+              </select>
+            </label>
+            <button id="search-submit" class="action-button orange wide" type="submit">开始 AI 搜索</button>
+          </form>
+
+          <div class="sidebar-block">
+            <span class="sidebar-kicker">搜索提醒</span>
+            <ul class="tips-list">
+              <li>先用“行业 + 市场 + 关键词”跑通一轮，再逐步收窄条件。</li>
+              <li>如果结果太少，优先放宽关键词或换一个更像客户官网的表达。</li>
+              <li>选中客户后可直接流转到开发信系统继续写邮件。</li>
+            </ul>
+          </div>
+        </aside>
+
+        <section class="workspace-main">
+          <div class="tab-strip">
+            <div class="tab-item is-active">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M4 19h16v2H4zM6 17V9h3v8H6Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" />
+              </svg>
+              实时进度
+            </div>
+            <div class="tab-item">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M4 5h16v2H4zm0 6h10v2H4zm0 6h16v2H4z" />
+              </svg>
+              运行日志
+            </div>
+            <div class="tab-item">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M5 5h14v4H5zm0 5h14v4H5zm0 5h14v4H5z" />
+              </svg>
+              搜索结果
+            </div>
+          </div>
+
+          <article class="progress-card">
+            <div class="progress-card-head">
+              <div>
+                <h2>AI 客户搜索进度</h2>
+                <p id="search-summary" class="summary-copy">还没有结果，先运行一次客户搜索。</p>
+              </div>
+              <span id="search-status-chip" class="status-chip pending">等待开始</span>
+            </div>
+
+            <div class="progress-track" aria-hidden="true"></div>
+
+            <div class="progress-grid">
+              <div class="progress-card-small">
+                <span class="progress-label">客户总数</span>
+                <strong class="progress-value" id="stat-total">0</strong>
+              </div>
+              <div class="progress-card-small">
+                <span class="progress-label">公开邮箱</span>
+                <strong class="progress-value" id="stat-email">0</strong>
+              </div>
+              <div class="progress-card-small">
+                <span class="progress-label">高匹配</span>
+                <strong class="progress-value" id="stat-match">0</strong>
+              </div>
+              <div class="progress-card-small">
+                <span class="progress-label">市场覆盖</span>
+                <strong class="progress-value" id="stat-market">0</strong>
+              </div>
+            </div>
+          </article>
+
+          <div class="workspace-content-grid">
+            <article class="workspace-main-card">
+              <div class="panel-heading">
+                <h2>运行日志</h2>
+                <p>展示搜索入口请求、站点识别、公开邮箱提取、筛选过滤与异常回退摘要。</p>
+              </div>
+              <ul id="search-logs" class="log-list">
+                <li class="log-item">
+                  <span class="log-time">--:--:--</span>
+                  <span class="log-text">等待你启动第一次客户搜索。</span>
+                </li>
+              </ul>
+            </article>
+
+            <article class="workspace-main-card">
+              <div class="empty-state">
+                <span class="empty-icon" aria-hidden="true">
+                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="6"></circle>
+                    <path d="m20 20-4.2-4.2"></path>
+                  </svg>
+                </span>
+                <h2>开始搜索客户</h2>
+                <p class="empty-copy">在左侧设置搜索条件，点击“开始 AI 搜索”按钮后，客户结果会在下方表格中出现。</p>
+              </div>
+            </article>
+          </div>
+
+          <article class="results-card">
+            <div class="results-toolbar">
+              <div>
+                <h2>搜索结果</h2>
+                <p>选择你要继续触达的客户，再流转到 AI 开发信页面。</p>
+              </div>
+              <div class="topbar-actions">
+                <div class="selection-chip">
+                  已选客户
+                  <strong id="selected-count">0</strong>
+                </div>
+                <button id="export-results" class="action-button ghost" type="button" disabled>导出 CSV</button>
+                <button id="push-to-outreach" class="action-button green" type="button" disabled>生成开发信</button>
+              </div>
+            </div>
+
+            <div class="table-shell">
+              <table class="lead-table">
+                <thead>
+                  <tr>
+                    <th><input id="select-all" type="checkbox" /></th>
+                    <th>公司信息</th>
+                    <th>国家</th>
+                    <th>联系人</th>
+                    <th>邮箱</th>
+                    <th>来源</th>
+                    <th>匹配说明</th>
+                  </tr>
+                </thead>
+                <tbody id="results-body">
+                  <tr>
+                    <td colspan="7">
+                      <div class="results-empty">搜索后这里会显示客户结果列表。</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <script src="/main.js"></script>
+    <script src="/customer-search.js"></script>
+  </body>
+</html>
