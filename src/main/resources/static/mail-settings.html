@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>邮箱配置 | 一分钟科技</title>
-    <meta name="description" content="配置发件邮箱、SMTP 服务和签名信息。" />
+    <meta name="description" content="发件身份和 SMTP 配置。" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body class="site-body">
@@ -21,9 +21,9 @@
         <span>邮箱与发件服务中心</span>
       </div>
 
-      <div class="locale-switch" aria-label="语言">
-        <span class="is-active">中文</span>
-        <span>EN</span>
+      <div class="locale-switch" aria-label="语言切换">
+        <button type="button" class="is-active" data-locale="zh-CN">中文</button>
+        <button type="button" data-locale="en">EN</button>
       </div>
     </header>
 
@@ -81,10 +81,10 @@
         <section class="settings-main">
           <div class="settings-hero">
             <h1>邮箱配置</h1>
-            <p>这里单独管理你的发件邮箱、SMTP 服务、回复地址和默认签名，不再和模型配置混在同一页。</p>
+            <p>保存这里的配置后，开发信页默认发件人和发送接口中的默认邮箱身份会同步变化。</p>
           </div>
 
-          <div class="settings-stack">
+          <form id="mail-settings-form" class="settings-stack">
             <article class="setting-section">
               <div class="settings-section-head">
                 <div class="section-title-row">
@@ -95,28 +95,27 @@
                   </span>
                   <div>
                     <h2 class="settings-section-title">发件身份</h2>
-                    <p class="summary-copy">配置真正用于发送开发信的邮箱信息。</p>
+                    <p class="summary-copy">配置真正用于发送开发信的默认身份。</p>
                   </div>
                 </div>
-                <span class="section-status gray">待完善</span>
               </div>
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group">
                     <span>发件人姓名</span>
-                    <input class="text-input" type="text" value="Zijian" placeholder="例如：Zijian" />
+                    <input class="text-input" id="mail-sender-name" type="text" value="Zijian" />
                   </label>
                   <label class="input-group">
                     <span>发件邮箱</span>
-                    <input class="text-input" type="email" value="zijian@example.com" placeholder="例如：sales@yourcompany.com" />
+                    <input class="text-input" id="mail-sender-email" type="email" value="zijian@example.com" />
                   </label>
                   <label class="input-group">
                     <span>回复邮箱</span>
-                    <input class="text-input" type="email" value="reply@example.com" placeholder="不填则默认同发件邮箱" />
+                    <input class="text-input" id="mail-reply-to-email" type="email" value="reply@example.com" />
                   </label>
                   <label class="input-group">
                     <span>默认签名</span>
-                    <input class="text-input" type="text" value="Zijian | LeadFlow Studio" placeholder="例如：姓名 | 公司名" />
+                    <input class="text-input" id="mail-signature" type="text" value="Zijian | LeadFlow Studio" />
                   </label>
                 </div>
               </div>
@@ -132,7 +131,7 @@
                   </span>
                   <div>
                     <h2 class="settings-section-title">SMTP 服务</h2>
-                    <p class="summary-copy">为后续接入真实邮件发送预留完整参数。</p>
+                    <p class="summary-copy">为后续接入真实发送保留参数。</p>
                   </div>
                 </div>
               </div>
@@ -140,37 +139,37 @@
                 <div class="setting-field-grid">
                   <label class="input-group">
                     <span>服务商</span>
-                    <select class="select-input">
-                      <option selected>自定义 SMTP</option>
-                      <option>Gmail</option>
-                      <option>Outlook</option>
-                      <option>腾讯企业邮箱</option>
-                      <option>阿里企业邮箱</option>
+                    <select class="select-input" id="mail-smtp-provider">
+                      <option value="Custom SMTP">Custom SMTP</option>
+                      <option value="Gmail">Gmail</option>
+                      <option value="Outlook">Outlook</option>
+                      <option value="Tencent Mail">Tencent Mail</option>
+                      <option value="Alibaba Mail">Alibaba Mail</option>
                     </select>
                   </label>
                   <label class="input-group">
                     <span>SMTP 主机</span>
-                    <input class="text-input" type="text" value="smtp.example.com" placeholder="例如：smtp.gmail.com" />
+                    <input class="text-input" id="mail-smtp-host" type="text" value="smtp.example.com" />
                   </label>
                   <label class="input-group">
                     <span>端口</span>
-                    <input class="text-input" type="text" value="587" placeholder="例如：465 / 587" />
+                    <input class="text-input" id="mail-smtp-port" type="number" min="1" value="587" />
                   </label>
                   <label class="input-group">
                     <span>安全方式</span>
-                    <select class="select-input">
-                      <option>TLS</option>
-                      <option selected>STARTTLS</option>
-                      <option>SSL</option>
+                    <select class="select-input" id="mail-smtp-security">
+                      <option value="TLS">TLS</option>
+                      <option value="STARTTLS">STARTTLS</option>
+                      <option value="SSL">SSL</option>
                     </select>
                   </label>
                   <label class="input-group">
                     <span>SMTP 用户名</span>
-                    <input class="text-input" type="text" value="zijian@example.com" placeholder="通常是邮箱地址" />
+                    <input class="text-input" id="mail-smtp-username" type="text" value="zijian@example.com" />
                   </label>
                   <label class="input-group">
                     <span>SMTP 密码 / 授权码</span>
-                    <input class="text-input" type="password" value="••••••••••••" />
+                    <input class="text-input" id="mail-smtp-password" type="password" value="" />
                   </label>
                 </div>
               </div>
@@ -186,40 +185,44 @@
                   </span>
                   <div>
                     <h2 class="settings-section-title">发送规则</h2>
-                    <p class="summary-copy">限制发送频率，避免开发信触达过快或过密。</p>
+                    <p class="summary-copy">限制默认发送节奏。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
-                <div class="settings-card-grid">
-                  <article class="mini-card">
-                    <span class="stat-label">单次批量上限</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">50</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">每小时上限</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">120</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">失败重试</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">2 次</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">当前模式</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">演示</strong>
-                  </article>
+                <div class="setting-field-grid">
+                  <label class="input-group">
+                    <span>单次批量上限</span>
+                    <input class="text-input" id="mail-batch-limit" type="number" min="1" value="50" />
+                  </label>
+                  <label class="input-group">
+                    <span>每小时上限</span>
+                    <input class="text-input" id="mail-hourly-limit" type="number" min="1" value="120" />
+                  </label>
+                  <label class="input-group">
+                    <span>失败重试次数</span>
+                    <input class="text-input" id="mail-retry-count" type="number" min="0" value="2" />
+                  </label>
+                  <label class="input-group">
+                    <span>发送模式</span>
+                    <select class="select-input" id="mail-send-mode">
+                      <option value="demo">演示发送</option>
+                      <option value="smtp">SMTP 发送</option>
+                    </select>
+                  </label>
                 </div>
               </div>
               <div class="footer-actions right">
-                <button class="action-button neutral" type="button">测试连接</button>
-                <button class="action-button orange" type="button">保存邮箱配置</button>
+                <div id="mail-settings-result" class="helper-note"></div>
+                <button class="action-button orange" type="submit">保存配置</button>
               </div>
             </article>
-          </div>
+          </form>
         </section>
       </div>
     </main>
 
-    <script src="/main.js"></script>
+    <script src="/main.js?v=4"></script>
+    <script src="/settings.js?v=3"></script>
   </body>
 </html>

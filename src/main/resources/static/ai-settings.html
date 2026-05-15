@@ -4,35 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI 配置 | 一分钟科技</title>
-    <meta name="description" content="参考图风格的 AI 模型、模板与发送策略配置页。" />
-    <link rel="stylesheet" href="/styles.css" />
+    <meta name="description" content="AI 模型、API 地址与默认开发信参数配置。" />
+    <link rel="stylesheet" href="/styles.css?v=7" />
   </head>
   <body class="site-body">
-    <header class="system-header">
+    <header class="system-header ref-settings-header">
       <a class="back-link" href="/">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="m15 18-6-6 6-6"></path>
         </svg>
         返回首页
       </a>
 
-      <div class="brand-label" style="margin-right: auto;">
+      <div class="brand-label ref-settings-brand">
         <strong>系统配置</strong>
-        <span>AI 模型与发送设置中心</span>
       </div>
 
-      <div class="locale-switch" aria-label="语言">
-        <span class="is-active">中文</span>
-        <span>EN</span>
+      <div class="locale-switch" aria-label="语言切换">
+        <button type="button" class="is-active" data-locale="zh-CN">中文</button>
+        <button type="button" data-locale="en">EN</button>
       </div>
     </header>
 
-    <main class="system-page">
-      <div class="settings-shell">
-        <aside class="settings-sidebar">
+    <main class="system-page ref-settings-page">
+      <div class="settings-shell ref-settings-shell">
+        <aside class="settings-sidebar ref-settings-sidebar">
           <div class="settings-nav-group">
             <h3>AI 模型</h3>
-            <a class="settings-link" data-settings-path="/ai-settings" href="/ai-settings">
+            <a class="settings-link is-active" data-settings-path="/ai-settings" href="/ai-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2 4 6v12l8 4 8-4V6l-8-4Zm0 2.2 5.8 2.9L12 10 6.2 7.1 12 4.2Zm-6 4.7 5 2.5v6.4l-5-2.5V8.9Zm7 8.9v-6.4l5-2.5v6.4l-5 2.5Z" />
               </svg>
@@ -59,7 +58,7 @@
 
           <div class="settings-nav-group">
             <h3>邮件服务</h3>
-            <a id="mail-service" class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
+            <a class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
               </svg>
@@ -78,126 +77,144 @@
           </div>
         </aside>
 
-        <section class="settings-main">
-          <div class="settings-hero">
+        <section class="settings-main ref-settings-main">
+          <div class="settings-hero ref-settings-hero">
             <h1>AI 模型配置</h1>
-            <p>配置模型供应商、默认模型、语言策略和发送前规则，用于客户分析和邮件草稿生成。</p>
+            <p>配置 AI 模型的 API 密钥、模型选择和参数，用于客户分析、邮件生成等功能。</p>
           </div>
 
-          <div class="settings-stack">
-            <article class="setting-section">
-              <div class="settings-section-head">
+          <form id="ai-settings-form" class="settings-stack ref-settings-stack">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M11 2h2v4h-2zM4.93 4.93l1.41-1.41 2.83 2.83-1.41 1.41zM2 11h4v2H2zm2.93 8.07 2.83-2.83 1.41 1.41-2.83 2.83zM11 18h2v4h-2zm6.83-1.76 1.41-1.41 2.83 2.83-1.41 1.41zM18 11h4v2h-4zm-1.76-4.66 2.83-2.83 1.41 1.41-2.83 2.83zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z" />
+                      <path d="M7 14a5 5 0 1 1 9.59 2H22v2h-2v2h-2v2h-3v-3.41A5 5 0 0 1 7 14Zm5-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
                     </svg>
                   </span>
                   <div>
                     <h2 class="settings-section-title">API 密钥配置</h2>
-                    <p class="summary-copy">选择默认供应商并维护对应的 API 连接参数。</p>
+                    <p class="summary-copy">选择默认 AI 供应商并维护对应的 API 连接参数。</p>
                   </div>
                 </div>
                 <span class="section-status green">已配置</span>
               </div>
+
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group setting-field full">
                     <span>API 服务商</span>
-                    <select class="select-input">
-                      <option>OpenAI (GPT-4, GPT-3.5)</option>
-                      <option>Azure OpenAI</option>
-                      <option>Anthropic (Claude)</option>
-                      <option>DeepSeek</option>
-                      <option selected>阿里云通义千问 (Qwen)</option>
-                      <option>智谱 AI (GLM)</option>
-                      <option>自定义 API</option>
+                    <select class="select-input" id="ai-provider">
+                      <option value="Qwen">阿里云通义千问 (Qwen)</option>
+                      <option value="OpenAI">OpenAI (GPT-4, GPT-3.5)</option>
+                      <option value="Azure OpenAI">Azure OpenAI</option>
+                      <option value="Anthropic">Anthropic (Claude)</option>
+                      <option value="DeepSeek">DeepSeek</option>
+                      <option value="GLM">智谱AI (GLM)</option>
+                      <option value="Custom API">自定义 API</option>
                     </select>
                   </label>
+
                   <label class="input-group setting-field full">
                     <span>API KEY</span>
-                    <input class="text-input" type="password" value="••••••••••••••••••••••••••••••••••••••" />
+                    <input class="text-input" id="ai-api-key" type="password" placeholder="输入 API Key" />
+                  </label>
+
+                  <label class="input-group setting-field full">
+                    <span>Base URL</span>
+                    <input class="text-input" id="ai-base-url" type="text" placeholder="自定义 API 地址，留空则使用默认地址" />
+                    <span class="helper-text">自定义 API 地址，留空则使用默认地址。</span>
+                  </label>
+
+                  <label class="input-group setting-field full">
+                    <span>连接测试</span>
+                    <button class="action-button ghost ref-inline-button" type="button">测试连接</button>
                   </label>
                 </div>
               </div>
             </article>
 
-            <article class="setting-section">
-              <div class="settings-section-head">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M5 5h14v4H5zm0 5h14v4H5zm0 5h8v4H5z" />
+                      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm-1 14-4-4 1.41-1.41L11 13.17l5.59-5.58L18 9Z" />
                     </svg>
                   </span>
                   <div>
                     <h2 class="settings-section-title">模型选择</h2>
-                    <p class="summary-copy">按业务场景区分默认模型，便于后续接真实配置。</p>
+                    <p class="summary-copy">选择默认模型与开发信生成时使用的业务参数。</p>
                   </div>
                 </div>
               </div>
+
               <div class="setting-body">
-                <div class="model-pill-group">
-                  <span class="model-pill is-active">qwen-max</span>
-                  <span class="model-pill">qwen-plus</span>
-                  <span class="model-pill">qwen-turbo</span>
-                  <span class="model-pill">gpt-4o</span>
-                  <span class="model-pill">gpt-4.1</span>
-                </div>
-                <div class="dual-cards">
-                  <article class="setting-card">
-                    <h3>客户分析</h3>
-                    <p class="setting-note">优先使用长文本能力更强的模型，生成行业判断和跟进建议。</p>
-                  </article>
-                  <article class="setting-card">
-                    <h3>邮件生成</h3>
-                    <p class="setting-note">优先使用速度更稳、语气更自然的模型，适合批量草稿生成。</p>
-                  </article>
+                <div class="setting-field-grid">
+                  <label class="input-group setting-field full">
+                    <span>选择模型</span>
+                    <select class="select-input" id="ai-model">
+                      <option value="qwen-max">qwen-max</option>
+                      <option value="qwen-plus">qwen-plus</option>
+                      <option value="qwen-turbo">qwen-turbo</option>
+                    </select>
+                  </label>
+
+                  <label class="input-group">
+                    <span>默认公司名称</span>
+                    <input class="text-input" id="ai-default-company-name" type="text" placeholder="输入默认公司名称" />
+                  </label>
+
+                  <label class="input-group">
+                    <span>默认产品名称</span>
+                    <input class="text-input" id="ai-default-product-name" type="text" placeholder="输入默认产品名称" />
+                  </label>
+
+                  <label class="input-group">
+                    <span>默认语言</span>
+                    <select class="select-input" id="ai-default-language">
+                      <option value="zh-CN">中文</option>
+                      <option value="en">English</option>
+                      <option value="de">Deutsch</option>
+                      <option value="fr">Français</option>
+                      <option value="es">Español</option>
+                    </select>
+                  </label>
+
+                  <label class="input-group">
+                    <span>默认语气</span>
+                    <select class="select-input" id="ai-default-tone">
+                      <option value="professional">专业稳重</option>
+                      <option value="warm">友好自然</option>
+                      <option value="direct">直接高效</option>
+                      <option value="consultative">顾问式建议</option>
+                    </select>
+                  </label>
+
+                  <label class="input-group setting-field full">
+                    <span>默认价值主张</span>
+                    <textarea class="textarea-input" id="ai-default-value-proposition" rows="5" placeholder="输入默认价值主张"></textarea>
+                  </label>
+
+                  <label class="input-group setting-field full">
+                    <span>默认 CTA</span>
+                    <textarea class="textarea-input" id="ai-default-call-to-action" rows="4" placeholder="输入默认 CTA"></textarea>
+                  </label>
                 </div>
               </div>
             </article>
 
-            <article class="setting-section">
-              <div class="settings-section-head">
-                <div class="section-title-row">
-                  <span class="section-icon">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M3 5h18v4H3zm0 6h18v8H3zm4 2v4h4v-4H7Z" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h2 class="settings-section-title">生成与发送策略</h2>
-                    <p class="summary-copy">统一管理语言、语气、模板逻辑和发送前检查项。</p>
-                  </div>
-                </div>
-              </div>
-              <div class="setting-body">
-                <div class="dual-cards">
-                  <article class="setting-card">
-                    <h3>默认生成策略</h3>
-                    <ul class="compact-list">
-                      <li>首封邮件默认专业稳重，必要时切换为顾问式或直接型表达。</li>
-                      <li>默认英语，支持中文、德语、法语、西语、俄语与阿语。</li>
-                      <li>优先引用国家、行业和产品关键词，再决定 CTA 强度。</li>
-                    </ul>
-                  </article>
-                  <article class="setting-card">
-                    <h3>发送前检查</h3>
-                    <ul class="compact-list">
-                      <li>先检查客户是否重复触达，避免重复发送。</li>
-                      <li>优先发送给高匹配客户和同域企业邮箱客户。</li>
-                      <li>发送后记录批次号，为二次跟进和 CRM 同步做准备。</li>
-                    </ul>
-                  </article>
-                </div>
-              </div>
-            </article>
-
-          </div>
+            <div class="footer-actions right ref-settings-footer">
+              <div id="ai-settings-result" class="helper-note"></div>
+              <button class="action-button ghost" type="button">恢复默认</button>
+              <button id="save-ai-settings" class="action-button orange" type="submit">保存配置</button>
+            </div>
+          </form>
         </section>
       </div>
     </main>
 
-    <script src="/main.js"></script>
+    <script src="/main.js?v=5"></script>
+    <script src="/settings.js?v=4"></script>
   </body>
 </html>

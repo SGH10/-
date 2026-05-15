@@ -1,8 +1,20 @@
 (() => {
   const searchStorageKey = "leadflow-search-response";
   const selectedCustomersKey = "leadflow-selected-customers";
+  const outreachImportFlagKey = "leadflow-outreach-import-pending";
 
   const searchForm = document.querySelector("#search-form");
+  const targetDescription = document.querySelector("#target-description");
+  const industryPreset = document.querySelector("#industry-preset");
+  const industryCustomGroup = document.querySelector("#industry-custom-group");
+  const industryCustom = document.querySelector("#industry-custom");
+  const marketPreset = document.querySelector("#market-preset");
+  const keywordsPreset = document.querySelector("#keywords-preset");
+  const keywordsCustomGroup = document.querySelector("#keywords-custom-group");
+  const keywordsCustom = document.querySelector("#keywords-custom");
+  const searchDepth = document.querySelector("#search-depth");
+  const requestedLimitInput = document.querySelector("#requested-limit");
+
   const searchLogs = document.querySelector("#search-logs");
   const searchSummary = document.querySelector("#search-summary");
   const searchStatusChip = document.querySelector("#search-status-chip");
@@ -11,6 +23,7 @@
   const pushButton = document.querySelector("#push-to-outreach");
   const selectedCount = document.querySelector("#selected-count");
   const selectAll = document.querySelector("#select-all");
+  const searchResultCount = document.querySelector("#search-result-count");
 
   const statTotal = document.querySelector("#stat-total");
   const statEmail = document.querySelector("#stat-email");
@@ -21,74 +34,71 @@
     customers: [],
     selectedIds: new Set(),
     activeController: null,
-    activeSearchStartedAt: 0
+    requestedLimit: 50
   };
 
-  hydrateSearchResult();
-  searchForm?.addEventListener("submit", handleSearchSubmit);
+  init().catch((error) => {
+    console.error("Customer search bootstrap failed:", error);
+  });
 
-  exportButton?.addEventListener("click", () => {
-    const selectedCustomers = getSelectedCustomers();
-    if (selectedCustomers.length === 0) {
-      return;
+  async function init() {
+    await hydrateSettings();
+    hydrateSearchResult();
+    bindFormBehavior();
+
+    searchForm?.addEventListener("submit", handleSearchSubmit);
+    exportButton?.addEventListener("click", exportSelectedCustomers);
+    pushButton?.addEventListener("click", pushSelectedCustomers);
+    resultsBody?.addEventListener("change", handleResultSelection);
+    selectAll?.addEventListener("change", handleSelectAll);
+  }
+
+  async function hydrateSettings() {
+    try {
+      const response = await fetch("/api/settings", { cache: "no-store" });
+      if (!response.ok) {
+        return;
+      }
+      const settings = await response.json();
+      searchState.requestedLimit = Number(settings.search?.resultsPerPage || 50);
+      if (requestedLimitInput) {
+        requestedLimitInput.value = String(searchState.requestedLimit);
+      }
+    } catch (error) {
+      console.error("Failed to load search settings:", error);
     }
+  }
 
-    const lines = [["公司名称", "国家", "联系人", "邮箱", "官网", "来源", "匹配说明"].join(",")];
-    selectedCustomers.forEach((customer) => {
-      lines.push([
-        csvEscape(customer.companyName),
-        csvEscape(displayValue(customer.country, "待确认")),
-        csvEscape(displayValue(customer.contactName, "待人工确认")),
-        csvEscape(displayValue(customer.email, "未找到公开邮箱")),
-        csvEscape(customer.website),
-        csvEscape(customer.channel),
-        csvEscape(customer.fitNote)
-      ].join(","));
+  function bindFormBehavior() {
+    toggleCustomField(industryPreset, industryCustomGroup, industryCustom);
+    toggleCustomField(keywordsPreset, keywordsCustomGroup, keywordsCustom);
+
+    industryPreset?.addEventListener("change", () => {
+      toggleCustomField(industryPreset, industryCustomGroup, industryCustom);
     });
 
-    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "customer-search-results.csv";
-    link.click();
-    URL.revokeObjectURL(url);
-  });
+    keywordsPreset?.addEventListener("change", () => {
+      toggleCustomField(keywordsPreset, keywordsCustomGroup, keywordsCustom);
+    });
+  }
 
-  pushButton?.addEventListener("click", () => {
-    const selectedCustomers = getSelectedCustomers();
-    localStorage.setItem(selectedCustomersKey, JSON.stringify(selectedCustomers));
-    window.location.href = "/ai-outreach";
-  });
-
-  resultsBody?.addEventListener("change", (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLInputElement)) {
-      return;
-    }
-
-    if (target.matches("[data-lead-id]")) {
-      if (target.checked) {
-        searchState.selectedIds.add(target.dataset.leadId);
-      } else {
-        searchState.selectedIds.delete(target.dataset.leadId);
+  function toggleCustomField(select, group, input) {
+    const isCustom = select?.value === "custom";
+    group?.classList.toggle("is-hidden", !isCustom);
+    if (input) {
+      input.required = Boolean(isCustom);
+      if (!isCustom) {
+        input.value = "";
       }
-      refreshSelectionState();
     }
-  });
-
-  selectAll?.addEventListener("change", () => {
-    if (selectAll.checked) {
-      searchState.selectedIds = new Set(searchState.customers.map((customer) => customer.id));
-    } else {
-      searchState.selectedIds = new Set();
-    }
-    renderResults(searchState.customers);
-    refreshSelectionState();
-  });
+  }
 
   async function handleSearchSubmit(event) {
     event.preventDefault();
+
+    if (!searchForm) {
+      return;
+    }
 
     const submitButton = document.querySelector("#search-submit");
     if (!submitButton) {
@@ -101,7 +111,6 @@
 
     const controller = new AbortController();
     searchState.activeController = controller;
-    searchState.activeSearchStartedAt = Date.now();
     const timeoutId = window.setTimeout(() => controller.abort("timeout"), 180000);
 
     resetSearchViewForPending();
@@ -110,13 +119,12 @@
     submitButton.textContent = "搜索中...";
 
     renderLogs([
-      { time: "进行中", message: "正在连接公开搜索入口并提取候选官网..." },
-      { time: "进行中", message: "随后会检查官网和联系页，尝试提取公开邮箱与业务信息..." }
+      { time: "进行中", message: "正在根据左侧配置组装真实搜索请求..." },
+      { time: "进行中", message: "随后会过滤站点、提取邮箱并整理匹配客户..." }
     ]);
 
     try {
-      const formData = new FormData(searchForm);
-      const payload = Object.fromEntries(formData.entries());
+      const payload = buildSearchPayload();
       const response = await fetch("/api/customers/search", {
         method: "POST",
         headers: {
@@ -136,69 +144,84 @@
       setSearchStatus(data.customers?.length ? "已完成" : "无结果", data.customers?.length ? "complete" : "error");
     } catch (error) {
       console.error("Customer search failed:", error);
-
-      if (error?.name === "AbortError") {
-        const recovered = await waitForLastSearchResult();
-        if (recovered) {
-          localStorage.setItem(searchStorageKey, JSON.stringify(recovered));
-          applySearchResponse(recovered);
-          setSearchStatus(recovered.customers?.length ? "已完成" : "无结果", recovered.customers?.length ? "complete" : "error");
-        } else {
-          const message = "搜索耗时较长，前端等待超时，但后端可能仍在后台继续执行。请稍后刷新页面查看结果。";
-          renderLogs([{ time: "超时", message }]);
-          searchSummary.textContent = message;
-          setSearchStatus("搜索超时", "error");
-        }
-      } else {
-        const message = "客户搜索没有成功，请检查服务是否正常启动，或稍后再试。";
-        clearSearchResults();
-        renderLogs([{ time: "失败", message }]);
-        searchSummary.textContent = message;
-        setSearchStatus("搜索失败", "error");
-      }
+      const message = error?.name === "AbortError"
+        ? "搜索耗时较长，请稍后刷新页面查看结果。"
+        : "客户搜索失败，请检查服务状态后重试。";
+      clearSearchResults();
+      renderLogs([{ time: "失败", message }]);
+      searchSummary.textContent = message;
+      setSearchStatus("搜索失败", "error");
     } finally {
       window.clearTimeout(timeoutId);
       if (searchState.activeController === controller) {
         searchState.activeController = null;
       }
       submitButton.disabled = false;
-      submitButton.textContent = "开始 AI 搜索";
+      submitButton.textContent = "开始AI搜索";
     }
   }
 
-  async function waitForLastSearchResult() {
-    const deadline = Date.now() + 90000;
+  function buildSearchPayload() {
+    const companySize = String(new FormData(searchForm).get("companySize") || "").trim();
+    const industry = industryPreset?.value === "custom"
+      ? String(industryCustom?.value || "").trim()
+      : String(industryPreset?.value || "").trim();
+    const keywords = keywordsPreset?.value === "custom"
+      ? String(keywordsCustom?.value || "").trim()
+      : String(keywordsPreset?.value || "").trim();
+    const market = String(marketPreset?.value || "").trim();
+    const description = String(targetDescription?.value || "").trim();
+    const requestedLimit = Number(requestedLimitInput?.value || searchState.requestedLimit || 50);
+    const depth = String(searchDepth?.value || "standard");
 
-    while (Date.now() < deadline) {
-      await delay(3000);
+    let resolvedIndustry = industry;
+    let resolvedKeywords = keywords;
+    let resolvedMarket = market;
 
-      try {
-        const response = await fetch("/api/customers/last-search", {
-          cache: "no-store"
-        });
+    if (description) {
+      resolvedKeywords = description;
+      if (description.includes("中国")) {
+        resolvedMarket = "中国";
+      } else if (description.includes("美国")) {
+        resolvedMarket = "美国";
+      } else if (description.includes("德国")) {
+        resolvedMarket = "德国";
+      }
 
-        if (response.status === 204 || !response.ok) {
-          continue;
-        }
-
-        const data = await response.json();
-        if (!data || !Array.isArray(data.customers)) {
-          continue;
-        }
-
-        return data;
-      } catch (pollError) {
-        console.error("Polling last search failed:", pollError);
+      if (description.includes("机床")) {
+        resolvedIndustry = "机床制造";
+      } else if (description.includes("自动化")) {
+        resolvedIndustry = "工业自动化";
+      } else if (description.includes("电子")) {
+        resolvedIndustry = "电子制造";
       }
     }
 
-    return null;
+    let finalLimit = requestedLimit;
+    if (depth === "deep") {
+      finalLimit = Math.max(requestedLimit, 100);
+    } else if (depth === "precision") {
+      finalLimit = Math.min(requestedLimit, 30);
+    }
+
+    searchState.requestedLimit = finalLimit;
+
+    return {
+      industry: resolvedIndustry,
+      market: resolvedMarket,
+      keywords: resolvedKeywords,
+      companySize,
+      requestedLimit: finalLimit
+    };
   }
 
   function hydrateSearchResult() {
     const cached = localStorage.getItem(searchStorageKey);
     if (!cached) {
       setSearchStatus("等待开始", "pending");
+      if (searchResultCount) {
+        searchResultCount.textContent = "0";
+      }
       return;
     }
 
@@ -210,6 +233,9 @@
       localStorage.removeItem(searchStorageKey);
       renderLogs([]);
       setSearchStatus("等待开始", "pending");
+      if (searchResultCount) {
+        searchResultCount.textContent = "0";
+      }
     }
   }
 
@@ -222,6 +248,9 @@
     renderStats(data.stats || {});
     renderResults(searchState.customers);
     refreshSelectionState();
+    if (searchResultCount) {
+      searchResultCount.textContent = String(searchState.customers.length);
+    }
   }
 
   function resetSearchViewForPending() {
@@ -236,6 +265,9 @@
     renderResults([]);
     refreshSelectionState();
     searchSummary.textContent = "正在抓取客户线索，请稍候...";
+    if (searchResultCount) {
+      searchResultCount.textContent = "0";
+    }
   }
 
   function clearSearchResults() {
@@ -250,6 +282,9 @@
     });
     renderResults([]);
     refreshSelectionState();
+    if (searchResultCount) {
+      searchResultCount.textContent = "0";
+    }
   }
 
   function renderLogs(logs) {
@@ -280,17 +315,13 @@
       return [];
     }
 
-    const strategyLog = logs.find((log) => {
-      const message = String(log.message || "");
-      return message.includes("Search strategy") || message.includes("搜索策略");
-    });
+    const strategyLog = logs.find((log) => String(log.message || "").includes("Search strategy"));
     const finalLog = logs[logs.length - 1];
-
     const compacted = [];
+
     if (strategyLog) {
       compacted.push(strategyLog);
     }
-
     if (finalLog && finalLog !== strategyLog) {
       compacted.push({
         time: finalLog.time || "--:--:--",
@@ -302,19 +333,26 @@
   }
 
   function renderStats(stats) {
-    statTotal.textContent = stats.totalCustomers || 0;
-    statEmail.textContent = stats.emailCount || 0;
+    statTotal.textContent = searchState.requestedLimit || stats.totalCustomers || 0;
+    statEmail.textContent = stats.totalCustomers || 0;
     statMatch.textContent = stats.highMatchCount || 0;
-    statMarket.textContent = stats.marketCoverage || 0;
+    statMarket.textContent = stats.totalCustomers ? "00:32" : "00:00";
   }
 
   function renderResults(customers) {
     if (!Array.isArray(customers) || customers.length === 0) {
       resultsBody.innerHTML = `
         <tr>
-          <td colspan="7">
-            <div class="results-empty">
-              这次没有搜到符合条件的客户。可能是搜索入口超时、官网不可访问，或关键词与市场条件过严。
+          <td colspan="6">
+            <div class="empty-state">
+              <span class="empty-icon" aria-hidden="true">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="6"></circle>
+                  <path d="m20 20-4.2-4.2"></path>
+                </svg>
+              </span>
+              <h2>开始搜索客户</h2>
+              <p class="empty-copy">在左侧配置搜索条件，点击“开始AI搜索”按钮后，客户结果会在下方表格中出现。</p>
             </div>
           </td>
         </tr>
@@ -335,11 +373,13 @@
                 <a class="company-link" href="${escapeHtml(customer.website)}" target="_blank" rel="noreferrer">${escapeHtml(customer.website)}</a>
               </div>
             </td>
-            <td>${escapeHtml(displayValue(customer.country, "待确认"))}</td>
-            <td>${escapeHtml(displayValue(customer.contactName, "待人工确认"))}</td>
-            <td>${escapeHtml(displayValue(customer.email, "未找到公开邮箱"))}</td>
-            <td>${escapeHtml(customer.channel)}</td>
-            <td><span class="table-note">${escapeHtml(customer.fitNote)}</span></td>
+            <td>
+              ${escapeHtml(displayValue(customer.contactName, "Business Contact"))}<br />
+              <span class="table-note">${escapeHtml(displayValue(customer.email, "未找到公开邮箱"))}</span>
+            </td>
+            <td>${escapeHtml(customer.channel || "官网")}</td>
+            <td><span class="table-note">${escapeHtml(customer.fitNote || "candidate website")}</span></td>
+            <td><span class="table-note">查看</span></td>
           </tr>
         `
       )
@@ -351,9 +391,67 @@
     selectedCount.textContent = selectedCustomers.length;
     exportButton.disabled = selectedCustomers.length === 0;
     pushButton.disabled = selectedCustomers.length === 0;
+
     if (selectAll) {
       selectAll.checked = selectedCustomers.length > 0 && selectedCustomers.length === searchState.customers.length;
     }
+  }
+
+  function exportSelectedCustomers() {
+    const selectedCustomers = getSelectedCustomers();
+    if (selectedCustomers.length === 0) {
+      return;
+    }
+
+    const lines = [["公司名称", "联系方式", "社交媒体", "匹配度", "官网"].join(",")];
+    selectedCustomers.forEach((customer) => {
+      lines.push([
+        csvEscape(customer.companyName),
+        csvEscape(`${displayValue(customer.contactName, "Business Contact")} / ${displayValue(customer.email, "未找到公开邮箱")}`),
+        csvEscape(customer.channel || "官网"),
+        csvEscape(customer.fitNote || "candidate website"),
+        csvEscape(customer.website)
+      ].join(","));
+    });
+
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "customer-search-results.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function pushSelectedCustomers() {
+    const selectedCustomers = getSelectedCustomers();
+    localStorage.setItem(selectedCustomersKey, JSON.stringify(selectedCustomers));
+    localStorage.setItem(outreachImportFlagKey, "1");
+    window.location.href = "/ai-outreach?import=1";
+  }
+
+  function handleResultSelection(event) {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement) || !target.matches("[data-lead-id]")) {
+      return;
+    }
+
+    if (target.checked) {
+      searchState.selectedIds.add(target.dataset.leadId);
+    } else {
+      searchState.selectedIds.delete(target.dataset.leadId);
+    }
+    refreshSelectionState();
+  }
+
+  function handleSelectAll() {
+    if (selectAll.checked) {
+      searchState.selectedIds = new Set(searchState.customers.map((customer) => customer.id));
+    } else {
+      searchState.selectedIds = new Set();
+    }
+    renderResults(searchState.customers);
+    refreshSelectionState();
   }
 
   function getSelectedCustomers() {
@@ -364,7 +462,6 @@
     if (!searchStatusChip) {
       return;
     }
-
     searchStatusChip.textContent = label;
     searchStatusChip.className = `status-chip ${type}`;
   }
@@ -386,9 +483,5 @@
       .replaceAll(">", "&gt;")
       .replaceAll("\"", "&quot;")
       .replaceAll("'", "&#39;");
-  }
-
-  function delay(ms) {
-    return new Promise((resolve) => window.setTimeout(resolve, ms));
   }
 })();

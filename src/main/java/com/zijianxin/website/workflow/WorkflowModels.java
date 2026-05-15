@@ -11,7 +11,8 @@ public final class WorkflowModels {
             String industry,
             String market,
             String keywords,
-            String companySize
+            String companySize,
+            Integer requestedLimit
     ) {
     }
 
@@ -68,6 +69,19 @@ public final class WorkflowModels {
     ) {
     }
 
+    public record DraftOptimizationRequest(
+            String subject,
+            String body,
+            String companyName,
+            String productName,
+            String valueProposition,
+            String language,
+            String tone,
+            String callToAction,
+            List<CustomerLead> recipients
+    ) {
+    }
+
     public record SendEmailRequest(
             String senderName,
             String senderEmail,
@@ -86,4 +100,3 @@ public final class WorkflowModels {
     ) {
     }
 }
-

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>通用设置 | 一分钟科技</title>
-    <meta name="description" content="统一管理语言、时区、日志和工作台偏好。" />
+    <meta name="description" content="语言、时区、默认入口和缓存策略配置。" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body class="site-body">
@@ -21,9 +21,9 @@
         <span>通用系统偏好中心</span>
       </div>
 
-      <div class="locale-switch" aria-label="语言">
-        <span class="is-active">中文</span>
-        <span>EN</span>
+      <div class="locale-switch" aria-label="语言切换">
+        <button type="button" class="is-active" data-locale="zh-CN">中文</button>
+        <button type="button" data-locale="en">EN</button>
       </div>
     </header>
 
@@ -81,10 +81,10 @@
         <section class="settings-main">
           <div class="settings-hero">
             <h1>通用设置</h1>
-            <p>这里单独放全局语言、时区、界面偏好、日志级别和默认工作行为，不再跳转回首页。</p>
+            <p>保存这里的配置后，界面语言、默认入口和本地缓存策略会同步影响其他模块。</p>
           </div>
 
-          <div class="settings-stack">
+          <form id="general-settings-form" class="settings-stack">
             <article class="setting-section">
               <div class="settings-section-head">
                 <div class="section-title-row">
@@ -95,7 +95,7 @@
                   </span>
                   <div>
                     <h2 class="settings-section-title">区域与时间</h2>
-                    <p class="summary-copy">统一工作台语言、时区和日期格式。</p>
+                    <p class="summary-copy">统一语言、时区和日期格式。</p>
                   </div>
                 </div>
               </div>
@@ -103,33 +103,32 @@
                 <div class="setting-field-grid">
                   <label class="input-group">
                     <span>界面语言</span>
-                    <select class="select-input">
-                      <option selected>中文</option>
-                      <option>English</option>
+                    <select class="select-input" id="general-language">
+                      <option value="zh-CN">中文</option>
+                      <option value="en">English</option>
                     </select>
                   </label>
                   <label class="input-group">
                     <span>时区</span>
-                    <select class="select-input">
-                      <option>Asia/Shanghai</option>
-                      <option selected>Asia/Shanghai (UTC+08:00)</option>
-                      <option>Europe/Berlin</option>
-                      <option>America/New_York</option>
+                    <select class="select-input" id="general-timezone">
+                      <option value="Asia/Shanghai">Asia/Shanghai</option>
+                      <option value="Europe/Berlin">Europe/Berlin</option>
+                      <option value="America/New_York">America/New_York</option>
                     </select>
                   </label>
                   <label class="input-group">
                     <span>日期格式</span>
-                    <select class="select-input">
-                      <option selected>YYYY-MM-DD</option>
-                      <option>DD/MM/YYYY</option>
-                      <option>MM/DD/YYYY</option>
+                    <select class="select-input" id="general-date-format">
+                      <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                      <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                      <option value="MM/DD/YYYY">MM/DD/YYYY</option>
                     </select>
                   </label>
                   <label class="input-group">
                     <span>数字格式</span>
-                    <select class="select-input">
-                      <option selected>1,234.56</option>
-                      <option>1.234,56</option>
+                    <select class="select-input" id="general-number-format">
+                      <option value="1,234.56">1,234.56</option>
+                      <option value="1.234,56">1.234,56</option>
                     </select>
                   </label>
                 </div>
@@ -146,76 +145,64 @@
                   </span>
                   <div>
                     <h2 class="settings-section-title">工作台偏好</h2>
-                    <p class="summary-copy">控制默认落地页、搜索结果行为和自动流转习惯。</p>
+                    <p class="summary-copy">控制默认入口和缓存/审核行为。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
-                <div class="dual-cards">
-                  <article class="setting-card">
-                    <h3>默认入口</h3>
-                    <ul class="compact-list">
-                      <li>默认打开客户搜索页。</li>
-                      <li>保留上次搜索结果缓存。</li>
-                      <li>默认勾选全部客户后再手动删减。</li>
-                    </ul>
-                  </article>
-                  <article class="setting-card">
-                    <h3>开发信工作流</h3>
-                    <ul class="compact-list">
-                      <li>搜索结果可直接流转到开发信页面。</li>
-                      <li>生成草稿后先人工确认，再允许发送。</li>
-                      <li>发送后记录批次号和跟进建议。</li>
-                    </ul>
-                  </article>
-                </div>
-              </div>
-            </article>
-
-            <article class="setting-section">
-              <div class="settings-section-head">
-                <div class="section-title-row">
-                  <span class="section-icon">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M5 4h14v4H5zm0 6h14v10H5zm2 2h10v2H7zm0 4h6v2H7z" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h2 class="settings-section-title">日志与调试</h2>
-                    <p class="summary-copy">统一控制搜索和发送流程的日志密度。</p>
-                  </div>
-                </div>
-              </div>
-              <div class="setting-body">
-                <div class="settings-card-grid">
-                  <article class="mini-card">
-                    <span class="stat-label">日志级别</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">摘要</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">保留天数</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">30</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">本地缓存</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">开启</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">调试模式</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">关闭</strong>
-                  </article>
+                <div class="setting-field-grid">
+                  <label class="input-group">
+                    <span>默认入口</span>
+                    <select class="select-input" id="general-default-landing-page">
+                      <option value="/customer-search">客户搜索</option>
+                      <option value="/ai-outreach">开发信</option>
+                    </select>
+                  </label>
+                  <label class="input-group">
+                    <span>日志保留天数</span>
+                    <input class="text-input" id="general-log-retention-days" type="number" min="1" value="30" />
+                  </label>
+                  <label class="input-group">
+                    <span>本地缓存</span>
+                    <select class="select-input" id="general-local-cache-enabled">
+                      <option value="true">开启</option>
+                      <option value="false">关闭</option>
+                    </select>
+                  </label>
+                  <label class="input-group">
+                    <span>默认全选客户</span>
+                    <select class="select-input" id="general-auto-select-leads">
+                      <option value="true">是</option>
+                      <option value="false">否</option>
+                    </select>
+                  </label>
+                  <label class="input-group">
+                    <span>发送前必须人工审核</span>
+                    <select class="select-input" id="general-require-review-before-send">
+                      <option value="true">是</option>
+                      <option value="false">否</option>
+                    </select>
+                  </label>
+                  <label class="input-group">
+                    <span>调试模式</span>
+                    <select class="select-input" id="general-debug-mode">
+                      <option value="false">关闭</option>
+                      <option value="true">开启</option>
+                    </select>
+                  </label>
                 </div>
               </div>
               <div class="footer-actions right">
-                <button class="action-button neutral" type="button">恢复默认</button>
-                <button class="action-button orange" type="button">保存通用设置</button>
+                <div id="general-settings-result" class="helper-note"></div>
+                <button class="action-button orange" type="submit">保存配置</button>
               </div>
             </article>
-          </div>
+          </form>
         </section>
       </div>
     </main>
 
-    <script src="/main.js"></script>
+    <script src="/main.js?v=4"></script>
+    <script src="/settings.js?v=3"></script>
   </body>
 </html>

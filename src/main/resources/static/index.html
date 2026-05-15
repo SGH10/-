@@ -43,9 +43,9 @@
       </nav>
 
       <div class="nav-actions">
-        <div class="locale-switch" aria-label="语言">
-          <span class="is-active">中文</span>
-          <span>EN</span>
+        <div class="locale-switch" aria-label="语言切换">
+          <button type="button" class="is-active" data-locale="zh-CN">中文</button>
+          <button type="button" data-locale="en">EN</button>
         </div>
         <a class="icon-button" href="/crawler-settings" title="系统配置">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -299,8 +299,59 @@
           </div>
         </article>
       </section>
+
+      <section class="workspace-main-card home-followup-panel">
+        <div class="panel-heading">
+          <div class="section-title-row">
+            <span class="section-icon">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M4 4h16v4H4zm0 6h16v10H4zm3 2h10v2H7zm0 4h6v2H7z" />
+              </svg>
+            </span>
+            <div>
+              <h2>跟进策略建议</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="follow-grid">
+          <article class="follow-card">
+            <span class="follow-index">1</span>
+            <div>
+              <h3>首次接触</h3>
+              <p class="feature-copy">发送开发信后24小时内，如未回复，可通过LinkedIn添加对方好友，增加曝光度</p>
+              <div class="chip-row">
+                <span class="chip">24小时内</span>
+                <span class="chip">LinkedIn</span>
+              </div>
+            </div>
+          </article>
+          <article class="follow-card">
+            <span class="follow-index">2</span>
+            <div>
+              <h3>二次跟进</h3>
+              <p class="feature-copy">3天后发送跟进邮件，提供更多产品资料或案例，强化产品优势</p>
+              <div class="chip-row">
+                <span class="chip">3天后</span>
+                <span class="chip">邮件</span>
+              </div>
+            </div>
+          </article>
+          <article class="follow-card is-highlight">
+            <span class="follow-index">3</span>
+            <div>
+              <h3>深度沟通</h3>
+              <p class="feature-copy">一周后尝试电话沟通，了解客户需求，提供定制化解决方案</p>
+              <div class="chip-row">
+                <span class="chip">1周后</span>
+                <span class="chip">电话</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
     </main>
 
-    <script src="/main.js"></script>
+    <script src="/main.js?v=4"></script>
   </body>
 </html>
