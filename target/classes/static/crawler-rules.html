@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>爬虫配置 | 一分钟科技</title>
-    <meta name="description" content="配置候选抓取规则、过滤策略和运行参数。" />
+    <meta name="description" content="抓取深度、超时、候选池和评分权重配置。" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body class="site-body">
@@ -21,9 +21,9 @@
         <span>爬虫与过滤规则中心</span>
       </div>
 
-      <div class="locale-switch" aria-label="语言">
-        <span class="is-active">中文</span>
-        <span>EN</span>
+      <div class="locale-switch" aria-label="语言切换">
+        <button type="button" class="is-active" data-locale="zh-CN">中文</button>
+        <button type="button" data-locale="en">EN</button>
       </div>
     </header>
 
@@ -81,10 +81,10 @@
         <section class="settings-main">
           <div class="settings-hero">
             <h1>爬虫配置</h1>
-            <p>把抓取规则、过滤规则和运行参数从搜索 API 页面拆出来，让左侧每个入口都对应一个明确的配置主题。</p>
+            <p>保存这里的配置后，客户搜索页的超时、候选池、抓取深度和评分逻辑会即时生效。</p>
           </div>
 
-          <div class="settings-stack">
+          <form id="crawler-settings-form" class="settings-stack">
             <article class="setting-section">
               <div class="settings-section-head">
                 <div class="section-title-row">
@@ -94,71 +94,33 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">候选抓取策略</h2>
-                    <p class="summary-copy">定义搜索结果进入候选列表的基本条件。</p>
-                  </div>
-                </div>
-                <span class="section-status green">已启用</span>
-              </div>
-              <div class="setting-body">
-                <div class="dual-cards">
-                  <article class="setting-card">
-                    <h3>优先抓取</h3>
-                    <ul class="compact-list">
-                      <li>企业官网首页、产品页、关于页、联系页。</li>
-                      <li>目标市场域名和对应语言页面。</li>
-                      <li>带企业主体词、行业词和同域邮箱的站点。</li>
-                    </ul>
-                  </article>
-                  <article class="setting-card">
-                    <h3>排除站点</h3>
-                    <ul class="compact-list">
-                      <li>新闻站、百科、论坛、博客、聚合目录站。</li>
-                      <li>搜索引擎跳转页、验证码页、登录校验页。</li>
-                      <li>明显不是公司主体官网的广告或中转链接。</li>
-                    </ul>
-                  </article>
-                </div>
-              </div>
-            </article>
-
-            <article class="setting-section">
-              <div class="settings-section-head">
-                <div class="section-title-row">
-                  <span class="section-icon">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M5 3h14v4H5zM4 9h16v12H4zM8 13h3v4H8z" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h2 class="settings-section-title">运行参数</h2>
-                    <p class="summary-copy">统一控制抓取速度、超时和结果数量。</p>
+                    <h2 class="settings-section-title">抓取参数</h2>
+                    <p class="summary-copy">控制搜索运行速度和抓取深度。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group">
-                    <span>请求超时</span>
-                    <input class="text-input" type="text" value="5000 ms" />
+                    <span>请求超时（毫秒）</span>
+                    <input class="text-input" id="crawler-request-timeout-ms" type="number" min="1000" value="8000" />
                   </label>
                   <label class="input-group">
-                    <span>候选上限</span>
-                    <input class="text-input" type="text" value="6" />
+                    <span>候选池大小</span>
+                    <input class="text-input" id="crawler-candidate-limit" type="number" min="1" value="36" />
                   </label>
                   <label class="input-group">
                     <span>邮箱提取深度</span>
-                    <select class="select-input">
-                      <option>仅首页</option>
-                      <option selected>首页 + 联系页</option>
-                      <option>全站扫描</option>
+                    <select class="select-input" id="crawler-email-extraction-depth">
+                      <option value="HOME_ONLY">仅首页</option>
+                      <option value="HOME_AND_CONTACT">首页 + 联系页</option>
                     </select>
                   </label>
                   <label class="input-group">
                     <span>日志模式</span>
-                    <select class="select-input">
-                      <option selected>摘要</option>
-                      <option>详细</option>
+                    <select class="select-input" id="crawler-log-mode">
+                      <option value="summary">摘要</option>
+                      <option value="detail">详细</option>
                     </select>
                   </label>
                 </div>
@@ -174,41 +136,42 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">结果评分</h2>
-                    <p class="summary-copy">控制高匹配客户的判断依据。</p>
+                    <h2 class="settings-section-title">评分权重</h2>
+                    <p class="summary-copy">控制高匹配客户的评分依据。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
-                <div class="settings-card-grid">
-                  <article class="mini-card">
-                    <span class="stat-label">同域邮箱加权</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">高</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">市场匹配权重</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">高</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">行业词匹配</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">中</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">公司主体信号</span>
-                    <strong class="stat-value" style="font-size: 1.9rem;">高</strong>
-                  </article>
+                <div class="setting-field-grid">
+                  <label class="input-group">
+                    <span>同域邮箱权重</span>
+                    <input class="text-input" id="crawler-same-domain-weight" type="number" min="1" value="10" />
+                  </label>
+                  <label class="input-group">
+                    <span>市场匹配权重</span>
+                    <input class="text-input" id="crawler-market-weight" type="number" min="1" value="8" />
+                  </label>
+                  <label class="input-group">
+                    <span>关键词匹配权重</span>
+                    <input class="text-input" id="crawler-keyword-weight" type="number" min="1" value="6" />
+                  </label>
+                  <label class="input-group">
+                    <span>公司主体信号权重</span>
+                    <input class="text-input" id="crawler-company-signal-weight" type="number" min="1" value="8" />
+                  </label>
                 </div>
               </div>
               <div class="footer-actions right">
-                <button class="action-button neutral" type="button">恢复默认</button>
-                <button class="action-button orange" type="button">保存爬虫配置</button>
+                <div id="crawler-settings-result" class="helper-note"></div>
+                <button class="action-button orange" type="submit">保存配置</button>
               </div>
             </article>
-          </div>
+          </form>
         </section>
       </div>
     </main>
 
-    <script src="/main.js"></script>
+    <script src="/main.js?v=4"></script>
+    <script src="/settings.js?v=3"></script>
   </body>
 </html>

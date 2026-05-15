@@ -1,0 +1,40 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.zijianxin:website >------------------------
+[INFO] Building website 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.3.12:run (default-cli) > test-compile @ website >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ website ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 13 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ website ---
+[WARNING]  Parameter 'compilerVersion' (user property 'maven.compiler.compilerVersion') is deprecated: This parameter is no longer evaluated by the underlying compilers, instead the actual version of the javac binary is automatically retrieved.
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 12 source files with javac [debug parameters release 17] to target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /D:/zijianxin/src/main/java/com/zijianxin/website/workflow/AiCompletionService.java:[85,11] 已捕获到异常错误java.net.http.HttpTimeoutException
+[ERROR] /D:/zijianxin/src/main/java/com/zijianxin/website/workflow/AiCompletionService.java:[87,11] 已捕获到异常错误java.net.ConnectException
+[INFO] 2 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.782 s
+[INFO] Finished at: 2026-05-15T12:48:41+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project website: Compilation failure: Compilation failure: 
+[ERROR] /D:/zijianxin/src/main/java/com/zijianxin/website/workflow/AiCompletionService.java:[85,11] 已捕获到异常错误java.net.http.HttpTimeoutException
+[ERROR] /D:/zijianxin/src/main/java/com/zijianxin/website/workflow/AiCompletionService.java:[87,11] 已捕获到异常错误java.net.ConnectException
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

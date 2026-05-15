@@ -4,32 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>搜索配置 | 一分钟科技</title>
-    <meta name="description" content="参考图风格的搜索和爬虫系统配置页。" />
-    <link rel="stylesheet" href="/styles.css" />
+    <meta name="description" content="搜索 API、SerpAPI 与 LinkedIn 数据配置。" />
+    <link rel="stylesheet" href="/styles.css?v=7" />
   </head>
   <body class="site-body">
-    <header class="system-header">
+    <header class="system-header ref-settings-header">
       <a class="back-link" href="/">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="m15 18-6-6 6-6"></path>
         </svg>
         返回首页
       </a>
 
-      <div class="brand-label" style="margin-right: auto;">
+      <div class="brand-label ref-settings-brand">
         <strong>系统配置</strong>
-        <span>搜索与爬虫设置中心</span>
       </div>
 
-      <div class="locale-switch" aria-label="语言">
-        <span class="is-active">中文</span>
-        <span>EN</span>
+      <div class="locale-switch" aria-label="语言切换">
+        <button type="button" class="is-active" data-locale="zh-CN">中文</button>
+        <button type="button" data-locale="en">EN</button>
       </div>
     </header>
 
-    <main class="system-page">
-      <div class="settings-shell">
-        <aside class="settings-sidebar">
+    <main class="system-page ref-settings-page">
+      <div class="settings-shell ref-settings-shell">
+        <aside class="settings-sidebar ref-settings-sidebar">
           <div class="settings-nav-group">
             <h3>AI 模型</h3>
             <a class="settings-link" data-settings-path="/ai-settings" href="/ai-settings">
@@ -42,7 +41,7 @@
 
           <div class="settings-nav-group">
             <h3>搜索引擎</h3>
-            <a class="settings-link" data-settings-path="/crawler-settings" href="/crawler-settings">
+            <a class="settings-link is-active" data-settings-path="/crawler-settings" href="/crawler-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="6"></circle>
                 <path d="m20 20-4.2-4.2"></path>
@@ -51,7 +50,7 @@
             </a>
             <a class="settings-link" data-settings-path="/crawler-rules" href="/crawler-rules">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Zm-3 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z" />
+                <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Z" />
               </svg>
               爬虫配置
             </a>
@@ -78,15 +77,15 @@
           </div>
         </aside>
 
-        <section class="settings-main">
-          <div class="settings-hero">
+        <section class="settings-main ref-settings-main">
+          <div class="settings-hero ref-settings-hero">
             <h1>搜索引擎配置</h1>
-            <p>配置搜索 API、候选抓取规则和结果过滤逻辑，让客户搜索页面更接近真实业务工作台。</p>
+            <p>配置搜索 API，获取真实客户搜索数据。</p>
           </div>
 
-          <div class="settings-stack">
-            <article class="setting-section">
-              <div class="settings-section-head">
+          <form id="search-settings-form" class="settings-stack ref-settings-stack">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -95,118 +94,72 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">SerpAPI（Google 搜索）</h2>
-                    <p class="summary-copy">配置搜索 API Key 与默认检索参数。</p>
+                    <h2 class="settings-section-title">SerpAPI （Google搜索）</h2>
                   </div>
                 </div>
                 <span class="section-status gray">未配置</span>
               </div>
+
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group setting-field full">
                     <span>SERPAPI KEY</span>
-                    <input class="text-input" type="password" value="••••••••••••••••••••••••••••••••••••••••" />
+                    <input class="text-input" id="search-serp-api-key" type="password" placeholder="输入 SerpAPI Key" />
+                    <span class="helper-text">从 serpapi.com 获取 API Key，支持 Google/Bing 搜索。</span>
                   </label>
-                  <label class="input-group setting-field">
+
+                  <label class="input-group setting-field full">
                     <span>默认搜索引擎</span>
-                    <select class="select-input">
-                      <option selected>Google</option>
-                      <option>Bing</option>
+                    <select class="select-input" id="search-default-engine">
+                      <option value="Google">Google</option>
+                      <option value="Bing">Bing</option>
                     </select>
                   </label>
-                  <label class="input-group setting-field">
+
+                  <label class="input-group setting-field full">
                     <span>每页结果数</span>
-                    <select class="select-input">
-                      <option>10</option>
-                      <option selected>20</option>
-                      <option>50</option>
-                    </select>
+                    <input class="text-input" id="search-results-per-page" type="number" min="1" max="50" placeholder="20" />
                   </label>
                 </div>
               </div>
             </article>
 
-            <article id="crawler-rules" class="setting-section">
-              <div class="settings-section-head">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M7 4a1 1 0 0 1 1 1v2h8V5a1 1 0 1 1 2 0v2h1a3 3 0 0 1 3 3v1h-2v-1a1 1 0 0 0-1-1h-1v2a1 1 0 1 1-2 0V9H8v2a1 1 0 1 1-2 0V9H5a1 1 0 0 0-1 1v1H2v-1a3 3 0 0 1 3-3h1V5a1 1 0 0 1 1-1Zm-1 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm12 0a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM9 15h6v2H9v-2Z" />
+                      <path d="M6.94 4A2.94 2.94 0 0 0 4 6.94v10.12A2.94 2.94 0 0 0 6.94 20h10.12A2.94 2.94 0 0 0 20 17.06V6.94A2.94 2.94 0 0 0 17.06 4H6.94ZM8.7 17H6.59V9.98H8.7V17Zm-1.06-8a1.23 1.23 0 1 1 0-2.46 1.23 1.23 0 0 1 0 2.46Zm9.37 8h-2.11v-3.59c0-.86-.02-1.97-1.2-1.97-1.21 0-1.39.94-1.39 1.91V17h-2.11V9.98h2.03v.96h.03c.28-.54.97-1.11 2-1.11 2.14 0 2.54 1.41 2.54 3.24V17Z" />
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">候选抓取与过滤规则</h2>
-                    <p class="summary-copy">控制哪些结果保留为公司站，哪些结果应当被过滤。</p>
+                    <h2 class="settings-section-title">LinkedIn 数据</h2>
                   </div>
                 </div>
-                <span class="section-status green">已启用</span>
               </div>
+
               <div class="setting-body">
-                <div class="dual-cards">
-                  <article class="setting-card">
-                    <h3>优先保留</h3>
-                    <ul class="compact-list">
-                      <li>公司首页、关于我们、产品中心和联系我们页面。</li>
-                      <li>带有企业主体信号、同域邮箱和明确行业词的网站。</li>
-                      <li>与目标市场匹配的域名与页面语言。</li>
-                    </ul>
-                  </article>
-                  <article class="setting-card">
-                    <h3>重点过滤</h3>
-                    <ul class="compact-list">
-                      <li>新闻、文章、论坛、百科、词典和验证码页面。</li>
-                      <li>门户站、目录站、B2B 聚合站和媒体资讯页面。</li>
-                      <li>搜索引擎自身页面与明显不属于公司官网的跳转链接。</li>
-                    </ul>
-                  </article>
+                <div class="setting-field-grid">
+                  <label class="input-group setting-field full">
+                    <span>LINKEDIN API KEY（可选）</span>
+                    <input class="text-input" id="search-linkedin-api-key" type="password" placeholder="LinkedIn API Key（可选）" />
+                    <span class="helper-text">配置后可读取更详细的 LinkedIn 公司和联系人数据。</span>
+                  </label>
                 </div>
               </div>
             </article>
 
-            <article class="setting-section">
-              <div class="settings-section-head">
-                <div class="section-title-row">
-                  <span class="section-icon">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M5 3h14v4H5zM4 9h16v12H4zM8 13h3v4H8z" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h2 class="settings-section-title">运行参数</h2>
-                    <p class="summary-copy">这些参数会直接影响搜索页的速度、数量和日志密度。</p>
-                  </div>
-                </div>
-              </div>
-              <div class="setting-body">
-                <div class="settings-card-grid">
-                  <article class="mini-card">
-                    <span class="stat-label">请求超时</span>
-                    <strong class="stat-value" style="font-size: 2rem;">5s</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">候选上限</span>
-                    <strong class="stat-value" style="font-size: 2rem;">6</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">日志模式</span>
-                    <strong class="stat-value" style="font-size: 2rem;">摘要</strong>
-                  </article>
-                  <article class="mini-card">
-                    <span class="stat-label">当前目标</span>
-                    <strong class="stat-value" style="font-size: 2rem;">稳态</strong>
-                  </article>
-                </div>
-              </div>
-              <div class="footer-actions right">
-                <button class="action-button neutral" type="button">恢复默认</button>
-                <button class="action-button orange" type="button">保存配置</button>
-              </div>
-            </article>
-          </div>
+            <div class="footer-actions right ref-settings-footer">
+              <div id="search-settings-result" class="helper-note"></div>
+              <button class="action-button ghost" type="button">恢复默认</button>
+              <button class="action-button orange" type="submit">保存配置</button>
+            </div>
+          </form>
         </section>
       </div>
     </main>
 
-    <script src="/main.js"></script>
+    <script src="/main.js?v=5"></script>
+    <script src="/settings.js?v=4"></script>
   </body>
 </html>

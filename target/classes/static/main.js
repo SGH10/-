@@ -1,6 +1,27 @@
 (() => {
+  const LOCALE_KEY = "leadflow-locale";
   const normalizedPath = window.location.pathname.replace(/\/+$/, "") || "/";
-  const searchStorageKey = "leadflow-search-response";
+
+  const sharedMessages = {
+    "zh-CN": {
+      "shared.brand.name": "一分钟科技",
+      "shared.brand.subtitle": "AI 外贸获客工作台",
+      "shared.nav.home": "首页",
+      "shared.nav.search": "客户搜索",
+      "shared.nav.outreach": "开发信",
+      "shared.systemSettings": "系统配置",
+      "shared.backHome": "返回首页"
+    },
+    en: {
+      "shared.brand.name": "One Minute Tech",
+      "shared.brand.subtitle": "AI Lead Generation Workspace",
+      "shared.nav.home": "Home",
+      "shared.nav.search": "Customer Search",
+      "shared.nav.outreach": "Outreach",
+      "shared.systemSettings": "System Settings",
+      "shared.backHome": "Back Home"
+    }
+  };
 
   document.querySelectorAll("[data-nav]").forEach((link) => {
     if (link.getAttribute("data-nav") === normalizedPath) {
@@ -18,103 +39,92 @@
     }
   });
 
-  const statusText = document.querySelector("#status-text");
-  if (statusText) {
-    statusText.textContent = "界面已完成初始化，可以直接进入客户搜索或开发信系统继续体验完整流程。";
+  const locale = readLocale();
+  applyLocaleState(locale);
+  bindLocaleSwitches();
+
+  window.leadflowLocale = {
+    get locale() {
+      return readLocale();
+    },
+    setLocale(localeValue) {
+      setLocale(localeValue);
+    }
+  };
+
+  function bindLocaleSwitches() {
+    document.querySelectorAll(".locale-switch [data-locale]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setLocale(button.getAttribute("data-locale"));
+      });
+    });
   }
 
-  if (normalizedPath === "/") {
-    loadEntrySearchLogs();
-  }
-
-  async function loadEntrySearchLogs() {
-    const summaryElement = document.querySelector("#entry-search-summary");
-    const logListElement = document.querySelector("#entry-log-list");
-    const totalElement = document.querySelector("#entry-total-count");
-    const emailElement = document.querySelector("#entry-email-count");
-    const matchElement = document.querySelector("#entry-match-count");
-
-    if (!summaryElement || !logListElement || !totalElement || !emailElement || !matchElement) {
+  function setLocale(localeValue) {
+    if (localeValue !== "zh-CN" && localeValue !== "en") {
       return;
     }
 
-    try {
-      const response = await fetch("/api/customers/last-search");
-      if (response.status === 204) {
-        const cached = readJsonStorage(searchStorageKey);
-        if (cached) {
-          renderEntrySearchLogs(cached, summaryElement, logListElement, totalElement, emailElement, matchElement);
-        }
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to load latest search logs");
-      }
-
-      const data = await response.json();
-      renderEntrySearchLogs(data, summaryElement, logListElement, totalElement, emailElement, matchElement);
-    } catch (error) {
-      const cached = readJsonStorage(searchStorageKey);
-      if (cached) {
-        renderEntrySearchLogs(cached, summaryElement, logListElement, totalElement, emailElement, matchElement);
-        return;
-      }
-
-      summaryElement.textContent = "最近一次搜索摘要暂时不可用，请稍后再试。";
-    }
+    localStorage.setItem(LOCALE_KEY, localeValue);
+    applyLocaleState(localeValue);
+    window.dispatchEvent(new CustomEvent("leadflow:locale-changed", { detail: { locale: localeValue } }));
   }
 
-  function renderEntrySearchLogs(data, summaryElement, logListElement, totalElement, emailElement, matchElement) {
-    summaryElement.textContent = data.summary || "最近一次搜索已完成。";
-    totalElement.textContent = data.stats?.totalCustomers || 0;
-    emailElement.textContent = data.stats?.emailCount || 0;
-    matchElement.textContent = data.stats?.highMatchCount || 0;
+  function applyLocaleState(localeValue) {
+    document.documentElement.lang = localeValue;
+    document.querySelectorAll(".locale-switch").forEach((switchElement) => {
+      switchElement.querySelectorAll("[data-locale]").forEach((button) => {
+        button.classList.toggle("is-active", button.getAttribute("data-locale") === localeValue);
+      });
+    });
 
-    const logs = Array.isArray(data.logs) ? data.logs : [];
-    if (logs.length === 0) {
-      logListElement.innerHTML = `
-        <li class="log-item">
-          <span class="log-time">--:--:--</span>
-          <span class="log-text">最近还没有可展示的抓取日志。</span>
-        </li>
-      `;
+    applySharedTranslations(localeValue);
+    applyPageTranslations(localeValue);
+  }
+
+  function applySharedTranslations(localeValue) {
+    const dict = sharedMessages[localeValue] || sharedMessages["zh-CN"];
+
+    document.querySelectorAll("[data-i18n-shared]").forEach((element) => {
+      const key = element.getAttribute("data-i18n-shared");
+      if (dict[key]) {
+        element.textContent = dict[key];
+      }
+    });
+  }
+
+  function applyPageTranslations(localeValue) {
+    const pageMessages = window.pageTranslations;
+    if (!pageMessages) {
       return;
     }
 
-    logListElement.innerHTML = logs
-      .slice(0, 6)
-      .map(
-        (log) => `
-          <li class="log-item">
-            <span class="log-time">${escapeHtml(log.time || "--:--:--")}</span>
-            <span class="log-text">${escapeHtml(log.message || "")}</span>
-          </li>
-        `
-      )
-      .join("");
-  }
-
-  function readJsonStorage(key) {
-    const raw = localStorage.getItem(key);
-    if (!raw) {
-      return null;
+    const dict = pageMessages[localeValue] || pageMessages["zh-CN"];
+    if (!dict) {
+      return;
     }
 
-    try {
-      return JSON.parse(raw);
-    } catch (error) {
-      localStorage.removeItem(key);
-      return null;
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      const key = element.getAttribute("data-i18n");
+      if (dict[key]) {
+        element.textContent = dict[key];
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+      const key = element.getAttribute("data-i18n-placeholder");
+      if (dict[key]) {
+        element.setAttribute("placeholder", dict[key]);
+      }
+    });
+
+    if (dict.__title) {
+      document.title = dict.__title;
     }
   }
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll("\"", "&quot;")
-      .replaceAll("'", "&#39;");
+  function readLocale() {
+    const saved = localStorage.getItem(LOCALE_KEY);
+    return saved === "en" ? "en" : "zh-CN";
   }
 })();
