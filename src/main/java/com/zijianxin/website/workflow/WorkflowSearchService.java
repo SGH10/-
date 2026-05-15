@@ -116,7 +116,7 @@ public class WorkflowSearchService {
             "主要", "需要", "寻找", "查找", "目标", "客户", "公司", "企业", "行业", "市场", "地区"
     );
 
-    private static final int SEARCH_ENGINE_PAGE_LIMIT = 2;
+    private static final int SEARCH_ENGINE_PAGE_LIMIT = 1;
     private static final int MAX_PARALLEL_INSPECTIONS = 8;
 
     private final SettingsService settingsService;
@@ -201,29 +201,23 @@ public class WorkflowSearchService {
             queries.add(joinQuery("site:.cn", primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
             queries.add(joinQuery("site:.com.cn", primaryKeywordHint, primaryIndustryHint, "company"));
             queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "manufacturer", "contact email"));
-            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "factory", "contact us"));
             queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "supplier", "sales email"));
-            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "company profile"));
             queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "官网"));
             queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "厂家", "联系方式"));
-            queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "公司", "邮箱"));
-            queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "有限公司"));
             if (!"ALL".equalsIgnoreCase(companySize)) {
                 queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, companySize, "company"));
             }
-            return new ArrayList<>(queries);
+            return queries.stream().limit(6).collect(Collectors.toList());
         }
 
         if ("ALL".equalsIgnoreCase(market)) {
             queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
             queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "supplier", "contact"));
             queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "factory", "email"));
-            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "company profile"));
-            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "sales email"));
             if (!"ALL".equalsIgnoreCase(companySize)) {
                 queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, companySize, "company"));
             }
-            return new ArrayList<>(queries);
+            return queries.stream().limit(5).collect(Collectors.toList());
         }
 
         String marketAlias = marketAlias(market);
@@ -231,12 +225,10 @@ public class WorkflowSearchService {
         queries.add(joinQuery(marketSite, primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
         queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "supplier", "contact"));
         queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "factory", "email"));
-        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "company profile"));
-        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "sales email"));
         if (!"ALL".equalsIgnoreCase(companySize)) {
             queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, companySize, "company"));
         }
-        return new ArrayList<>(queries);
+        return queries.stream().limit(5).collect(Collectors.toList());
     }
 
     private List<SearchCandidate> fetchCandidates(
@@ -254,11 +246,19 @@ public class WorkflowSearchService {
                 break;
             }
             session.log("Trying query: " + query);
-            collectFromBingRss(query, candidates, seenHosts, candidatePoolLimit, timeoutMs);
             collectFromBingHtml(query, candidates, seenHosts, candidatePoolLimit, timeoutMs);
-            collectFromDuckDuckGo(query, candidates, seenHosts, candidatePoolLimit, timeoutMs);
             if ("China".equalsIgnoreCase(market)) {
                 collectFromBaidu(query, candidates, seenHosts, candidatePoolLimit, timeoutMs);
+            }
+        }
+
+        if (candidates.size() < Math.min(candidatePoolLimit, 24)) {
+            for (String query : queries) {
+                if (candidates.size() >= candidatePoolLimit) {
+                    break;
+                }
+                collectFromBingRss(query, candidates, seenHosts, candidatePoolLimit, timeoutMs);
+                collectFromDuckDuckGo(query, candidates, seenHosts, candidatePoolLimit, timeoutMs);
             }
         }
 
@@ -559,7 +559,7 @@ public class WorkflowSearchService {
             if (!looksLikeCompanyCandidate(host, combined)) {
                 return null;
             }
-            if (!matchesMarketSignal(host, combined, market)) {
+            if (!matchesMarketSignal(host, combined, market) && isStrongMarketMismatch(host, combined, market)) {
                 return null;
             }
             if (!matchesKeywords(industry, keywords, combined)) {
@@ -852,6 +852,33 @@ public class WorkflowSearchService {
         return host.endsWith(marketSite(market).replace("site:.", "."))
                 || lower.contains(market.toLowerCase(Locale.ROOT))
                 || lower.contains(marketAlias(market));
+    }
+
+    private boolean isStrongMarketMismatch(String host, String text, String market) {
+        if ("ALL".equalsIgnoreCase(market)) {
+            return false;
+        }
+
+        String lower = text.toLowerCase(Locale.ROOT);
+        return switch (market) {
+            case "China" -> host.endsWith(".de")
+                    || host.endsWith(".us")
+                    || lower.contains("germany")
+                    || lower.contains("usa")
+                    || lower.contains("united states");
+            case "USA" -> host.endsWith(".cn")
+                    || host.endsWith(".de")
+                    || containsChineseScript(text)
+                    || lower.contains("germany")
+                    || lower.contains("china");
+            case "Germany" -> host.endsWith(".cn")
+                    || host.endsWith(".us")
+                    || containsChineseScript(text)
+                    || lower.contains("china")
+                    || lower.contains("usa")
+                    || lower.contains("united states");
+            default -> false;
+        };
     }
 
     private boolean looksLikeBlockedContent(String url, String combined) {
