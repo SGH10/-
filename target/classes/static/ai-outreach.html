@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>开发信系统 | 一分钟科技</title>
-    <meta name="description" content="AI 开发信工作台，支持客户导入、手动录入、开发信生成与 AI 优化。" />
+    <title>Outreach System | One Minute Tech</title>
+    <meta name="description" content="AI outreach workspace for imported customers, manual lead entry, email draft generation, and optimization." />
     <link rel="stylesheet" href="/styles.css?v=9" />
   </head>
   <body class="site-body">
@@ -12,8 +12,8 @@
       <a class="brand" href="/">
         <span class="brand-mark">1F</span>
         <span class="brand-label">
-          <strong data-i18n="brand.name">一分钟科技</strong>
-          <span data-i18n="brand.subtitle">AI 外贸获客工作台</span>
+          <strong data-i18n-shared="shared.brand.name">一分钟科技</strong>
+          <span data-i18n-shared="shared.brand.subtitle">AI 外贸获客工作台</span>
         </span>
       </a>
 
@@ -22,29 +22,29 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 3.5 3 10.5v9a1 1 0 0 0 1 1h5.5v-6h5v6H20a1 1 0 0 0 1-1v-9l-9-7z" />
           </svg>
-          <span data-i18n="nav.home">首页</span>
+          <span data-i18n-shared="shared.nav.home">首页</span>
         </a>
         <a href="/customer-search" data-nav="/customer-search">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="6"></circle>
             <path d="m20 20-4.2-4.2"></path>
           </svg>
-          <span data-i18n="nav.search">客户搜索</span>
+          <span data-i18n-shared="shared.nav.search">客户搜索</span>
         </a>
         <a href="/ai-outreach" data-nav="/ai-outreach">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
           </svg>
-          <span data-i18n="nav.outreach">开发信</span>
+          <span data-i18n-shared="shared.nav.outreach">开发信</span>
         </a>
       </nav>
 
       <div class="nav-actions">
-        <div class="locale-switch" aria-label="语言切换">
+        <div class="locale-switch" aria-label="Language Switch">
           <button type="button" class="is-active" data-locale="zh-CN">中文</button>
           <button type="button" data-locale="en">EN</button>
         </div>
-        <a class="icon-button" href="/ai-settings" title="AI 设置">
+        <a class="icon-button" href="/ai-settings" title="AI Settings">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="m19.43 12.98.04-.48-.04-.48 2.03-1.58a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 9.62a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
           </svg>
@@ -60,13 +60,13 @@
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M16 11c1.66 0 2.99-1.57 2.99-3.5S17.66 4 16 4s-3 1.57-3 3.5 1.34 3.5 3 3.5ZM8 11c1.66 0 2.99-1.57 2.99-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11Zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V20h6v-3.5c0-2.33-4.67-3.5-7-3.5Z" />
               </svg>
-              <strong data-i18n="section.targetCustomers">目标客户</strong>
+              <strong data-i18n="outreach.section.targetCustomers">目标客户</strong>
             </div>
 
             <div class="outreach-inline-actions">
-              <button id="search-import-button" class="action-button ghost" type="button" data-i18n="button.searchImport">搜索导入</button>
-              <button id="manual-entry-button" class="action-button ghost" type="button" data-i18n="button.manualEntry">手动输入</button>
-              <button id="clear-imported-customers" class="action-button ghost" type="button" data-i18n="button.clearCustomers">清空客户</button>
+              <button id="search-import-button" class="action-button ghost" type="button" data-i18n="outreach.button.searchImport">搜索导入</button>
+              <button id="manual-entry-button" class="action-button ghost" type="button" data-i18n="outreach.button.manualEntry">手动输入</button>
+              <button id="clear-imported-customers" class="action-button ghost" type="button" data-i18n="outreach.button.clearCustomers">清空客户</button>
             </div>
 
             <div id="recipient-list" class="outreach-empty-recipient">
@@ -75,8 +75,8 @@
                   <path d="M16 11c1.66 0 2.99-1.57 2.99-3.5S17.66 4 16 4s-3 1.57-3 3.5 1.34 3.5 3 3.5ZM8 11c1.66 0 2.99-1.57 2.99-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11Zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V20h6v-3.5c0-2.33-4.67-3.5-7-3.5Z" />
                 </svg>
               </span>
-              <h3 data-i18n="empty.noCustomerTitle">暂无客户</h3>
-              <p data-i18n="empty.noCustomerCopy">从客户搜索系统导入，或手动输入</p>
+              <h3 data-i18n="outreach.empty.noCustomerTitle">暂无客户</h3>
+              <p data-i18n="outreach.empty.noCustomerCopy">从客户搜索系统导入，或手动输入</p>
             </div>
           </section>
 
@@ -85,21 +85,21 @@
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z" />
               </svg>
-              <strong data-i18n="section.productInfo">产品信息</strong>
+              <strong data-i18n="outreach.section.productInfo">产品信息</strong>
             </div>
 
             <div class="form-stack">
               <label class="input-group">
-                <span data-i18n="field.productName">产品名称 *</span>
-                <input id="sidebar-product-name" class="text-input" type="text" data-i18n-placeholder="placeholder.productName" />
+                <span data-i18n="outreach.field.productName">产品名称 *</span>
+                <input id="sidebar-product-name" class="text-input" type="text" data-i18n-placeholder="outreach.placeholder.productName" />
               </label>
               <label class="input-group">
-                <span data-i18n="field.productKeywords">产品关键词 *</span>
-                <input id="sidebar-product-keywords" class="text-input" type="text" data-i18n-placeholder="placeholder.productKeywords" />
+                <span data-i18n="outreach.field.productKeywords">产品关键词 *</span>
+                <input id="sidebar-product-keywords" class="text-input" type="text" data-i18n-placeholder="outreach.placeholder.productKeywords" />
               </label>
               <label class="input-group">
-                <span data-i18n="field.valueProposition">产品优势</span>
-                <textarea id="sidebar-value-proposition" class="textarea-input" rows="5" data-i18n-placeholder="placeholder.valueProposition"></textarea>
+                <span data-i18n="outreach.field.valueProposition">产品优势</span>
+                <textarea id="sidebar-value-proposition" class="textarea-input" rows="5" data-i18n-placeholder="outreach.placeholder.valueProposition"></textarea>
               </label>
             </div>
           </section>
@@ -109,7 +109,7 @@
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm5.75 9H13V6.25A8 8 0 0 1 17.75 11ZM11 6.25V11H6.25A8 8 0 0 1 11 6.25ZM6.25 13H11v4.75A8 8 0 0 1 6.25 13ZM13 17.75V13h4.75A8 8 0 0 1 13 17.75Z" />
               </svg>
-              <strong data-i18n="section.targetLanguage">目标语言</strong>
+              <strong data-i18n="outreach.section.targetLanguage">目标语言</strong>
             </div>
 
             <div class="language-pill-grid">
@@ -136,13 +136,13 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 data-i18n="section.editor">开发信编辑</h2>
+                    <h2 data-i18n="outreach.section.editor">开发信编辑</h2>
                   </div>
                 </div>
                 <div class="topbar-actions">
-                  <button id="optimize-draft" class="action-button ghost" type="button" data-i18n="button.optimize">AI优化</button>
-                  <button class="action-button ghost" type="button" data-i18n="button.saveTemplate">保存模板</button>
-                  <button class="action-button ghost" type="button" data-i18n="button.sendTop">发送</button>
+                  <button id="optimize-draft" class="action-button ghost" type="button" data-i18n="outreach.button.optimize">AI优化</button>
+                  <button class="action-button ghost" type="button" data-i18n="outreach.button.saveTemplate">保存模板</button>
+                  <button class="action-button ghost" type="button" data-i18n="outreach.button.sendTop">发送</button>
                 </div>
               </div>
             </div>
@@ -151,11 +151,11 @@
               <form id="compose-form" class="form-stack">
                 <div class="ref-editor-top-row">
                   <label class="input-group">
-                    <span data-i18n="field.recipient">收件人：</span>
+                    <span data-i18n="outreach.field.recipient">收件人：</span>
                     <input id="recipient-email-preview" class="text-input" type="text" value="contact@example.com" readonly />
                   </label>
                   <label class="input-group">
-                    <span data-i18n="field.language">语言：</span>
+                    <span data-i18n="outreach.field.language">语言：</span>
                     <select id="compose-language" class="select-input" name="language">
                       <option value="zh-CN">中文</option>
                       <option value="en">English</option>
@@ -164,13 +164,14 @@
                       <option value="es">Español</option>
                       <option value="ru">Русский</option>
                       <option value="ar">العربية</option>
+                      <option value="pt">Português</option>
                     </select>
                   </label>
                 </div>
 
                 <label class="input-group">
-                  <span data-i18n="field.subject">主题：</span>
-                  <input id="draft-subject" class="text-input" type="text" value="" data-i18n-placeholder="placeholder.subject" />
+                  <span data-i18n="outreach.field.subject">主题：</span>
+                  <input id="draft-subject" class="text-input" type="text" value="" data-i18n-placeholder="outreach.placeholder.subject" />
                 </label>
 
                 <div class="ref-mail-body-shell">
@@ -180,8 +181,8 @@
                         <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
                       </svg>
                     </span>
-                    <h3 data-i18n="empty.draftTitle">开始生成开发信</h3>
-                    <p data-i18n="empty.draftCopy">在左侧配置客户信息和产品详情，点击“AI生成开发信”按钮</p>
+                    <h3 data-i18n="outreach.empty.draftTitle">开始生成开发信</h3>
+                    <p data-i18n="outreach.empty.draftCopy">在左侧配置客户信息和产品详情，点击“AI生成开发信”按钮</p>
                   </div>
                   <textarea id="draft-body" class="textarea-input ref-mail-body-textarea" rows="16"></textarea>
                 </div>
@@ -201,15 +202,13 @@
                 <div id="send-result" class="helper-note"></div>
 
                 <div class="topbar-actions ref-primary-actions">
-                  <button id="generate-draft" class="action-button orange" type="submit" data-i18n="button.generate">AI生成开发信</button>
-                  <button id="send-email" class="action-button green" type="button" disabled data-i18n="button.sendSelected">发送给已选客户</button>
+                  <button id="generate-draft" class="action-button orange" type="submit" data-i18n="outreach.button.generate">AI生成开发信</button>
+                  <button id="send-email" class="action-button green" type="button" disabled data-i18n="outreach.button.sendSelected">发送给已选客户</button>
                 </div>
               </form>
             </div>
           </article>
-        </section>
 
-        <section class="outreach-secondary-column">
           <article id="template-library" class="workspace-main-card template-library-panel">
             <div class="results-toolbar">
               <div class="section-title-row">
@@ -219,16 +218,16 @@
                   </svg>
                 </span>
                 <div>
-                  <h2 data-i18n="section.templateLibrary">邮件模板库</h2>
+                  <h2 data-i18n="outreach.section.templateLibrary">邮件模板库</h2>
                 </div>
               </div>
-              <a class="action-button ghost" href="/ai-settings" data-i18n="button.newTemplate">新建模板</a>
+              <a class="action-button ghost" href="/ai-settings" data-i18n="outreach.button.newTemplate">新建模板</a>
             </div>
             <div class="template-grid outreach-template-grid">
               <article class="template-card">
-                <span class="template-badge" data-i18n="badge.hot">热门</span>
-                <h3 data-i18n="template.zh.title">初次接触（中文）</h3>
-                <p class="feature-copy" data-i18n="template.zh.copy">zh · 初次开发</p>
+                <span class="template-badge" data-i18n="outreach.template.badgeHot">热门</span>
+                <h3 data-i18n="outreach.template.firstCnTitle">初次接触（中文）</h3>
+                <p class="feature-copy" data-i18n="outreach.template.firstCnCopy">zh · 初次开发</p>
                 <div class="template-meta">
                   <span>2,341</span>
                   <span>89%</span>
@@ -273,38 +272,136 @@
     <div id="manual-customer-modal" class="manual-modal is-hidden" aria-hidden="true">
       <div class="manual-modal-card">
         <div class="manual-modal-head">
-          <h3 data-i18n="modal.manualCustomerTitle">手动输入客户</h3>
-          <button id="manual-customer-close" class="action-button ghost manual-modal-close" type="button" data-i18n="button.close">关闭</button>
+          <h3 data-i18n="outreach.modal.manualTitle">手动输入客户</h3>
+          <button id="manual-customer-close" class="action-button ghost manual-modal-close" type="button" data-i18n="outreach.button.close">关闭</button>
         </div>
         <form id="manual-customer-form" class="form-stack">
           <label class="input-group">
-            <span data-i18n="field.companyName">公司名称 *</span>
-            <input id="manual-company-name" class="text-input" type="text" data-i18n-placeholder="placeholder.manualCompany" required />
+            <span data-i18n="outreach.field.companyName">公司名称 *</span>
+            <input id="manual-company-name" class="text-input" type="text" data-i18n-placeholder="outreach.placeholder.manualCompany" required />
           </label>
           <label class="input-group">
-            <span data-i18n="field.contactName">联系人</span>
-            <input id="manual-contact-name" class="text-input" type="text" data-i18n-placeholder="placeholder.manualContact" />
+            <span data-i18n="outreach.field.contactName">联系人</span>
+            <input id="manual-contact-name" class="text-input" type="text" data-i18n-placeholder="outreach.placeholder.manualContact" />
           </label>
           <label class="input-group">
-            <span data-i18n="field.email">邮箱 *</span>
-            <input id="manual-email" class="text-input" type="email" data-i18n-placeholder="placeholder.manualEmail" required />
+            <span data-i18n="outreach.field.email">邮箱 *</span>
+            <input id="manual-email" class="text-input" type="email" data-i18n-placeholder="outreach.placeholder.manualEmail" required />
           </label>
           <label class="input-group">
-            <span data-i18n="field.country">国家/地区</span>
-            <input id="manual-country" class="text-input" type="text" data-i18n-placeholder="placeholder.manualCountry" />
+            <span data-i18n="outreach.field.country">国家/地区</span>
+            <input id="manual-country" class="text-input" type="text" data-i18n-placeholder="outreach.placeholder.manualCountry" />
           </label>
           <label class="input-group">
-            <span data-i18n="field.website">官网</span>
-            <input id="manual-website" class="text-input" type="text" data-i18n-placeholder="placeholder.manualWebsite" />
+            <span data-i18n="outreach.field.website">官网</span>
+            <input id="manual-website" class="text-input" type="text" data-i18n-placeholder="outreach.placeholder.manualWebsite" />
           </label>
           <div class="topbar-actions">
-            <button class="action-button orange" type="submit" data-i18n="button.addCustomer">添加客户</button>
+            <button class="action-button orange" type="submit" data-i18n="outreach.button.addCustomer">添加客户</button>
           </div>
         </form>
       </div>
     </div>
 
-    <script src="/main.js?v=5"></script>
+    <script>
+      window.pageTranslations = {
+        "zh-CN": {
+          "__title": "开发信系统 | 一分钟科技",
+          "outreach.section.targetCustomers": "目标客户",
+          "outreach.section.productInfo": "产品信息",
+          "outreach.section.targetLanguage": "目标语言",
+          "outreach.section.editor": "开发信编辑",
+          "outreach.section.templateLibrary": "邮件模板库",
+          "outreach.field.productName": "产品名称 *",
+          "outreach.field.productKeywords": "产品关键词 *",
+          "outreach.field.valueProposition": "产品优势",
+          "outreach.field.recipient": "收件人：",
+          "outreach.field.language": "语言：",
+          "outreach.field.subject": "主题：",
+          "outreach.field.companyName": "公司名称 *",
+          "outreach.field.contactName": "联系人",
+          "outreach.field.email": "邮箱 *",
+          "outreach.field.country": "国家/地区",
+          "outreach.field.website": "官网",
+          "outreach.button.searchImport": "搜索导入",
+          "outreach.button.manualEntry": "手动输入",
+          "outreach.button.clearCustomers": "清空客户",
+          "outreach.button.optimize": "AI优化",
+          "outreach.button.saveTemplate": "保存模板",
+          "outreach.button.sendTop": "发送",
+          "outreach.button.generate": "AI生成开发信",
+          "outreach.button.sendSelected": "发送给已选客户",
+          "outreach.button.newTemplate": "新建模板",
+          "outreach.button.close": "关闭",
+          "outreach.button.addCustomer": "添加客户",
+          "outreach.empty.noCustomerTitle": "暂无客户",
+          "outreach.empty.noCustomerCopy": "从客户搜索系统导入，或手动输入",
+          "outreach.empty.draftTitle": "开始生成开发信",
+          "outreach.empty.draftCopy": "在左侧配置客户信息和产品详情，点击“AI生成开发信”按钮",
+          "outreach.modal.manualTitle": "手动输入客户",
+          "outreach.template.badgeHot": "热门",
+          "outreach.template.firstCnTitle": "初次接触（中文）",
+          "outreach.template.firstCnCopy": "zh · 初次开发",
+          "outreach.placeholder.productName": "例如：智能手机配件",
+          "outreach.placeholder.productKeywords": "例如：充电器,数据线,手机壳",
+          "outreach.placeholder.valueProposition": "描述您的产品优势和特点...",
+          "outreach.placeholder.subject": "输入邮件主题...",
+          "outreach.placeholder.manualCompany": "例如：ABC Trading",
+          "outreach.placeholder.manualContact": "例如：Alex",
+          "outreach.placeholder.manualEmail": "例如：alex@example.com",
+          "outreach.placeholder.manualCountry": "例如：中国",
+          "outreach.placeholder.manualWebsite": "例如：https://example.com"
+        },
+        "en": {
+          "__title": "Outreach System | One Minute Tech",
+          "outreach.section.targetCustomers": "Target Customers",
+          "outreach.section.productInfo": "Product Info",
+          "outreach.section.targetLanguage": "Target Language",
+          "outreach.section.editor": "Outreach Editor",
+          "outreach.section.templateLibrary": "Email Templates",
+          "outreach.field.productName": "Product Name *",
+          "outreach.field.productKeywords": "Product Keywords *",
+          "outreach.field.valueProposition": "Product Advantages",
+          "outreach.field.recipient": "Recipient:",
+          "outreach.field.language": "Language:",
+          "outreach.field.subject": "Subject:",
+          "outreach.field.companyName": "Company Name *",
+          "outreach.field.contactName": "Contact Name",
+          "outreach.field.email": "Email *",
+          "outreach.field.country": "Country / Region",
+          "outreach.field.website": "Website",
+          "outreach.button.searchImport": "Import Search",
+          "outreach.button.manualEntry": "Manual Entry",
+          "outreach.button.clearCustomers": "Clear Customers",
+          "outreach.button.optimize": "AI Optimize",
+          "outreach.button.saveTemplate": "Save Template",
+          "outreach.button.sendTop": "Send",
+          "outreach.button.generate": "Generate Draft",
+          "outreach.button.sendSelected": "Send to Selected",
+          "outreach.button.newTemplate": "New Template",
+          "outreach.button.close": "Close",
+          "outreach.button.addCustomer": "Add Customer",
+          "outreach.empty.noCustomerTitle": "No Customers Yet",
+          "outreach.empty.noCustomerCopy": "Import from customer search or add one manually.",
+          "outreach.empty.draftTitle": "Start Generating an Email",
+          "outreach.empty.draftCopy": "Fill in customer and product details on the left, then click Generate Draft.",
+          "outreach.modal.manualTitle": "Manual Customer Entry",
+          "outreach.template.badgeHot": "Hot",
+          "outreach.template.firstCnTitle": "First Contact (Chinese)",
+          "outreach.template.firstCnCopy": "zh · Initial outreach",
+          "outreach.placeholder.productName": "e.g. smartphone accessories",
+          "outreach.placeholder.productKeywords": "e.g. chargers, cables, phone cases",
+          "outreach.placeholder.valueProposition": "Describe your product strengths and differentiators...",
+          "outreach.placeholder.subject": "Enter email subject...",
+          "outreach.placeholder.manualCompany": "e.g. ABC Trading",
+          "outreach.placeholder.manualContact": "e.g. Alex",
+          "outreach.placeholder.manualEmail": "e.g. alex@example.com",
+          "outreach.placeholder.manualCountry": "e.g. China",
+          "outreach.placeholder.manualWebsite": "e.g. https://example.com"
+        }
+      };
+    </script>
+    <script src="/main.js?v=6"></script>
     <script src="/ai-outreach.js?v=9"></script>
   </body>
 </html>

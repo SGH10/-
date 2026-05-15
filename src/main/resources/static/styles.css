@@ -432,8 +432,7 @@ svg {
 }
 
 .system-feature {
-  display: grid;
-  grid-template-columns: 56px 1fr;
+  display: flex;
   gap: 16px;
   align-items: flex-start;
   padding: 18px 0;
@@ -468,6 +467,9 @@ svg {
 
 .feature-copy {
   margin-bottom: 0;
+  max-width: 34ch;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .system-card-footer {

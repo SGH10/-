@@ -50,11 +50,13 @@ public class WorkflowDraftService {
                 productName,
                 valueProposition,
                 callToAction,
+                language,
                 recipients,
                 firstRecipient
         );
 
-        log.info("Generating draft with AI. recipients={}, provider={}, model={}", recipients.size(), ai.provider(), ai.model());
+        log.info("Generating draft with AI. recipients={}, provider={}, model={}, targetLanguage={}",
+                recipients.size(), ai.provider(), ai.model(), language);
         String raw = aiCompletionService.complete(ai, systemPrompt, userPrompt);
         ParsedDraft parsedDraft = parseDraft(raw);
 
@@ -101,10 +103,12 @@ public class WorkflowDraftService {
                 productName,
                 valueProposition,
                 callToAction,
+                language,
                 firstRecipient
         );
 
-        log.info("Optimizing draft with AI. recipient={}, provider={}, model={}", firstRecipient.companyName(), ai.provider(), ai.model());
+        log.info("Optimizing draft with AI. recipient={}, provider={}, model={}, targetLanguage={}",
+                firstRecipient.companyName(), ai.provider(), ai.model(), language);
         String raw = aiCompletionService.complete(ai, systemPrompt, userPrompt);
         ParsedDraft parsedDraft = parseDraft(raw);
 
@@ -117,6 +121,7 @@ public class WorkflowDraftService {
     }
 
     private String buildDraftSystemPrompt(String language, String tone) {
+        String languageName = resolveLanguageName(language);
         return """
                 You are an expert B2B outbound email copywriter.
                 Generate a concise, realistic, high-conversion cold outreach email.
@@ -127,18 +132,24 @@ public class WorkflowDraftService {
                                 
                 Requirements:
                 - Keep the email natural and businesslike.
-                - Match the requested language.
+                - Write the entire subject and body in %s.
+                - Do not reply in any other language.
+                - Do not mix multiple languages in the final email.
+                - Do not add a second translated version.
                 - Respect the requested tone.
                 - Do not use markdown.
                 - Do not fabricate impossible claims.
                 - Mention recipient context when available.
                 - End with a clear CTA.
-                Current language: %s
+                - Keep proper nouns such as company names, personal names, websites, and email addresses exactly as provided.
+                Current language code: %s
+                Current language name: %s
                 Current tone: %s
-                """.formatted(language, tone);
+                """.formatted(languageName, language, languageName, tone);
     }
 
     private String buildOptimizationSystemPrompt(String language, String tone) {
+        String languageName = resolveLanguageName(language);
         return """
                 You are an expert B2B outbound email copywriter and editor.
                 Optimize the provided draft for clarity, relevance, personalization, and reply rate.
@@ -150,13 +161,18 @@ public class WorkflowDraftService {
                 Requirements:
                 - Keep the meaning aligned with the original draft.
                 - Improve readability and conversion.
-                - Match the requested language.
+                - Rewrite the entire subject and body in %s.
+                - Do not reply in any other language.
+                - Do not mix multiple languages in the final email.
+                - Do not add a second translated version.
                 - Respect the requested tone.
                 - Do not use markdown.
                 - Keep it concise and realistic.
-                Current language: %s
+                - Keep proper nouns such as company names, personal names, websites, and email addresses exactly as provided.
+                Current language code: %s
+                Current language name: %s
                 Current tone: %s
-                """.formatted(language, tone);
+                """.formatted(languageName, language, languageName, tone);
     }
 
     private String buildDraftUserPrompt(
@@ -164,10 +180,15 @@ public class WorkflowDraftService {
             String productName,
             String valueProposition,
             String callToAction,
+            String language,
             List<WorkflowModels.CustomerLead> recipients,
             WorkflowModels.CustomerLead firstRecipient
     ) {
+        String languageName = resolveLanguageName(language);
         return """
+                Target output language: %s (%s)
+                Final email rule: the subject and body must be fully written in %s only.
+                                
                 Sender company: %s
                 Product / solution: %s
                 Value proposition: %s
@@ -180,7 +201,11 @@ public class WorkflowDraftService {
                 Fit note: %s
                                 
                 Please write a cold outreach email for the primary recipient while keeping it reusable for the selected batch.
+                Return only one final version in %s.
                 """.formatted(
+                languageName,
+                language,
+                languageName,
                 companyName,
                 productName,
                 valueProposition,
@@ -190,7 +215,8 @@ public class WorkflowDraftService {
                 firstRecipient.country(),
                 fallback(firstRecipient.contactName(), "Business Contact"),
                 fallback(firstRecipient.email(), "N/A"),
-                fallback(firstRecipient.fitNote(), "Potential customer")
+                fallback(firstRecipient.fitNote(), "Potential customer"),
+                languageName
         );
     }
 
@@ -201,9 +227,14 @@ public class WorkflowDraftService {
             String productName,
             String valueProposition,
             String callToAction,
+            String language,
             WorkflowModels.CustomerLead recipient
     ) {
+        String languageName = resolveLanguageName(language);
         return """
+                Target output language: %s (%s)
+                Final email rule: the optimized subject and body must be fully written in %s only.
+                                
                 Sender company: %s
                 Product / solution: %s
                 Value proposition: %s
@@ -219,7 +250,11 @@ public class WorkflowDraftService {
                 %s
                                 
                 Please optimize the subject and body.
+                Return only one final version in %s.
                 """.formatted(
+                languageName,
+                language,
+                languageName,
                 companyName,
                 productName,
                 valueProposition,
@@ -228,7 +263,8 @@ public class WorkflowDraftService {
                 recipient.country(),
                 fallback(recipient.contactName(), "Business Contact"),
                 fallback(subject, ""),
-                fallback(body, "")
+                fallback(body, ""),
+                languageName
         );
     }
 
@@ -282,6 +318,23 @@ public class WorkflowDraftService {
 
     private String buildFallbackSubject(String companyName, String productName, String recipientCompany) {
         return recipientCompany + " x " + companyName + " | " + productName;
+    }
+
+    private String resolveLanguageName(String language) {
+        if (language == null || language.isBlank()) {
+            return "Simplified Chinese";
+        }
+        return switch (language.trim()) {
+            case "zh", "zh-CN", "zh-Hans" -> "Simplified Chinese";
+            case "en", "en-US", "en-GB" -> "English";
+            case "de", "de-DE" -> "German";
+            case "fr", "fr-FR" -> "French";
+            case "es", "es-ES" -> "Spanish";
+            case "ru", "ru-RU" -> "Russian";
+            case "ar", "ar-SA", "ar-AE" -> "Arabic";
+            case "pt", "pt-BR", "pt-PT" -> "Portuguese";
+            default -> language.trim();
+        };
     }
 
     private List<WorkflowModels.CustomerLead> safeRecipients(List<WorkflowModels.CustomerLead> recipients) {

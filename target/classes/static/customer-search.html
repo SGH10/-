@@ -3,20 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>客户搜索 | 一分钟科技</title>
-    <meta
-      name="description"
-      content="参考图风格的 AI 客户搜索工作台，支持搜索配置、搜索深度、目标客户数、进度追踪和结果筛选。"
-    />
-    <link rel="stylesheet" href="/styles.css" />
+    <title>Customer Search | One Minute Tech</title>
+    <meta name="description" content="AI customer search workspace with configuration, progress tracking, and result review." />
+    <link rel="stylesheet" href="/styles.css?v=9" />
   </head>
   <body class="site-body">
     <header class="topbar">
       <a class="brand" href="/">
         <span class="brand-mark">1F</span>
         <span class="brand-label">
-          <strong>一分钟科技</strong>
-          <span>AI 外贸获客工作台</span>
+          <strong data-i18n-shared="shared.brand.name">一分钟科技</strong>
+          <span data-i18n-shared="shared.brand.subtitle">AI 外贸获客工作台</span>
         </span>
       </a>
 
@@ -25,29 +22,29 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 3.5 3 10.5v9a1 1 0 0 0 1 1h5.5v-6h5v6H20a1 1 0 0 0 1-1v-9l-9-7z" />
           </svg>
-          <span>首页</span>
+          <span data-i18n-shared="shared.nav.home">首页</span>
         </a>
         <a href="/customer-search" data-nav="/customer-search">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="6"></circle>
             <path d="m20 20-4.2-4.2"></path>
           </svg>
-          <span>客户搜索</span>
+          <span data-i18n-shared="shared.nav.search">客户搜索</span>
         </a>
         <a href="/ai-outreach" data-nav="/ai-outreach">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
           </svg>
-          <span>开发信</span>
+          <span data-i18n-shared="shared.nav.outreach">开发信</span>
         </a>
       </nav>
 
       <div class="nav-actions">
-        <div class="locale-switch" aria-label="语言切换">
+        <div class="locale-switch" aria-label="Language Switch">
           <button type="button" class="is-active" data-locale="zh-CN">中文</button>
           <button type="button" data-locale="en">EN</button>
         </div>
-        <a class="icon-button" href="/crawler-settings" title="系统配置">
+        <a class="icon-button" href="/crawler-settings" title="System Settings">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="m19.43 12.98.04-.48-.04-.48 2.03-1.58a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 9.62a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
           </svg>
@@ -58,105 +55,92 @@
     <main class="workspace-page">
       <section class="notice-strip">
         <div>
-          <strong>爬虫模式：Puppeteer 无头浏览器 - 真实数据自动爬取</strong>
-          <p class="summary-copy">左侧搜索配置按参考图补齐目标客户描述、搜索深度和目标客户数，右侧展示进度与结果。</p>
+          <strong data-i18n="search.noticeTitle">爬虫模式：Puppeteer 无头浏览器 - 真实数据自动抓取</strong>
+          <p class="summary-copy" data-i18n="search.noticeCopy">左侧搜索配置按参考图补齐目标客户描述、搜索深度和目标客户数，右侧展示进度与结果。</p>
         </div>
-        <a class="action-button orange" href="/crawler-settings">升级配置</a>
+        <a class="action-button orange" href="/crawler-settings" data-i18n="search.upgradeConfig">升级配置</a>
       </section>
 
       <div class="workspace-shell">
         <aside class="workspace-sidebar search-sidebar-ref">
           <form id="search-form" class="form-stack">
             <div class="sidebar-panel ref-sidebar-head">
-              <span class="sidebar-kicker">搜索配置</span>
+              <span class="sidebar-kicker" data-i18n="search.sidebarKicker">搜索配置</span>
               <label class="input-group">
-                <span>目标客户描述</span>
+                <span data-i18n="search.targetDescription">目标客户描述</span>
                 <textarea
                   class="textarea-input"
                   id="target-description"
                   name="targetDescription"
                   rows="4"
-                  placeholder="例如：美国电子产品进口商，年营业额5000万以上，主要进口智能手机配件..."
+                  data-i18n-placeholder="search.targetDescriptionPlaceholder"
                 ></textarea>
               </label>
             </div>
 
             <label class="input-group">
-              <span>目标国家/地区</span>
+              <span data-i18n="search.market">目标国家/地区</span>
               <select class="select-input" name="marketPreset" id="market-preset">
-                <option value="全部">全部地区</option>
-                <option value="中国" selected>中国</option>
-                <option value="美国">美国</option>
-                <option value="德国">德国</option>
+                <option value="全部" data-i18n="search.market.all">全部地区</option>
+                <option value="中国" selected data-i18n="search.market.cn">中国</option>
+                <option value="美国" data-i18n="search.market.us">美国</option>
+                <option value="德国" data-i18n="search.market.de">德国</option>
               </select>
             </label>
 
             <label class="input-group">
-              <span>行业领域</span>
+              <span data-i18n="search.industry">行业领域</span>
               <select class="select-input" name="industryPreset" id="industry-preset">
-                <option value="工业设备" selected>工业设备</option>
-                <option value="机床制造">机床制造</option>
-                <option value="自动化设备">自动化设备</option>
-                <option value="电子制造">电子制造</option>
-                <option value="工业自动化">工业自动化</option>
-                <option value="custom">自定义</option>
+                <option value="工业设备" selected data-i18n="search.industry.default">工业设备</option>
+                <option value="机床制造" data-i18n="search.industry.machineTool">机床制造</option>
+                <option value="自动化设备" data-i18n="search.industry.automation">自动化设备</option>
+                <option value="电子制造" data-i18n="search.industry.electronics">电子制造</option>
+                <option value="工业自动化" data-i18n="search.industry.industrialAutomation">工业自动化</option>
+                <option value="custom" data-i18n="search.industry.custom">自定义</option>
               </select>
             </label>
 
             <label class="input-group is-hidden" id="industry-custom-group">
-              <span>自定义行业</span>
-              <input class="text-input" type="text" name="industryCustom" id="industry-custom" placeholder="输入自定义行业" />
+              <span data-i18n="search.customIndustry">自定义行业</span>
+              <input class="text-input" type="text" name="industryCustom" id="industry-custom" data-i18n-placeholder="search.customIndustryPlaceholder" />
             </label>
 
             <label class="input-group">
-              <span>公司规模</span>
+              <span data-i18n="search.companySize">公司规模</span>
               <select class="select-input" name="companySize">
-                <option>全部规模</option>
-                <option>10-50人</option>
-                <option selected>50-200人</option>
-                <option>200-500人</option>
-                <option>500人以上</option>
+                <option data-i18n="search.companySize.all">全部规模</option>
+                <option data-i18n="search.companySize.s1">10-50人</option>
+                <option selected data-i18n="search.companySize.s2">50-200人</option>
+                <option data-i18n="search.companySize.s3">200-500人</option>
+                <option data-i18n="search.companySize.s4">500人以上</option>
               </select>
             </label>
 
             <label class="input-group">
-              <span>搜索深度</span>
+              <span data-i18n="search.depth">搜索深度</span>
               <select class="select-input" id="search-depth" name="searchDepth">
-                <option value="standard" selected>标准（约100客户）</option>
-                <option value="deep">深度（约300客户）</option>
-                <option value="precision">精准（高匹配优先）</option>
+                <option value="standard" selected data-i18n="search.depth.standard">标准（约100客户）</option>
+                <option value="deep" data-i18n="search.depth.deep">深度（约300客户）</option>
+                <option value="precision" data-i18n="search.depth.precision">精准（高匹配优先）</option>
               </select>
             </label>
 
             <label class="input-group">
-              <span>目标客户数（可自定义）</span>
+              <span data-i18n="search.targetCount">目标客户数（可自定义）</span>
               <input class="text-input" id="requested-limit" name="requestedLimitInput" type="number" min="10" max="200" value="50" />
-              <span class="helper-text">设置本次搜索期望获取的客户数量</span>
+              <span class="helper-text" data-i18n="search.targetCountHelp">设置本次搜索期望获取的客户数量</span>
             </label>
 
-            <button id="search-submit" class="action-button orange wide search-primary-button" type="submit">开始AI搜索</button>
+            <button id="search-submit" class="action-button orange wide search-primary-button" type="submit" data-i18n="search.startButton">开始AI搜索</button>
           </form>
         </aside>
 
         <section class="workspace-main search-main-ref">
           <div class="tab-strip ref-tab-strip">
-            <div class="tab-item is-active">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M4 19h16v2H4zM6 17V9h3v8H6Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" />
-              </svg>
-              实时进度
-            </div>
+            <div class="tab-item is-active" data-i18n="search.tab.progress">实时进度</div>
+            <div class="tab-item" data-i18n="search.tab.log">运行日志</div>
             <div class="tab-item">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M4 5h16v2H4zm0 6h10v2H4zm0 6h16v2H4z" />
-              </svg>
-              运行日志
-            </div>
-            <div class="tab-item">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M5 5h14v4H5zm0 5h14v4H5zm0 5h14v4H5z" />
-              </svg>
-              搜索结果
+              <span data-i18n="search.tab.result">搜索结果</span>
               <span class="soft-badge search-result-badge"><strong id="search-result-count">0</strong></span>
             </div>
           </div>
@@ -164,29 +148,29 @@
           <article class="progress-card ref-progress-card">
             <div class="progress-card-head">
               <div>
-                <h2>AI客户搜索进度</h2>
+                <h2 data-i18n="search.progressTitle">AI客户搜索进度</h2>
                 <p id="search-summary" class="summary-copy">还没有结果，先运行一次客户搜索。</p>
               </div>
-              <span id="search-status-chip" class="status-chip pending">等待开始</span>
+              <span id="search-status-chip" class="status-chip pending" data-i18n="search.status.pending">等待开始</span>
             </div>
 
             <div class="progress-track" aria-hidden="true"></div>
 
             <div class="progress-grid">
               <div class="progress-card-small">
-                <span class="progress-label">目标数量</span>
+                <span class="progress-label" data-i18n="search.metric.total">目标数量</span>
                 <strong class="progress-value" id="stat-total">0</strong>
               </div>
               <div class="progress-card-small">
-                <span class="progress-label">已找到</span>
+                <span class="progress-label" data-i18n="search.metric.found">已找到</span>
                 <strong class="progress-value" id="stat-email">0</strong>
               </div>
               <div class="progress-card-small">
-                <span class="progress-label">已验证</span>
+                <span class="progress-label" data-i18n="search.metric.validated">已验证</span>
                 <strong class="progress-value" id="stat-match">0</strong>
               </div>
               <div class="progress-card-small">
-                <span class="progress-label">运行时间</span>
+                <span class="progress-label" data-i18n="search.metric.time">运行时间</span>
                 <strong class="progress-value" id="stat-market">00:00</strong>
               </div>
             </div>
@@ -195,16 +179,16 @@
           <article class="results-card ref-results-card">
             <div class="results-toolbar">
               <div>
-                <h2>搜索结果</h2>
-                <p>选择你要继续触达的客户，再流转到 AI 开发信页面。</p>
+                <h2 data-i18n="search.resultTitle">搜索结果</h2>
+                <p data-i18n="search.resultCopy">选择你要继续触达的客户，再流转到 AI 开发信页面。</p>
               </div>
               <div class="topbar-actions">
                 <label class="action-button ghost select-toggle-button">
                   <input id="select-all" type="checkbox" />
-                  <span>全选</span>
+                  <span data-i18n="search.selectAll">全选</span>
                 </label>
-                <button id="push-to-outreach" class="action-button ghost" type="button" disabled>生成开发信</button>
-                <button id="export-results" class="action-button orange" type="button" disabled>导出Excel</button>
+                <button id="push-to-outreach" class="action-button ghost" type="button" disabled data-i18n="search.pushToOutreach">生成开发信</button>
+                <button id="export-results" class="action-button orange" type="button" disabled data-i18n="search.export">导出Excel</button>
               </div>
             </div>
 
@@ -213,11 +197,11 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th>公司信息</th>
-                    <th>联系方式</th>
-                    <th>社交媒体</th>
-                    <th>匹配度</th>
-                    <th>操作</th>
+                    <th data-i18n="search.table.company">公司信息</th>
+                    <th data-i18n="search.table.contact">联系方式</th>
+                    <th data-i18n="search.table.channel">社交媒体</th>
+                    <th data-i18n="search.table.fit">匹配度</th>
+                    <th data-i18n="search.table.action">操作</th>
                   </tr>
                 </thead>
                 <tbody id="results-body">
@@ -230,8 +214,8 @@
                             <path d="m20 20-4.2-4.2"></path>
                           </svg>
                         </span>
-                        <h2>开始搜索客户</h2>
-                        <p class="empty-copy">在左侧配置搜索条件，点击“开始AI搜索”按钮后，客户结果会在下方表格中出现。</p>
+                        <h2 data-i18n="search.emptyTitle">开始搜索客户</h2>
+                        <p class="empty-copy" data-i18n="search.emptyCopy">在左侧配置搜索条件，点击“开始AI搜索”按钮后，客户结果会在下方表格中出现。</p>
                       </div>
                     </td>
                   </tr>
@@ -241,13 +225,13 @@
 
             <article class="workspace-main-card search-log-card-ref">
               <div class="panel-heading">
-                <h2>运行日志</h2>
-                <p>展示搜索入口请求、站点识别、公开邮箱提取、筛选过滤与异常回退摘要。</p>
+                <h2 data-i18n="search.logTitle">运行日志</h2>
+                <p data-i18n="search.logCopy">展示搜索入口请求、站点识别、公开邮箱提取、筛选过滤与异常回退摘要。</p>
               </div>
               <ul id="search-logs" class="log-list">
                 <li class="log-item">
                   <span class="log-time">--:--:--</span>
-                  <span class="log-text">等待你启动第一次客户搜索。</span>
+                  <span class="log-text" data-i18n="search.logEmpty">等待你启动第一次客户搜索。</span>
                 </li>
               </ul>
             </article>
@@ -256,7 +240,131 @@
       </div>
     </main>
 
-    <script src="/main.js?v=4"></script>
+    <script>
+      window.pageTranslations = {
+        "zh-CN": {
+          "__title": "客户搜索 | 一分钟科技",
+          "search.noticeTitle": "爬虫模式：Puppeteer 无头浏览器 - 真实数据自动抓取",
+          "search.noticeCopy": "左侧搜索配置按参考图补齐目标客户描述、搜索深度和目标客户数，右侧展示进度与结果。",
+          "search.upgradeConfig": "升级配置",
+          "search.sidebarKicker": "搜索配置",
+          "search.targetDescription": "目标客户描述",
+          "search.targetDescriptionPlaceholder": "例如：美国电子产品进口商，年营业额 5000 万以上，主要进口智能手机配件...",
+          "search.market": "目标国家/地区",
+          "search.market.all": "全部地区",
+          "search.market.cn": "中国",
+          "search.market.us": "美国",
+          "search.market.de": "德国",
+          "search.industry": "行业领域",
+          "search.industry.default": "工业设备",
+          "search.industry.machineTool": "机床制造",
+          "search.industry.automation": "自动化设备",
+          "search.industry.electronics": "电子制造",
+          "search.industry.industrialAutomation": "工业自动化",
+          "search.industry.custom": "自定义",
+          "search.customIndustry": "自定义行业",
+          "search.customIndustryPlaceholder": "输入自定义行业",
+          "search.companySize": "公司规模",
+          "search.companySize.all": "全部规模",
+          "search.companySize.s1": "10-50人",
+          "search.companySize.s2": "50-200人",
+          "search.companySize.s3": "200-500人",
+          "search.companySize.s4": "500人以上",
+          "search.depth": "搜索深度",
+          "search.depth.standard": "标准（约100客户）",
+          "search.depth.deep": "深度（约300客户）",
+          "search.depth.precision": "精准（高匹配优先）",
+          "search.targetCount": "目标客户数（可自定义）",
+          "search.targetCountHelp": "设置本次搜索期望获取的客户数量",
+          "search.startButton": "开始AI搜索",
+          "search.tab.progress": "实时进度",
+          "search.tab.log": "运行日志",
+          "search.tab.result": "搜索结果",
+          "search.progressTitle": "AI客户搜索进度",
+          "search.status.pending": "等待开始",
+          "search.metric.total": "目标数量",
+          "search.metric.found": "已找到",
+          "search.metric.validated": "已验证",
+          "search.metric.time": "运行时间",
+          "search.resultTitle": "搜索结果",
+          "search.resultCopy": "选择你要继续触达的客户，再流转到 AI 开发信页面。",
+          "search.selectAll": "全选",
+          "search.pushToOutreach": "生成开发信",
+          "search.export": "导出Excel",
+          "search.table.company": "公司信息",
+          "search.table.contact": "联系方式",
+          "search.table.channel": "社交媒体",
+          "search.table.fit": "匹配度",
+          "search.table.action": "操作",
+          "search.emptyTitle": "开始搜索客户",
+          "search.emptyCopy": "在左侧配置搜索条件，点击“开始AI搜索”按钮后，客户结果会在下方表格中出现。",
+          "search.logTitle": "运行日志",
+          "search.logCopy": "展示搜索入口请求、站点识别、公开邮箱提取、筛选过滤与异常回退摘要。",
+          "search.logEmpty": "等待你启动第一次客户搜索。"
+        },
+        "en": {
+          "__title": "Customer Search | One Minute Tech",
+          "search.noticeTitle": "Crawler Mode: Puppeteer Headless Browser - Real Data Collection",
+          "search.noticeCopy": "Complete your target description, search depth, and expected lead count on the left, while progress and results appear on the right.",
+          "search.upgradeConfig": "Upgrade Config",
+          "search.sidebarKicker": "Search Setup",
+          "search.targetDescription": "Target Customer Description",
+          "search.targetDescriptionPlaceholder": "e.g. US electronics importers with over 50M annual revenue, mainly importing smartphone accessories...",
+          "search.market": "Target Country / Region",
+          "search.market.all": "All Regions",
+          "search.market.cn": "China",
+          "search.market.us": "United States",
+          "search.market.de": "Germany",
+          "search.industry": "Industry",
+          "search.industry.default": "Industrial Equipment",
+          "search.industry.machineTool": "Machine Tool Manufacturing",
+          "search.industry.automation": "Automation Equipment",
+          "search.industry.electronics": "Electronics Manufacturing",
+          "search.industry.industrialAutomation": "Industrial Automation",
+          "search.industry.custom": "Custom",
+          "search.customIndustry": "Custom Industry",
+          "search.customIndustryPlaceholder": "Enter custom industry",
+          "search.companySize": "Company Size",
+          "search.companySize.all": "All Sizes",
+          "search.companySize.s1": "10-50 employees",
+          "search.companySize.s2": "50-200 employees",
+          "search.companySize.s3": "200-500 employees",
+          "search.companySize.s4": "500+ employees",
+          "search.depth": "Search Depth",
+          "search.depth.standard": "Standard (about 100 leads)",
+          "search.depth.deep": "Deep (about 300 leads)",
+          "search.depth.precision": "Precision (high-fit first)",
+          "search.targetCount": "Target Lead Count (Custom)",
+          "search.targetCountHelp": "Set how many leads you want this run to return.",
+          "search.startButton": "Start AI Search",
+          "search.tab.progress": "Live Progress",
+          "search.tab.log": "Run Logs",
+          "search.tab.result": "Results",
+          "search.progressTitle": "AI Customer Search Progress",
+          "search.status.pending": "Waiting",
+          "search.metric.total": "Target Count",
+          "search.metric.found": "Found",
+          "search.metric.validated": "Validated",
+          "search.metric.time": "Run Time",
+          "search.resultTitle": "Search Results",
+          "search.resultCopy": "Pick the customers you want to contact next, then move them into the AI outreach page.",
+          "search.selectAll": "Select All",
+          "search.pushToOutreach": "Create Outreach",
+          "search.export": "Export Excel",
+          "search.table.company": "Company Info",
+          "search.table.contact": "Contact",
+          "search.table.channel": "Channel",
+          "search.table.fit": "Fit",
+          "search.table.action": "Action",
+          "search.emptyTitle": "Start Searching Customers",
+          "search.emptyCopy": "Set the search conditions on the left. After you click Start AI Search, the customer results will appear below.",
+          "search.logTitle": "Run Logs",
+          "search.logCopy": "Shows request entry points, site identification, public email extraction, filtering, and fallback summaries.",
+          "search.logEmpty": "Waiting for you to launch the first customer search."
+        }
+      };
+    </script>
+    <script src="/main.js?v=6"></script>
     <script src="/customer-search.js?v=4"></script>
   </body>
 </html>
