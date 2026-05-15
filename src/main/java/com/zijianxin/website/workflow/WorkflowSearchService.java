@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -106,6 +111,14 @@ public class WorkflowSearchService {
             "manager", "director", "sales", "contact"
     );
 
+    private static final Set<String> SEARCH_STOP_WORDS = Set.of(
+            "the", "and", "for", "with", "that", "from", "this", "into", "your", "their", "mainly",
+            "主要", "需要", "寻找", "查找", "目标", "客户", "公司", "企业", "行业", "市场", "地区"
+    );
+
+    private static final int SEARCH_ENGINE_PAGE_LIMIT = 2;
+    private static final int MAX_PARALLEL_INSPECTIONS = 8;
+
     private final SettingsService settingsService;
     private volatile WorkflowModels.CustomerSearchResponse lastSearchResponse;
 
@@ -129,7 +142,10 @@ public class WorkflowSearchService {
         String companySize = normalizeInput(fallback(request.companySize(), "50-200"));
 
         int leadLimit = normalizePositive(request.requestedLimit(), searchSettings.resultsPerPage(), 10);
-        int candidatePoolLimit = Math.max(leadLimit * 5, normalizePositive(crawlerSettings.candidateLimit(), 50, 50));
+        int candidatePoolLimit = Math.max(
+                Math.max(leadLimit * 8, 80),
+                normalizePositive(crawlerSettings.candidateLimit(), 50, 50)
+        );
         int timeoutMs = normalizePositive(crawlerSettings.requestTimeoutMs(), 8000, 8000);
 
         List<String> queries = buildSearchQueries(industry, market, keywords, companySize);
@@ -174,37 +190,51 @@ public class WorkflowSearchService {
 
     private List<String> buildSearchQueries(String industry, String market, String keywords, String companySize) {
         LinkedHashSet<String> queries = new LinkedHashSet<>();
-        String industryAlias = toEnglishHint(industry);
-        String keywordAlias = toEnglishHint(keywords);
+        List<String> industryHints = buildSearchHints(industry);
+        List<String> keywordHints = buildSearchHints(keywords);
+        String primaryIndustryHint = firstQueryHint(industryHints, toEnglishHint(industry));
+        String primaryKeywordHint = firstQueryHint(keywordHints, toEnglishHint(keywords));
+        String nativeIndustryHint = firstNativeHint(industryHints, industry);
+        String nativeKeywordHint = firstNativeHint(keywordHints, keywords);
 
         if ("China".equalsIgnoreCase(market)) {
-            queries.add(joinQuery("site:.cn", keywordAlias, industryAlias, "manufacturer", "official website"));
-            queries.add(joinQuery("site:.com.cn", keywordAlias, industryAlias, "company"));
-            queries.add(joinQuery(keywordAlias, industryAlias, "manufacturer", "contact email"));
-            queries.add(joinQuery(keywordAlias, industryAlias, "factory", "contact us"));
+            queries.add(joinQuery("site:.cn", primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
+            queries.add(joinQuery("site:.com.cn", primaryKeywordHint, primaryIndustryHint, "company"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "manufacturer", "contact email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "factory", "contact us"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "supplier", "sales email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "company profile"));
+            queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "官网"));
+            queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "厂家", "联系方式"));
+            queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "公司", "邮箱"));
+            queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "有限公司"));
             if (!"ALL".equalsIgnoreCase(companySize)) {
-                queries.add(joinQuery(keywordAlias, industryAlias, companySize, "company"));
+                queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, companySize, "company"));
             }
             return new ArrayList<>(queries);
         }
 
         if ("ALL".equalsIgnoreCase(market)) {
-            queries.add(joinQuery(keywordAlias, industryAlias, "manufacturer", "official website"));
-            queries.add(joinQuery(keywordAlias, industryAlias, "supplier", "contact"));
-            queries.add(joinQuery(keywordAlias, industryAlias, "factory", "email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "supplier", "contact"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "factory", "email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "company profile"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "sales email"));
             if (!"ALL".equalsIgnoreCase(companySize)) {
-                queries.add(joinQuery(keywordAlias, industryAlias, companySize, "company"));
+                queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, companySize, "company"));
             }
             return new ArrayList<>(queries);
         }
 
         String marketAlias = marketAlias(market);
         String marketSite = marketSite(market);
-        queries.add(joinQuery(marketSite, keywordAlias, industryAlias, "manufacturer", "official website"));
-        queries.add(joinQuery(marketAlias, keywordAlias, industryAlias, "supplier", "contact"));
-        queries.add(joinQuery(marketAlias, keywordAlias, industryAlias, "factory", "email"));
+        queries.add(joinQuery(marketSite, primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "supplier", "contact"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "factory", "email"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "company profile"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "sales email"));
         if (!"ALL".equalsIgnoreCase(companySize)) {
-            queries.add(joinQuery(marketAlias, keywordAlias, industryAlias, companySize, "company"));
+            queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, companySize, "company"));
         }
         return new ArrayList<>(queries);
     }
@@ -286,36 +316,40 @@ public class WorkflowSearchService {
             int candidatePoolLimit,
             int timeoutMs
     ) {
-        if (candidates.size() >= candidatePoolLimit) {
-            return;
-        }
-
-        String searchUrl = "https://www.bing.com/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
-        try {
-            Document document = Jsoup.connect(searchUrl)
-                    .userAgent(USER_AGENT)
-                    .referrer("https://www.bing.com/")
-                    .timeout(timeoutMs)
-                    .get();
-
-            for (Element result : document.select("li.b_algo")) {
-                Element link = result.selectFirst("h2 a");
-                if (link == null) {
-                    continue;
-                }
-                addCandidate(
-                        candidates,
-                        seenHosts,
-                        cleanText(link.text()),
-                        cleanText(link.attr("abs:href")),
-                        cleanText(result.select(".b_caption").text()),
-                        "Bing HTML"
-                );
-                if (candidates.size() >= candidatePoolLimit) {
-                    break;
-                }
+        for (int pageIndex = 0; pageIndex < SEARCH_ENGINE_PAGE_LIMIT; pageIndex++) {
+            if (candidates.size() >= candidatePoolLimit) {
+                return;
             }
-        } catch (IOException ignored) {
+
+            int offset = pageIndex * 10;
+            String searchUrl = "https://www.bing.com/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
+                    + "&first=" + (offset + 1);
+            try {
+                Document document = Jsoup.connect(searchUrl)
+                        .userAgent(USER_AGENT)
+                        .referrer("https://www.bing.com/")
+                        .timeout(timeoutMs)
+                        .get();
+
+                for (Element result : document.select("li.b_algo")) {
+                    Element link = result.selectFirst("h2 a");
+                    if (link == null) {
+                        continue;
+                    }
+                    addCandidate(
+                            candidates,
+                            seenHosts,
+                            cleanText(link.text()),
+                            cleanText(link.attr("abs:href")),
+                            cleanText(result.select(".b_caption").text()),
+                            "Bing HTML"
+                    );
+                    if (candidates.size() >= candidatePoolLimit) {
+                        break;
+                    }
+                }
+            } catch (IOException ignored) {
+            }
         }
     }
 
@@ -357,27 +391,31 @@ public class WorkflowSearchService {
             int candidatePoolLimit,
             int timeoutMs
     ) {
-        if (candidates.size() >= candidatePoolLimit) {
-            return;
-        }
-
-        String searchUrl = "https://www.baidu.com/s?wd=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
-        try {
-            Document document = Jsoup.connect(searchUrl)
-                    .userAgent(USER_AGENT)
-                    .referrer("https://www.baidu.com/")
-                    .timeout(timeoutMs)
-                    .get();
-
-            for (Element link : document.select("h3 a")) {
-                String resolved = followRedirectUrl(link.absUrl("href"), timeoutMs);
-                String snippet = cleanText(link.closest("div") == null ? "" : link.closest("div").text());
-                addCandidate(candidates, seenHosts, cleanText(link.text()), resolved, snippet, "Baidu");
-                if (candidates.size() >= candidatePoolLimit) {
-                    break;
-                }
+        for (int pageIndex = 0; pageIndex < SEARCH_ENGINE_PAGE_LIMIT; pageIndex++) {
+            if (candidates.size() >= candidatePoolLimit) {
+                return;
             }
-        } catch (IOException ignored) {
+
+            int offset = pageIndex * 10;
+            String searchUrl = "https://www.baidu.com/s?wd=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
+                    + "&pn=" + offset;
+            try {
+                Document document = Jsoup.connect(searchUrl)
+                        .userAgent(USER_AGENT)
+                        .referrer("https://www.baidu.com/")
+                        .timeout(timeoutMs)
+                        .get();
+
+                for (Element link : document.select("h3 a")) {
+                    String resolved = followRedirectUrl(link.absUrl("href"), timeoutMs);
+                    String snippet = cleanText(link.closest("div") == null ? "" : link.closest("div").text());
+                    addCandidate(candidates, seenHosts, cleanText(link.text()), resolved, snippet, "Baidu");
+                    if (candidates.size() >= candidatePoolLimit) {
+                        break;
+                    }
+                }
+            } catch (IOException ignored) {
+            }
         }
     }
 
@@ -411,31 +449,57 @@ public class WorkflowSearchService {
                 .sorted(Comparator.comparingInt((SearchCandidate candidate) -> scoreCandidate(candidate, market, industry, keywords)).reversed())
                 .toList();
 
-        for (SearchCandidate candidate : sortedCandidates) {
-            if (leads.size() >= searchLimit) {
-                break;
+        int inspectionLimit = Math.min(sortedCandidates.size(), Math.max(searchLimit * 6, 30));
+        ExecutorService executor = Executors.newFixedThreadPool(Math.min(MAX_PARALLEL_INSPECTIONS, Math.max(2, inspectionLimit)));
+        CompletionService<InspectedCandidate> completionService = new ExecutorCompletionService<>(executor);
+        int submitted = 0;
+
+        try {
+            for (int index = 0; index < inspectionLimit; index++) {
+                SearchCandidate candidate = sortedCandidates.get(index);
+                completionService.submit(() -> new InspectedCandidate(
+                        candidate,
+                        inspectWebsite(candidate, industry, market, keywords, timeoutMs, crawlerSettings)
+                ));
+                submitted++;
             }
 
-            PageScanResult scanResult = inspectWebsite(candidate, industry, market, keywords, timeoutMs, crawlerSettings);
-            if (scanResult == null) {
-                continue;
-            }
+            for (int index = 0; index < submitted; index++) {
+                if (leads.size() >= searchLimit) {
+                    break;
+                }
 
-            String host = normalizeHost(hostOf(scanResult.website()));
-            if (host.isBlank() || !acceptedHosts.add(host)) {
-                continue;
-            }
+                InspectedCandidate inspectedCandidate = completionService.take().get();
+                if (inspectedCandidate == null || inspectedCandidate.scanResult() == null) {
+                    continue;
+                }
 
-            leads.add(new WorkflowModels.CustomerLead(
-                    "lead-" + UUID.randomUUID(),
-                    scanResult.companyName(),
-                    scanResult.website(),
-                    scanResult.country(),
-                    scanResult.contactName(),
-                    scanResult.email(),
-                    scanResult.channel(),
-                    scanResult.fitNote()
-            ));
+                PageScanResult scanResult = inspectedCandidate.scanResult();
+                String host = normalizeHost(hostOf(scanResult.website()));
+                if (host.isBlank() || !acceptedHosts.add(host)) {
+                    continue;
+                }
+
+                leads.add(toLead(scanResult));
+            }
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ignored) {
+            // Keep best-effort search behavior even if some pages fail.
+        } finally {
+            executor.shutdownNow();
+        }
+
+        if (leads.size() < searchLimit) {
+            fillWithFallbackCandidates(
+                    sortedCandidates,
+                    acceptedHosts,
+                    leads,
+                    industry,
+                    market,
+                    keywords,
+                    searchLimit
+            );
         }
 
         leads.sort(Comparator.comparingInt((WorkflowModels.CustomerLead lead) -> lead.email().isBlank() ? 0 : 1).reversed());
@@ -543,6 +607,62 @@ public class WorkflowSearchService {
             );
         } catch (IOException ignored) {
             return null;
+        }
+    }
+
+    private WorkflowModels.CustomerLead toLead(PageScanResult scanResult) {
+        return new WorkflowModels.CustomerLead(
+                "lead-" + UUID.randomUUID(),
+                scanResult.companyName(),
+                scanResult.website(),
+                scanResult.country(),
+                scanResult.contactName(),
+                scanResult.email(),
+                scanResult.channel(),
+                scanResult.fitNote()
+        );
+    }
+
+    private void fillWithFallbackCandidates(
+            List<SearchCandidate> sortedCandidates,
+            Set<String> acceptedHosts,
+            List<WorkflowModels.CustomerLead> leads,
+            String industry,
+            String market,
+            String keywords,
+            int searchLimit
+    ) {
+        for (SearchCandidate candidate : sortedCandidates) {
+            if (leads.size() >= searchLimit) {
+                break;
+            }
+
+            String host = normalizeHost(hostOf(candidate.url()));
+            String combined = (cleanText(candidate.title()) + " " + cleanText(candidate.snippet())).toLowerCase(Locale.ROOT);
+            if (host.isBlank() || acceptedHosts.contains(host) || isBlockedHost(host)) {
+                continue;
+            }
+            if (!looksLikeCompanyCandidate(host, combined)) {
+                continue;
+            }
+            if (!matchesMarketSignal(host, combined, market)) {
+                continue;
+            }
+            if (!matchesKeywords(industry, keywords, combined)) {
+                continue;
+            }
+
+            acceptedHosts.add(host);
+            leads.add(new WorkflowModels.CustomerLead(
+                    "lead-" + UUID.randomUUID(),
+                    simplifyTitle(candidate.title()).isBlank() ? host : simplifyTitle(candidate.title()),
+                    rootUrlOf(candidate.url()),
+                    inferCountry(host, market),
+                    "Business Contact",
+                    "",
+                    candidate.source(),
+                    "candidate website; manual review suggested"
+            ));
         }
     }
 
@@ -708,17 +828,17 @@ public class WorkflowSearchService {
 
     private boolean matchesKeywords(String industry, String keywords, String text) {
         String lower = text.toLowerCase(Locale.ROOT);
-        String normalizedKeyword = normalizeSearchPhrase(keywords);
-        String normalizedKeywordAlias = normalizeSearchPhrase(toEnglishHint(keywords));
-        String normalizedIndustry = normalizeSearchPhrase(industry);
-        String normalizedIndustryAlias = normalizeSearchPhrase(toEnglishHint(industry));
+        List<String> keywordHints = buildSearchHints(keywords);
+        List<String> industryHints = buildSearchHints(industry);
 
-        boolean keywordMatched = containsMeaningfulPhrase(lower, normalizedKeyword)
-                || containsMeaningfulPhrase(lower, normalizedKeywordAlias);
-        boolean industryMatched = containsMeaningfulPhrase(lower, normalizedIndustry)
-                || containsMeaningfulPhrase(lower, normalizedIndustryAlias);
+        boolean keywordMatched = keywordHints.stream().anyMatch(hint -> containsMeaningfulPhrase(lower, hint));
+        boolean industryMatched = industryHints.stream().anyMatch(hint -> containsMeaningfulPhrase(lower, hint));
 
-        return keywordMatched && (industryMatched || isBroadIndustry(industry));
+        if (keywordMatched && (industryMatched || isBroadIndustry(industry))) {
+            return true;
+        }
+
+        return industryMatched && keywordHints.stream().anyMatch(hint -> containsLooseKeywordToken(lower, hint));
     }
 
     private boolean matchesMarketSignal(String host, String text, String market) {
@@ -726,6 +846,9 @@ public class WorkflowSearchService {
             return true;
         }
         String lower = text.toLowerCase(Locale.ROOT);
+        if ("China".equalsIgnoreCase(market) && containsChineseScript(text)) {
+            return true;
+        }
         return host.endsWith(marketSite(market).replace("site:.", "."))
                 || lower.contains(market.toLowerCase(Locale.ROOT))
                 || lower.contains(marketAlias(market));
@@ -972,7 +1095,156 @@ public class WorkflowSearchService {
         if (expectedTokens == 0) {
             return false;
         }
-        return matchedTokens >= Math.max(2, expectedTokens - 1);
+        if (expectedTokens <= 2) {
+            return matchedTokens >= 1;
+        }
+        if (expectedTokens <= 5) {
+            return matchedTokens >= 2;
+        }
+        return matchedTokens >= Math.max(2, Math.min(4, (int) Math.ceil(expectedTokens * 0.5)));
+    }
+
+    private List<String> buildSearchHints(String value) {
+        LinkedHashSet<String> hints = new LinkedHashSet<>();
+        String normalized = normalizeInput(value);
+        extractKnownBusinessPhrases(normalized).forEach(hints::add);
+
+        String alias = normalizeInput(toEnglishHint(value));
+        if (!alias.isBlank()) {
+            hints.add(alias);
+        }
+
+        if (!normalized.isBlank() && looksUsefulHint(normalized)) {
+            hints.add(normalized);
+        }
+
+        for (String token : normalized.split("[\\s,，;；/|]+")) {
+            String cleaned = cleanText(token);
+            if (cleaned.length() < 2 || SEARCH_STOP_WORDS.contains(cleaned.toLowerCase(Locale.ROOT))) {
+                continue;
+            }
+            hints.add(cleaned);
+            if (hints.size() >= 8) {
+                break;
+            }
+        }
+        return new ArrayList<>(hints);
+    }
+
+    private boolean looksUsefulHint(String normalized) {
+        if (normalized.isBlank()) {
+            return false;
+        }
+        if (containsChineseScript(normalized)) {
+            return normalized.length() <= 18;
+        }
+        return normalized.length() <= 40 && normalized.split("\\s+").length <= 4;
+    }
+
+    private List<String> extractKnownBusinessPhrases(String text) {
+        String normalized = normalizeInput(text).toLowerCase(Locale.ROOT);
+        LinkedHashSet<String> phrases = new LinkedHashSet<>();
+
+        if (normalized.contains("机床") || normalized.contains("machine tool")) {
+            phrases.add("machine tool");
+            phrases.add("机床");
+            phrases.add("cnc machine");
+        }
+        if (normalized.contains("工业设备") || normalized.contains("industrial equipment")) {
+            phrases.add("industrial equipment");
+            phrases.add("工业设备");
+            phrases.add("machinery");
+        }
+        if (normalized.contains("工业自动化") || normalized.contains("industrial automation")) {
+            phrases.add("industrial automation");
+            phrases.add("工业自动化");
+        }
+        if (normalized.contains("自动化设备") || normalized.contains("automation equipment")) {
+            phrases.add("automation equipment");
+            phrases.add("自动化设备");
+        }
+        if (normalized.contains("电子制造") || normalized.contains("electronics manufacturing")) {
+            phrases.add("electronics manufacturing");
+            phrases.add("电子制造");
+        }
+        if (normalized.contains("电子")) {
+            phrases.add("electronics");
+            phrases.add("电子");
+        }
+        if (normalized.contains("手机") || normalized.contains("smartphone")) {
+            phrases.add("smartphone");
+            phrases.add("手机");
+        }
+        if (normalized.contains("手表") || normalized.contains("watch")) {
+            phrases.add("watch");
+            phrases.add("手表");
+        }
+        if (normalized.contains("配件") || normalized.contains("accessories")) {
+            phrases.add("accessories");
+            phrases.add("配件");
+        }
+        if (normalized.contains("智能制造") || normalized.contains("smart manufacturing")) {
+            phrases.add("smart manufacturing");
+            phrases.add("智能制造");
+        }
+        if (normalized.contains("数控") || normalized.contains("cnc")) {
+            phrases.add("cnc");
+            phrases.add("数控");
+        }
+        if (normalized.contains("制造商") || normalized.contains("manufacturer")) {
+            phrases.add("manufacturer");
+            phrases.add("制造商");
+        }
+        if (normalized.contains("供应商") || normalized.contains("supplier")) {
+            phrases.add("supplier");
+            phrases.add("供应商");
+        }
+
+        return new ArrayList<>(phrases);
+    }
+
+    private String firstHint(List<String> hints, String fallbackValue) {
+        return hints.stream().filter(hint -> !hint.isBlank()).findFirst().orElse(cleanText(fallbackValue));
+    }
+
+    private String firstQueryHint(List<String> hints, String fallbackValue) {
+        return hints.stream()
+                .filter(this::looksUsefulHint)
+                .findFirst()
+                .orElse(firstHint(hints, fallbackValue));
+    }
+
+    private String firstNativeHint(List<String> hints, String fallbackValue) {
+        return hints.stream()
+                .filter(hint -> !hint.isBlank() && containsChineseScript(hint))
+                .findFirst()
+                .orElse(cleanText(fallbackValue));
+    }
+
+    private boolean containsLooseKeywordToken(String haystack, String phrase) {
+        if (phrase == null || phrase.isBlank()) {
+            return false;
+        }
+        for (String token : phrase.split("\\s+")) {
+            String normalized = cleanText(token).toLowerCase(Locale.ROOT);
+            if (normalized.length() < 3 || SEARCH_STOP_WORDS.contains(normalized)) {
+                continue;
+            }
+            if (haystack.contains(normalized)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsChineseScript(String value) {
+        if (value == null || value.isBlank()) {
+            return false;
+        }
+        return value.codePoints().anyMatch(codePoint -> Character.UnicodeScript.of(codePoint) == Character.UnicodeScript.HAN);
+    }
+
+    private record InspectedCandidate(SearchCandidate candidate, PageScanResult scanResult) {
     }
 
     private String cleanText(String value) {

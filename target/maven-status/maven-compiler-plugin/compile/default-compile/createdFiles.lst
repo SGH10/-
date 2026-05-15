@@ -9,6 +9,7 @@ com\zijianxin\website\WebsiteApplication.class
 com\zijianxin\website\workflow\WorkflowModels$DraftRequest.class
 com\zijianxin\website\workflow\WorkflowModels$SendEmailRequest.class
 com\zijianxin\website\workflow\AiCompletionService.class
+com\zijianxin\website\workflow\WorkflowSearchService$InspectedCandidate.class
 com\zijianxin\website\workflow\WorkflowModels.class
 com\zijianxin\website\workflow\WorkflowDraftService$ParsedDraft.class
 com\zijianxin\website\workflow\WorkflowModels$SearchLogEntry.class

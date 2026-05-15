@@ -71,7 +71,9 @@
 
   function bindFormBehavior() {
     toggleCustomField(industryPreset, industryCustomGroup, industryCustom);
-    toggleCustomField(keywordsPreset, keywordsCustomGroup, keywordsCustom);
+    if (keywordsPreset || keywordsCustomGroup || keywordsCustom) {
+      toggleCustomField(keywordsPreset, keywordsCustomGroup, keywordsCustom);
+    }
 
     industryPreset?.addEventListener("change", () => {
       toggleCustomField(industryPreset, industryCustomGroup, industryCustom);
@@ -83,6 +85,10 @@
   }
 
   function toggleCustomField(select, group, input) {
+    if (!select && !group && !input) {
+      return;
+    }
+
     const isCustom = select?.value === "custom";
     group?.classList.toggle("is-hidden", !isCustom);
     if (input) {
@@ -166,9 +172,11 @@
     const industry = industryPreset?.value === "custom"
       ? String(industryCustom?.value || "").trim()
       : String(industryPreset?.value || "").trim();
-    const keywords = keywordsPreset?.value === "custom"
-      ? String(keywordsCustom?.value || "").trim()
-      : String(keywordsPreset?.value || "").trim();
+    const keywords = keywordsPreset
+      ? (keywordsPreset?.value === "custom"
+        ? String(keywordsCustom?.value || "").trim()
+        : String(keywordsPreset?.value || "").trim())
+      : "";
     const market = String(marketPreset?.value || "").trim();
     const description = String(targetDescription?.value || "").trim();
     const requestedLimit = Number(requestedLimitInput?.value || searchState.requestedLimit || 50);
@@ -197,21 +205,14 @@
       }
     }
 
-    let finalLimit = requestedLimit;
-    if (depth === "deep") {
-      finalLimit = Math.max(requestedLimit, 100);
-    } else if (depth === "precision") {
-      finalLimit = Math.min(requestedLimit, 30);
-    }
-
-    searchState.requestedLimit = finalLimit;
+    searchState.requestedLimit = requestedLimit;
 
     return {
       industry: resolvedIndustry,
       market: resolvedMarket,
       keywords: resolvedKeywords,
       companySize,
-      requestedLimit: finalLimit
+      requestedLimit
     };
   }
 
@@ -388,9 +389,15 @@
 
   function refreshSelectionState() {
     const selectedCustomers = getSelectedCustomers();
-    selectedCount.textContent = selectedCustomers.length;
-    exportButton.disabled = selectedCustomers.length === 0;
-    pushButton.disabled = selectedCustomers.length === 0;
+    if (selectedCount) {
+      selectedCount.textContent = selectedCustomers.length;
+    }
+    if (exportButton) {
+      exportButton.disabled = selectedCustomers.length === 0;
+    }
+    if (pushButton) {
+      pushButton.disabled = selectedCustomers.length === 0;
+    }
 
     if (selectAll) {
       selectAll.checked = selectedCustomers.length > 0 && selectedCustomers.length === searchState.customers.length;
