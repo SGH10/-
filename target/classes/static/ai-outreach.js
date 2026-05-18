@@ -69,8 +69,19 @@
       "badge.hot": "热门",
       "template.zh.title": "初次接触（中文）",
       "template.zh.copy": "zh · 初次开发",
+      "lang.zh-CN": "中文",
+      "lang.en": "英语",
+      "lang.de": "德语",
+      "lang.fr": "法语",
+      "lang.es": "西班牙语",
+      "lang.ru": "俄语",
+      "lang.ar": "阿拉伯语",
+      "lang.pt": "葡萄牙语",
       "empty.noCustomerTitle": "暂无客户",
       "empty.noCustomerCopy": "从客户搜索系统导入，或手动输入",
+      "status.pending": "待确认",
+      "status.unconfirmed": "待人工确认",
+      "status.noEmail": "未找到公开邮箱",
       "empty.draftTitle": "开始生成开发信",
       "empty.draftCopy": "在左侧配置客户信息和产品详情，点击“AI生成开发信”按钮",
       "modal.manualCustomerTitle": "手动输入客户",
@@ -120,8 +131,19 @@
       "badge.hot": "Hot",
       "template.zh.title": "First Contact (Chinese)",
       "template.zh.copy": "zh · Initial outreach",
+      "lang.zh-CN": "Chinese",
+      "lang.en": "English",
+      "lang.de": "German",
+      "lang.fr": "French",
+      "lang.es": "Spanish",
+      "lang.ru": "Russian",
+      "lang.ar": "Arabic",
+      "lang.pt": "Portuguese",
       "empty.noCustomerTitle": "No Customers Yet",
       "empty.noCustomerCopy": "Import from customer search or add one manually.",
+      "status.pending": "Pending",
+      "status.unconfirmed": "Unconfirmed",
+      "status.noEmail": "No public email found",
       "empty.draftTitle": "Start Generating an Email",
       "empty.draftCopy": "Fill in customer and product details on the left, then click Generate Draft.",
       "modal.manualCustomerTitle": "Manual Customer Entry",
@@ -260,6 +282,12 @@
     setValue(hiddenValueProposition, mergedValue);
   }
 
+  function t(key, fallback) {
+    const locale = window.leadflowLocale?.locale || "zh-CN";
+    const dict = window.pageTranslations?.[locale] || window.pageTranslations?.["zh-CN"] || {};
+    return dict[key] || fallback;
+  }
+
   function renderRecipients() {
     if (outreachState.recipients.length === 0) {
       recipientList.className = "outreach-empty-recipient";
@@ -269,8 +297,8 @@
             <path d="M16 11c1.66 0 2.99-1.57 2.99-3.5S17.66 4 16 4s-3 1.57-3 3.5 1.34 3.5 3 3.5ZM8 11c1.66 0 2.99-1.57 2.99-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11Zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V20h6v-3.5c0-2.33-4.67-3.5-7-3.5Z" />
           </svg>
         </span>
-        <h3>暂无客户</h3>
-        <p>从客户搜索系统导入，或手动输入</p>
+        <h3>${t("outreach.empty.noCustomerTitle", "暂无客户")}</h3>
+        <p>${t("outreach.empty.noCustomerCopy", "从客户搜索系统导入，或手动输入")}</p>
       `;
       recipientEmailPreview.value = "contact@example.com";
       return;
@@ -283,8 +311,8 @@
           <input type="checkbox" data-recipient-id="${escapeHtml(recipient.id)}" ${outreachState.selectedIds.has(recipient.id) ? "checked" : ""} />
           <div class="recipient-body">
             <strong>${escapeHtml(recipient.companyName)}</strong>
-            <span class="recipient-meta">${escapeHtml(displayValue(recipient.country, "待确认"))} | ${escapeHtml(displayValue(recipient.contactName, "待人工确认"))}</span>
-            <span class="recipient-meta">${escapeHtml(displayValue(recipient.email, "未找到公开邮箱"))}</span>
+            <span class="recipient-meta">${escapeHtml(displayValue(recipient.country, t("outreach.status.pending", "待确认")))} | ${escapeHtml(displayValue(recipient.contactName, t("outreach.status.unconfirmed", "待人工确认")))}</span>
+            <span class="recipient-meta">${escapeHtml(displayValue(recipient.email, t("outreach.status.noEmail", "未找到公开邮箱")))}</span>
           </div>
         </label>
       `)
