@@ -71,6 +71,30 @@ public class WorkflowDraftService {
         );
     }
 
+    public WorkflowModels.TranslateEmailResponse translateEmail(WorkflowModels.TranslateEmailRequest request) {
+        SettingsModels.AiSettings ai = settingsService.getSettings().ai();
+
+        String targetLanguage = fallback(request.targetLanguage(), ai.defaultLanguage());
+        String targetLanguageName = resolveLanguageName(targetLanguage);
+
+        String systemPrompt = buildTranslationSystemPrompt(targetLanguageName);
+        String userPrompt = buildTranslationUserPrompt(
+                fallback(request.subject(), ""),
+                fallback(request.body(), ""),
+                targetLanguageName
+        );
+
+        log.info("Translating email with AI. provider={}, model={}, targetLanguage={}",
+                ai.provider(), ai.model(), targetLanguage);
+        String raw = aiCompletionService.complete(ai, systemPrompt, userPrompt);
+        ParsedDraft parsedDraft = parseDraft(raw);
+
+        return new WorkflowModels.TranslateEmailResponse(
+                fallback(parsedDraft.subject(), request.subject()),
+                fallback(parsedDraft.body(), request.body())
+        );
+    }
+
     public WorkflowModels.DraftResponse optimizeDraft(WorkflowModels.DraftOptimizationRequest request) {
         SettingsModels.AiSettings ai = settingsService.getSettings().ai();
 
@@ -218,6 +242,36 @@ public class WorkflowDraftService {
                 fallback(firstRecipient.fitNote(), "Potential customer"),
                 languageName
         );
+    }
+
+    private String buildTranslationSystemPrompt(String targetLanguageName) {
+        return """
+                You are a professional translator specializing in business communication.
+                Translate the email below into %s.
+
+                Requirements:
+                - Preserve the original meaning, tone, and intent.
+                - Adapt the translation for business email conventions in the target language.
+                - Keep proper nouns (company names, personal names, websites, email addresses) unchanged.
+                - Do not add explanations, notes, or markdown formatting.
+                - Output format must be exactly:
+
+                SUBJECT: <translated subject>
+                BODY:
+                <translated body>
+                """.formatted(targetLanguageName);
+    }
+
+    private String buildTranslationUserPrompt(String subject, String body, String targetLanguageName) {
+        return """
+                Translate the following email into %s.
+
+                Original subject:
+                %s
+
+                Original body:
+                %s
+                """.formatted(targetLanguageName, subject, body);
     }
 
     private String buildOptimizationUserPrompt(

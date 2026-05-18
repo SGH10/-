@@ -55,6 +55,13 @@ public class WorkflowApiController {
         return workflowService.sendEmail(request);
     }
 
+    @PostMapping("/outreach/translate")
+    public WorkflowModels.TranslateEmailResponse translateEmail(
+            @RequestBody WorkflowModels.TranslateEmailRequest request
+    ) {
+        return workflowService.translateEmail(request);
+    }
+
     @GetMapping("/settings")
     public SettingsModels.AppSettings getSettings() {
         return workflowService.getSettings();

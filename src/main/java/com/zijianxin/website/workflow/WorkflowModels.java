@@ -91,6 +91,19 @@ public final class WorkflowModels {
     ) {
     }
 
+    public record TranslateEmailRequest(
+            String subject,
+            String body,
+            String targetLanguage
+    ) {
+    }
+
+    public record TranslateEmailResponse(
+            String subject,
+            String body
+    ) {
+    }
+
     public record SendEmailResponse(
             int sentCount,
             String batchId,

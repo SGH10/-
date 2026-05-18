@@ -27,6 +27,7 @@
   const hiddenSenderEmail = document.querySelector("#hidden-sender-email");
 
   const optimizeButton = document.querySelector("#optimize-draft");
+  const translateButton = document.querySelector("#translate-email");
   const draftSubject = document.querySelector("#draft-subject");
   const draftBody = document.querySelector("#draft-body");
   const draftEmptyState = document.querySelector(".ref-mail-body-empty");
@@ -63,6 +64,7 @@
       "button.sendTop": "发送",
       "button.generate": "AI生成开发信",
       "button.sendSelected": "发送给已选客户",
+      "button.translate": "翻译邮件",
       "button.newTemplate": "新建模板",
       "button.close": "关闭",
       "button.addCustomer": "添加客户",
@@ -125,6 +127,7 @@
       "button.sendTop": "Send",
       "button.generate": "Generate Draft",
       "button.sendSelected": "Send to Selected",
+      "button.translate": "Translate",
       "button.newTemplate": "New Template",
       "button.close": "Close",
       "button.addCustomer": "Add Customer",
@@ -178,6 +181,7 @@
 
     composeForm?.addEventListener("submit", handleGenerateDraft);
     optimizeButton?.addEventListener("click", handleOptimizeDraft);
+    translateButton?.addEventListener("click", handleTranslateEmail);
     sendButton?.addEventListener("click", handleSendEmail);
     recipientList?.addEventListener("change", handleRecipientSelection);
     searchImportButton?.addEventListener("click", () => {
@@ -445,6 +449,51 @@
     } finally {
       optimizeButton.disabled = false;
       optimizeButton.textContent = "AI优化";
+    }
+  }
+
+  async function handleTranslateEmail() {
+    if (!draftBody.value.trim()) {
+      showResult("请先生成或输入开发信内容，再执行翻译。", "warning");
+      return;
+    }
+
+    const targetLanguage = composeLanguage.value || "zh-CN";
+    const targetLanguageName = composeLanguage.options[composeLanguage.selectedIndex].text;
+    const originalText = translateButton.textContent;
+
+    translateButton.disabled = true;
+    translateButton.textContent = `翻译为${targetLanguageName}中...`;
+
+    try {
+      const payload = {
+        subject: draftSubject.value.trim(),
+        body: draftBody.value.trim(),
+        targetLanguage: targetLanguage
+      };
+
+      const response = await fetch("/api/outreach/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const data = await response.json();
+      draftSubject.value = data.subject || draftSubject.value;
+      draftBody.value = data.body || draftBody.value;
+      toggleDraftEmptyState();
+      updateSendButtonState();
+      showResult(`邮件已翻译为 ${targetLanguageName}。`, "success");
+    } catch (error) {
+      console.error("Email translation failed:", error);
+      showResult(normalizeError(error), "warning");
+    } finally {
+      translateButton.disabled = false;
+      translateButton.textContent = originalText;
     }
   }
 

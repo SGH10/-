@@ -38,6 +38,10 @@ public class WorkflowService {
         return workflowDraftService.optimizeDraft(request);
     }
 
+    public WorkflowModels.TranslateEmailResponse translateEmail(WorkflowModels.TranslateEmailRequest request) {
+        return workflowDraftService.translateEmail(request);
+    }
+
     public WorkflowModels.SendEmailResponse sendEmail(WorkflowModels.SendEmailRequest request) {
         return workflowEmailService.sendEmail(request);
     }
