@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Customer Search | One Minute Tech</title>
     <meta name="description" content="AI customer search workspace with configuration, progress tracking, and result review." />
-    <link rel="stylesheet" href="/styles.css?v=9" />
+    <link rel="stylesheet" href="/styles.css?v=13" />
   </head>
   <body class="site-body">
     <header class="topbar">
@@ -53,17 +53,9 @@
     </header>
 
     <main class="workspace-page">
-      <section class="notice-strip">
-        <div>
-          <strong data-i18n="search.noticeTitle">爬虫模式：Puppeteer 无头浏览器 - 真实数据自动抓取</strong>
-          <p class="summary-copy" data-i18n="search.noticeCopy">左侧搜索配置按参考图补齐目标客户描述、搜索深度和目标客户数，右侧展示进度与结果。</p>
-        </div>
-        <a class="action-button orange" href="/crawler-settings" data-i18n="search.upgradeConfig">升级配置</a>
-      </section>
-
       <div class="workspace-shell">
         <aside class="workspace-sidebar search-sidebar-ref">
-          <form id="search-form" class="form-stack">
+          <form id="search-form" class="form-stack search-form">
             <div class="sidebar-panel ref-sidebar-head">
               <span class="sidebar-kicker" data-i18n="search.sidebarKicker">搜索配置</span>
               <label class="input-group">
@@ -130,7 +122,6 @@
             <label class="input-group">
               <span data-i18n="search.targetCount">目标客户数（可自定义）</span>
               <input class="text-input" id="requested-limit" name="requestedLimitInput" type="number" min="10" max="200" value="50" />
-              <span class="helper-text" data-i18n="search.targetCountHelp">设置本次搜索期望获取的客户数量</span>
             </label>
 
             <button id="search-submit" class="action-button orange wide search-primary-button" type="submit" data-i18n="search.startButton">开始AI搜索</button>
@@ -246,9 +237,6 @@
       window.pageTranslations = {
         "zh-CN": {
           "__title": "客户搜索 | 一分钟科技",
-          "search.noticeTitle": "爬虫模式：Puppeteer 无头浏览器 - 真实数据自动抓取",
-          "search.noticeCopy": "左侧搜索配置按参考图补齐目标客户描述、搜索深度和目标客户数，右侧展示进度与结果。",
-          "search.upgradeConfig": "升级配置",
           "search.sidebarKicker": "搜索配置",
           "search.targetDescription": "目标客户描述",
           "search.targetDescriptionPlaceholder": "例如：美国电子产品进口商，年营业额 5000 万以上，主要进口智能手机配件...",
@@ -279,7 +267,6 @@
           "search.depth.deep": "深度",
           "search.depth.precision": "精准",
           "search.targetCount": "目标客户数（可自定义）",
-          "search.targetCountHelp": "设置本次搜索期望获取的客户数量",
           "search.startButton": "开始AI搜索",
           "search.tab.progress": "实时进度",
           "search.tab.log": "运行日志",
@@ -308,9 +295,6 @@
         },
         "en": {
           "__title": "Customer Search | One Minute Tech",
-          "search.noticeTitle": "Crawler Mode: Puppeteer Headless Browser - Real Data Collection",
-          "search.noticeCopy": "Complete your target description, search depth, and expected lead count on the left, while progress and results appear on the right.",
-          "search.upgradeConfig": "Upgrade Config",
           "search.sidebarKicker": "Search Setup",
           "search.targetDescription": "Target Customer Description",
           "search.targetDescriptionPlaceholder": "e.g. US electronics importers with over 50M annual revenue, mainly importing smartphone accessories...",
@@ -341,7 +325,6 @@
           "search.depth.deep": "Deep",
           "search.depth.precision": "Precision",
           "search.targetCount": "Target Lead Count (Custom)",
-          "search.targetCountHelp": "Set how many leads you want this run to return.",
           "search.startButton": "Start AI Search",
           "search.tab.progress": "Live Progress",
           "search.tab.log": "Run Logs",
@@ -371,6 +354,6 @@
       };
     </script>
     <script src="/main.js?v=6"></script>
-    <script src="/customer-search.js?v=9"></script>
+    <script src="/customer-search.js?v=13"></script>
   </body>
 </html>

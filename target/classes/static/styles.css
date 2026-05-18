@@ -804,7 +804,7 @@ svg {
 
 .workspace-shell {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
+  grid-template-columns: 300px minmax(0, 1fr);
   gap: 22px;
   align-items: start;
 }
@@ -814,14 +814,41 @@ svg {
 }
 
 .ref-sidebar-head {
-  min-height: 260px;
+  min-height: 90px;
   border-radius: 30px;
 }
 
+.search-form {
+  gap: 12px;
+}
+
 .search-primary-button {
-  min-height: 72px;
-  font-size: 1.1rem;
+  min-height: 52px;
+  font-size: 1.05rem;
   border-radius: 22px;
+}
+
+.search-sidebar-ref {
+  gap: 8px;
+  padding: 14px;
+}
+
+.search-sidebar-ref .sidebar-panel {
+  padding: 14px;
+}
+
+.search-sidebar-ref .textarea-input {
+  min-height: 108px;
+  padding: 10px 12px;
+}
+
+.search-sidebar-ref .text-input,
+.search-sidebar-ref .select-input {
+  padding: 10px 12px;
+}
+
+.search-sidebar-ref .input-group {
+  gap: 4px;
 }
 
 .ref-tip-panel {
