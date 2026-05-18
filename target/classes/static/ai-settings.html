@@ -13,11 +13,12 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        返回首页
+        <span data-i18n="shared.backHome">返回首页</span>
       </a>
 
-      <div class="brand-label ref-settings-brand">
-        <strong>系统配置</strong>
+      <div class="brand-label" style="margin-right: auto;">
+        <strong data-i18n="shared.systemSettings">系统配置</strong>
+        <span data-i18n="ai.brand.subtitle">AI 模型与开发信中心</span>
       </div>
 
       <div class="locale-switch" aria-label="语言切换">
@@ -30,57 +31,57 @@
       <div class="settings-shell ref-settings-shell">
         <aside class="settings-sidebar ref-settings-sidebar">
           <div class="settings-nav-group">
-            <h3>AI 模型</h3>
+            <h3 data-i18n="settings.nav.group.ai">AI 模型</h3>
             <a class="settings-link is-active" data-settings-path="/ai-settings" href="/ai-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2 4 6v12l8 4 8-4V6l-8-4Zm0 2.2 5.8 2.9L12 10 6.2 7.1 12 4.2Zm-6 4.7 5 2.5v6.4l-5-2.5V8.9Zm7 8.9v-6.4l5-2.5v6.4l-5 2.5Z" />
               </svg>
-              模型配置
+              <span data-i18n="settings.nav.modelConfig">模型配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>搜索引擎</h3>
+            <h3 data-i18n="settings.nav.group.search">搜索引擎</h3>
             <a class="settings-link" data-settings-path="/crawler-settings" href="/crawler-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="6"></circle>
                 <path d="m20 20-4.2-4.2"></path>
               </svg>
-              搜索 API
+              <span data-i18n="settings.nav.searchApi">搜索 API</span>
             </a>
             <a class="settings-link" data-settings-path="/crawler-rules" href="/crawler-rules">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Z" />
               </svg>
-              爬虫配置
+              <span data-i18n="settings.nav.crawlerConfig">爬虫配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>邮件服务</h3>
+            <h3 data-i18n="settings.nav.group.mail">邮件服务</h3>
             <a class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
               </svg>
-              邮箱配置
+              <span data-i18n="settings.nav.mailConfig">邮箱配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>系统</h3>
+            <h3 data-i18n="settings.nav.group.system">系统</h3>
             <a class="settings-link" data-settings-path="/general-settings" href="/general-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M19.43 12.98 21.46 11.4a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 10.58a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58.04-.48-.04-.48ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
               </svg>
-              通用设置
+              <span data-i18n="settings.nav.generalSettings">通用设置</span>
             </a>
           </div>
         </aside>
 
         <section class="settings-main ref-settings-main">
           <div class="settings-hero ref-settings-hero">
-            <h1>AI 模型配置</h1>
-            <p>配置 AI 模型的 API 密钥、模型选择和参数，用于客户分析、邮件生成等功能。</p>
+            <h1 data-i18n="ai.hero.title">AI 模型配置</h1>
+            <p data-i18n="ai.hero.copy">配置 AI 模型的 API 密钥、模型选择和参数，用于客户分析、邮件生成等功能。</p>
           </div>
 
           <form id="ai-settings-form" class="settings-stack ref-settings-stack">
@@ -93,42 +94,42 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">API 密钥配置</h2>
-                    <p class="summary-copy">选择默认 AI 供应商并维护对应的 API 连接参数。</p>
+                    <h2 class="settings-section-title" data-i18n="ai.section.api.title">API 密钥配置</h2>
+                    <p class="summary-copy" data-i18n="ai.section.api.copy">选择默认 AI 供应商并维护对应的 API 连接参数。</p>
                   </div>
                 </div>
-                <span class="section-status green">已配置</span>
+                <span class="section-status green" data-i18n="ai.section.api.status">已配置</span>
               </div>
 
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group setting-field full">
-                    <span>API 服务商</span>
+                    <span data-i18n="ai.field.provider">API 服务商</span>
                     <select class="select-input" id="ai-provider">
-                      <option value="Qwen">阿里云通义千问 (Qwen)</option>
+                      <option value="Qwen" data-i18n="ai.provider.qwen">阿里云通义千问 (Qwen)</option>
                       <option value="OpenAI">OpenAI (GPT-4, GPT-3.5)</option>
                       <option value="Azure OpenAI">Azure OpenAI</option>
                       <option value="Anthropic">Anthropic (Claude)</option>
                       <option value="DeepSeek">DeepSeek</option>
-                      <option value="GLM">智谱AI (GLM)</option>
-                      <option value="Custom API">自定义 API</option>
+                      <option value="GLM" data-i18n="ai.provider.glm">智谱AI (GLM)</option>
+                      <option value="Custom API" data-i18n="ai.provider.custom">自定义 API</option>
                     </select>
                   </label>
 
                   <label class="input-group setting-field full">
                     <span>API KEY</span>
-                    <input class="text-input" id="ai-api-key" type="password" placeholder="输入 API Key" />
+                    <input class="text-input" id="ai-api-key" type="password" data-i18n-placeholder="ai.field.apiKey.placeholder" placeholder="输入 API Key" />
                   </label>
 
                   <label class="input-group setting-field full">
                     <span>Base URL</span>
-                    <input class="text-input" id="ai-base-url" type="text" placeholder="自定义 API 地址，留空则使用默认地址" />
-                    <span class="helper-text">自定义 API 地址，留空则使用默认地址。</span>
+                    <input class="text-input" id="ai-base-url" type="text" data-i18n-placeholder="ai.field.baseUrl.placeholder" placeholder="自定义 API 地址，留空则使用默认地址" />
+                    <span class="helper-text" data-i18n="ai.field.baseUrl.helper">自定义 API 地址，留空则使用默认地址。</span>
                   </label>
 
                   <label class="input-group setting-field full">
-                    <span>连接测试</span>
-                    <button class="action-button ghost ref-inline-button" type="button">测试连接</button>
+                    <span data-i18n="ai.field.testConn">连接测试</span>
+                    <button class="action-button ghost ref-inline-button" type="button" data-i18n="ai.btn.testConn">测试连接</button>
                   </label>
                 </div>
               </div>
@@ -143,8 +144,8 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">模型选择</h2>
-                    <p class="summary-copy">选择默认模型与开发信生成时使用的业务参数。</p>
+                    <h2 class="settings-section-title" data-i18n="ai.section.model.title">模型选择</h2>
+                    <p class="summary-copy" data-i18n="ai.section.model.copy">选择默认模型与开发信生成时使用的业务参数。</p>
                   </div>
                 </div>
               </div>
@@ -152,7 +153,7 @@
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group setting-field full">
-                    <span>选择模型</span>
+                    <span data-i18n="ai.field.model">选择模型</span>
                     <select class="select-input" id="ai-model">
                       <option value="qwen-max">qwen-max</option>
                       <option value="qwen-plus">qwen-plus</option>
@@ -161,17 +162,17 @@
                   </label>
 
                   <label class="input-group">
-                    <span>默认公司名称</span>
-                    <input class="text-input" id="ai-default-company-name" type="text" placeholder="输入默认公司名称" />
+                    <span data-i18n="ai.field.defaultCompany">默认公司名称</span>
+                    <input class="text-input" id="ai-default-company-name" type="text" data-i18n-placeholder="ai.field.defaultCompany.placeholder" placeholder="输入默认公司名称" />
                   </label>
 
                   <label class="input-group">
-                    <span>默认产品名称</span>
-                    <input class="text-input" id="ai-default-product-name" type="text" placeholder="输入默认产品名称" />
+                    <span data-i18n="ai.field.defaultProduct">默认产品名称</span>
+                    <input class="text-input" id="ai-default-product-name" type="text" data-i18n-placeholder="ai.field.defaultProduct.placeholder" placeholder="输入默认产品名称" />
                   </label>
 
                   <label class="input-group">
-                    <span>默认语言</span>
+                    <span data-i18n="ai.field.defaultLanguage">默认语言</span>
                     <select class="select-input" id="ai-default-language">
                       <option value="zh-CN">中文</option>
                       <option value="en">English</option>
@@ -182,23 +183,23 @@
                   </label>
 
                   <label class="input-group">
-                    <span>默认语气</span>
+                    <span data-i18n="ai.field.defaultTone">默认语气</span>
                     <select class="select-input" id="ai-default-tone">
-                      <option value="professional">专业稳重</option>
-                      <option value="warm">友好自然</option>
-                      <option value="direct">直接高效</option>
-                      <option value="consultative">顾问式建议</option>
+                      <option value="professional" data-i18n="ai.tone.professional">专业稳重</option>
+                      <option value="warm" data-i18n="ai.tone.warm">友好自然</option>
+                      <option value="direct" data-i18n="ai.tone.direct">直接高效</option>
+                      <option value="consultative" data-i18n="ai.tone.consultative">顾问式建议</option>
                     </select>
                   </label>
 
                   <label class="input-group setting-field full">
-                    <span>默认价值主张</span>
-                    <textarea class="textarea-input" id="ai-default-value-proposition" rows="5" placeholder="输入默认价值主张"></textarea>
+                    <span data-i18n="ai.field.defaultVp">默认价值主张</span>
+                    <textarea class="textarea-input" id="ai-default-value-proposition" rows="5" data-i18n-placeholder="ai.field.defaultVp.placeholder" placeholder="输入默认价值主张"></textarea>
                   </label>
 
                   <label class="input-group setting-field full">
-                    <span>默认 CTA</span>
-                    <textarea class="textarea-input" id="ai-default-call-to-action" rows="4" placeholder="输入默认 CTA"></textarea>
+                    <span data-i18n="ai.field.defaultCta">默认 CTA</span>
+                    <textarea class="textarea-input" id="ai-default-call-to-action" rows="4" data-i18n-placeholder="ai.field.defaultCta.placeholder" placeholder="输入默认 CTA"></textarea>
                   </label>
                 </div>
               </div>
@@ -206,14 +207,110 @@
 
             <div class="footer-actions right ref-settings-footer">
               <div id="ai-settings-result" class="helper-note"></div>
-              <button class="action-button ghost" type="button">恢复默认</button>
-              <button id="save-ai-settings" class="action-button orange" type="submit">保存配置</button>
+              <button class="action-button ghost" type="button" data-i18n="settings.btn.reset">恢复默认</button>
+              <button id="save-ai-settings" class="action-button orange" type="submit" data-i18n="settings.btn.save">保存配置</button>
             </div>
           </form>
         </section>
       </div>
     </main>
 
+    <script>
+      window.pageTranslations = {
+        "zh-CN": {
+          "__title": "AI 配置 | 一分钟科技",
+          "settings.nav.group.ai": "AI 模型",
+          "settings.nav.modelConfig": "模型配置",
+          "settings.nav.group.search": "搜索引擎",
+          "settings.nav.searchApi": "搜索 API",
+          "settings.nav.crawlerConfig": "爬虫配置",
+          "settings.nav.group.mail": "邮件服务",
+          "settings.nav.mailConfig": "邮箱配置",
+          "ai.brand.subtitle": "AI 模型与开发信中心",
+          "settings.nav.group.system": "系统",
+          "settings.nav.generalSettings": "通用设置",
+          "settings.btn.save": "保存配置",
+          "settings.btn.reset": "恢复默认",
+          "ai.hero.title": "AI 模型配置",
+          "ai.hero.copy": "配置 AI 模型的 API 密钥、模型选择和参数，用于客户分析、邮件生成等功能。",
+          "ai.section.api.title": "API 密钥配置",
+          "ai.section.api.copy": "选择默认 AI 供应商并维护对应的 API 连接参数。",
+          "ai.section.api.status": "已配置",
+          "ai.field.provider": "API 服务商",
+          "ai.provider.qwen": "阿里云通义千问 (Qwen)",
+          "ai.provider.glm": "智谱AI (GLM)",
+          "ai.provider.custom": "自定义 API",
+          "ai.field.apiKey.placeholder": "输入 API Key",
+          "ai.field.baseUrl.placeholder": "自定义 API 地址，留空则使用默认地址",
+          "ai.field.baseUrl.helper": "自定义 API 地址，留空则使用默认地址。",
+          "ai.field.testConn": "连接测试",
+          "ai.btn.testConn": "测试连接",
+          "ai.section.model.title": "模型选择",
+          "ai.section.model.copy": "选择默认模型与开发信生成时使用的业务参数。",
+          "ai.field.model": "选择模型",
+          "ai.field.defaultCompany": "默认公司名称",
+          "ai.field.defaultCompany.placeholder": "输入默认公司名称",
+          "ai.field.defaultProduct": "默认产品名称",
+          "ai.field.defaultProduct.placeholder": "输入默认产品名称",
+          "ai.field.defaultLanguage": "默认语言",
+          "ai.field.defaultTone": "默认语气",
+          "ai.tone.professional": "专业稳重",
+          "ai.tone.warm": "友好自然",
+          "ai.tone.direct": "直接高效",
+          "ai.tone.consultative": "顾问式建议",
+          "ai.field.defaultVp": "默认价值主张",
+          "ai.field.defaultVp.placeholder": "输入默认价值主张",
+          "ai.field.defaultCta": "默认 CTA",
+          "ai.field.defaultCta.placeholder": "输入默认 CTA"
+        },
+        "en": {
+          "__title": "AI Settings | One Minute Tech",
+          "settings.nav.group.ai": "AI Model",
+          "settings.nav.modelConfig": "Model Config",
+          "settings.nav.group.search": "Search Engine",
+          "settings.nav.searchApi": "Search API",
+          "settings.nav.crawlerConfig": "Crawler Config",
+          "settings.nav.group.mail": "Mail Service",
+          "settings.nav.mailConfig": "Mail Config",
+          "ai.brand.subtitle": "AI Model & Outreach Center",
+          "settings.nav.group.system": "System",
+          "settings.nav.generalSettings": "General Settings",
+          "settings.btn.save": "Save",
+          "settings.btn.reset": "Reset to Defaults",
+          "ai.hero.title": "AI Model Settings",
+          "ai.hero.copy": "Configure the AI API key, model selection, and default parameters for customer analysis and email generation.",
+          "ai.section.api.title": "API Key",
+          "ai.section.api.copy": "Select the default AI provider and maintain the corresponding API connection parameters.",
+          "ai.section.api.status": "Configured",
+          "ai.field.provider": "Provider",
+          "ai.provider.qwen": "Alibaba Cloud Qwen",
+          "ai.provider.glm": "Zhipu AI (GLM)",
+          "ai.provider.custom": "Custom API",
+          "ai.field.apiKey.placeholder": "Enter API Key",
+          "ai.field.baseUrl.placeholder": "Custom API base URL, leave blank to use default",
+          "ai.field.baseUrl.helper": "Custom API base URL. Leave blank to use the provider default.",
+          "ai.field.testConn": "Connection Test",
+          "ai.btn.testConn": "Test Connection",
+          "ai.section.model.title": "Model Selection",
+          "ai.section.model.copy": "Choose the default model and business parameters used when generating outreach emails.",
+          "ai.field.model": "Model",
+          "ai.field.defaultCompany": "Default Company Name",
+          "ai.field.defaultCompany.placeholder": "Enter default company name",
+          "ai.field.defaultProduct": "Default Product Name",
+          "ai.field.defaultProduct.placeholder": "Enter default product name",
+          "ai.field.defaultLanguage": "Default Language",
+          "ai.field.defaultTone": "Default Tone",
+          "ai.tone.professional": "Professional",
+          "ai.tone.warm": "Warm & Friendly",
+          "ai.tone.direct": "Direct & Concise",
+          "ai.tone.consultative": "Consultative",
+          "ai.field.defaultVp": "Default Value Proposition",
+          "ai.field.defaultVp.placeholder": "Enter default value proposition",
+          "ai.field.defaultCta": "Default CTA",
+          "ai.field.defaultCta.placeholder": "Enter default call-to-action"
+        }
+      };
+    </script>
     <script src="/main.js?v=5"></script>
     <script src="/settings.js?v=4"></script>
   </body>

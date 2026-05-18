@@ -73,7 +73,7 @@
           defaultCallToAction: valueOf("#ai-default-call-to-action")
         },
         "#ai-settings-result",
-        "AI 配置已保存，开发信页默认值会同步更新。"
+        t("AI 配置已保存，开发信页默认值会同步更新。", "AI settings saved. Outreach page defaults have been updated.")
       );
     });
   }
@@ -95,7 +95,7 @@
           linkedinApiKey: valueOf("#search-linkedin-api-key")
         },
         "#search-settings-result",
-        "搜索配置已保存，客户搜索页会使用新的默认搜索参数。"
+        t("搜索配置已保存，客户搜索页会使用新的默认搜索参数。", "Search settings saved. Customer search page will use the new parameters.")
       );
     });
   }
@@ -125,7 +125,7 @@
           companySignalWeight: numberOf("#crawler-company-signal-weight", 8)
         },
         "#crawler-settings-result",
-        "爬虫配置已保存，搜索超时、候选池和评分逻辑会同步生效。"
+        t("爬虫配置已保存，搜索超时、候选池和评分逻辑会同步生效。", "Crawler settings saved. Timeout, candidate pool, and scoring will take effect immediately.")
       );
     });
   }
@@ -167,7 +167,7 @@
           sendMode: valueOf("#mail-send-mode")
         },
         "#mail-settings-result",
-        "邮箱配置已保存，开发信页和发送接口会使用新的默认发件身份。"
+        t("邮箱配置已保存，开发信页和发送接口会使用新的默认发件身份。", "Mail settings saved. The outreach page and send API will use the new sender identity.")
       );
     });
   }
@@ -201,7 +201,7 @@
           debugMode: booleanOf("#general-debug-mode", false)
         },
         "#general-settings-result",
-        "通用配置已保存，默认入口和本地缓存行为会同步更新。"
+        t("通用配置已保存，默认入口和本地缓存行为会同步更新。", "General settings saved. Default landing page and cache behavior have been updated.")
       );
     });
   }
@@ -216,7 +216,7 @@
     });
 
     if (!response.ok) {
-      setResult(resultSelector, "保存失败，请稍后重试。", false);
+      setResult(resultSelector, t("保存失败，请稍后重试。", "Save failed. Please try again."), false);
       return;
     }
 
@@ -258,5 +258,10 @@
       return false;
     }
     return fallbackValue;
+  }
+
+  function t(zh, en) {
+    const locale = localStorage.getItem("leadflow-locale");
+    return locale === "en" ? en : zh;
   }
 })();

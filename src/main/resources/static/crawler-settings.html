@@ -13,11 +13,12 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        返回首页
+        <span data-i18n="shared.backHome">返回首页</span>
       </a>
 
-      <div class="brand-label ref-settings-brand">
-        <strong>系统配置</strong>
+      <div class="brand-label" style="margin-right: auto;">
+        <strong data-i18n="shared.systemSettings">系统配置</strong>
+        <span data-i18n="search.brand.subtitle">搜索引擎 API 中心</span>
       </div>
 
       <div class="locale-switch" aria-label="语言切换">
@@ -30,57 +31,57 @@
       <div class="settings-shell ref-settings-shell">
         <aside class="settings-sidebar ref-settings-sidebar">
           <div class="settings-nav-group">
-            <h3>AI 模型</h3>
+            <h3 data-i18n="settings.nav.group.ai">AI 模型</h3>
             <a class="settings-link" data-settings-path="/ai-settings" href="/ai-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2 4 6v12l8 4 8-4V6l-8-4Zm0 2.2 5.8 2.9L12 10 6.2 7.1 12 4.2Zm-6 4.7 5 2.5v6.4l-5-2.5V8.9Zm7 8.9v-6.4l5-2.5v6.4l-5 2.5Z" />
               </svg>
-              模型配置
+              <span data-i18n="settings.nav.modelConfig">模型配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>搜索引擎</h3>
+            <h3 data-i18n="settings.nav.group.search">搜索引擎</h3>
             <a class="settings-link is-active" data-settings-path="/crawler-settings" href="/crawler-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="6"></circle>
                 <path d="m20 20-4.2-4.2"></path>
               </svg>
-              搜索 API
+              <span data-i18n="settings.nav.searchApi">搜索 API</span>
             </a>
             <a class="settings-link" data-settings-path="/crawler-rules" href="/crawler-rules">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Z" />
               </svg>
-              爬虫配置
+              <span data-i18n="settings.nav.crawlerConfig">爬虫配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>邮件服务</h3>
+            <h3 data-i18n="settings.nav.group.mail">邮件服务</h3>
             <a class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
               </svg>
-              邮箱配置
+              <span data-i18n="settings.nav.mailConfig">邮箱配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>系统</h3>
+            <h3 data-i18n="settings.nav.group.system">系统</h3>
             <a class="settings-link" data-settings-path="/general-settings" href="/general-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M19.43 12.98 21.46 11.4a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 10.58a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58.04-.48-.04-.48ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
               </svg>
-              通用设置
+              <span data-i18n="settings.nav.generalSettings">通用设置</span>
             </a>
           </div>
         </aside>
 
         <section class="settings-main ref-settings-main">
           <div class="settings-hero ref-settings-hero">
-            <h1>搜索引擎配置</h1>
-            <p>配置搜索 API，获取真实客户搜索数据。</p>
+            <h1 data-i18n="search.hero.title">搜索引擎配置</h1>
+            <p data-i18n="search.hero.copy">配置搜索 API，获取真实客户搜索数据。</p>
           </div>
 
           <form id="search-settings-form" class="settings-stack ref-settings-stack">
@@ -94,22 +95,22 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">SerpAPI （Google搜索）</h2>
+                    <h2 class="settings-section-title" data-i18n="search.section.serp.title">SerpAPI （Google搜索）</h2>
                   </div>
                 </div>
-                <span class="section-status gray">未配置</span>
+                <span class="section-status gray" data-i18n="search.section.serp.status">未配置</span>
               </div>
 
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group setting-field full">
                     <span>SERPAPI KEY</span>
-                    <input class="text-input" id="search-serp-api-key" type="password" placeholder="输入 SerpAPI Key" />
-                    <span class="helper-text">从 serpapi.com 获取 API Key，支持 Google/Bing 搜索。</span>
+                    <input class="text-input" id="search-serp-api-key" type="password" data-i18n-placeholder="search.field.serpKey.placeholder" placeholder="输入 SerpAPI Key" />
+                    <span class="helper-text" data-i18n="search.field.serpKey.helper">从 serpapi.com 获取 API Key，支持 Google/Bing 搜索。</span>
                   </label>
 
                   <label class="input-group setting-field full">
-                    <span>默认搜索引擎</span>
+                    <span data-i18n="search.field.engine">默认搜索引擎</span>
                     <select class="select-input" id="search-default-engine">
                       <option value="Google">Google</option>
                       <option value="Bing">Bing</option>
@@ -117,7 +118,7 @@
                   </label>
 
                   <label class="input-group setting-field full">
-                    <span>每页结果数</span>
+                    <span data-i18n="search.field.resultsPerPage">每页结果数</span>
                     <input class="text-input" id="search-results-per-page" type="number" min="1" max="50" placeholder="20" />
                   </label>
                 </div>
@@ -133,7 +134,7 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">LinkedIn 数据</h2>
+                    <h2 class="settings-section-title" data-i18n="search.section.linkedin.title">LinkedIn 数据</h2>
                   </div>
                 </div>
               </div>
@@ -141,9 +142,9 @@
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group setting-field full">
-                    <span>LINKEDIN API KEY（可选）</span>
-                    <input class="text-input" id="search-linkedin-api-key" type="password" placeholder="LinkedIn API Key（可选）" />
-                    <span class="helper-text">配置后可读取更详细的 LinkedIn 公司和联系人数据。</span>
+                    <span data-i18n="search.field.linkedinKey">LINKEDIN API KEY（可选）</span>
+                    <input class="text-input" id="search-linkedin-api-key" type="password" data-i18n-placeholder="search.field.linkedinKey.placeholder" placeholder="LinkedIn API Key（可选）" />
+                    <span class="helper-text" data-i18n="search.field.linkedinKey.helper">配置后可读取更详细的 LinkedIn 公司和联系人数据。</span>
                   </label>
                 </div>
               </div>
@@ -151,14 +152,72 @@
 
             <div class="footer-actions right ref-settings-footer">
               <div id="search-settings-result" class="helper-note"></div>
-              <button class="action-button ghost" type="button">恢复默认</button>
-              <button class="action-button orange" type="submit">保存配置</button>
+              <button class="action-button ghost" type="button" data-i18n="settings.btn.reset">恢复默认</button>
+              <button class="action-button orange" type="submit" data-i18n="settings.btn.save">保存配置</button>
             </div>
           </form>
         </section>
       </div>
     </main>
 
+    <script>
+      window.pageTranslations = {
+        "zh-CN": {
+          "__title": "搜索配置 | 一分钟科技",
+          "settings.nav.group.ai": "AI 模型",
+          "settings.nav.modelConfig": "模型配置",
+          "settings.nav.group.search": "搜索引擎",
+          "settings.nav.searchApi": "搜索 API",
+          "settings.nav.crawlerConfig": "爬虫配置",
+          "settings.nav.group.mail": "邮件服务",
+          "settings.nav.mailConfig": "邮箱配置",
+          "settings.nav.group.system": "系统",
+          "settings.nav.generalSettings": "通用设置",
+          "search.brand.subtitle": "搜索引擎 API 中心",
+          "settings.btn.save": "保存配置",
+          "settings.btn.reset": "恢复默认",
+          "search.hero.title": "搜索引擎配置",
+          "search.hero.copy": "配置搜索 API，获取真实客户搜索数据。",
+          "search.section.serp.title": "SerpAPI （Google搜索）",
+          "search.section.serp.status": "未配置",
+          "search.field.serpKey.placeholder": "输入 SerpAPI Key",
+          "search.field.serpKey.helper": "从 serpapi.com 获取 API Key，支持 Google/Bing 搜索。",
+          "search.field.engine": "默认搜索引擎",
+          "search.field.resultsPerPage": "每页结果数",
+          "search.section.linkedin.title": "LinkedIn 数据",
+          "search.field.linkedinKey": "LINKEDIN API KEY（可选）",
+          "search.field.linkedinKey.placeholder": "LinkedIn API Key（可选）",
+          "search.field.linkedinKey.helper": "配置后可读取更详细的 LinkedIn 公司和联系人数据。"
+        },
+        "en": {
+          "__title": "Search Settings | One Minute Tech",
+          "settings.nav.group.ai": "AI Model",
+          "settings.nav.modelConfig": "Model Config",
+          "settings.nav.group.search": "Search Engine",
+          "settings.nav.searchApi": "Search API",
+          "settings.nav.crawlerConfig": "Crawler Config",
+          "settings.nav.group.mail": "Mail Service",
+          "settings.nav.mailConfig": "Mail Config",
+          "settings.nav.group.system": "System",
+          "settings.nav.generalSettings": "General Settings",
+          "search.brand.subtitle": "Search Engine API Center",
+          "settings.btn.save": "Save",
+          "settings.btn.reset": "Reset to Defaults",
+          "search.hero.title": "Search Engine Settings",
+          "search.hero.copy": "Configure the Search API to retrieve real customer data.",
+          "search.section.serp.title": "SerpAPI (Google Search)",
+          "search.section.serp.status": "Not Configured",
+          "search.field.serpKey.placeholder": "Enter SerpAPI Key",
+          "search.field.serpKey.helper": "Get an API Key from serpapi.com to enable Google/Bing search.",
+          "search.field.engine": "Default Search Engine",
+          "search.field.resultsPerPage": "Results Per Page",
+          "search.section.linkedin.title": "LinkedIn Data",
+          "search.field.linkedinKey": "LINKEDIN API KEY (Optional)",
+          "search.field.linkedinKey.placeholder": "LinkedIn API Key (optional)",
+          "search.field.linkedinKey.helper": "Enables richer LinkedIn company and contact data when configured."
+        }
+      };
+    </script>
     <script src="/main.js?v=5"></script>
     <script src="/settings.js?v=4"></script>
   </body>

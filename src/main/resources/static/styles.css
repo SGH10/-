@@ -311,7 +311,12 @@ svg {
 .step-copy,
 .log-text,
 .table-note,
-.recipient-meta,
+.recipient-meta {
+  color: var(--muted);
+  line-height: 1.78;
+  word-break: break-all;
+}
+
 .compact-list,
 .results-empty {
   color: var(--muted);
@@ -922,6 +927,7 @@ svg {
 .outreach-left-column {
   grid-column: 1;
   grid-row: 1;
+  min-width: 0;
 }
 
 .outreach-right-column {
@@ -1353,16 +1359,29 @@ svg {
   border-radius: 999px;
   background: linear-gradient(90deg, #ffe9c8, #ffe8cf);
   overflow: hidden;
+  --progress-width: 24%;
 }
 
 .progress-track::after {
   content: "";
   display: block;
-  width: 24%;
+  width: var(--progress-width);
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, rgba(255, 122, 26, 0.86), rgba(255, 199, 117, 0.92));
   opacity: 0.58;
+  transition: width 0.4s ease;
+}
+
+.progress-track.is-indeterminate::after {
+  width: 30%;
+  animation: progress-indeterminate 1.4s ease-in-out infinite;
+}
+
+@keyframes progress-indeterminate {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(250%); }
+  100% { transform: translateX(-100%); }
 }
 
 .stat-grid,
@@ -1488,6 +1507,7 @@ svg {
   padding: 16px;
   border-radius: 18px;
   background: var(--surface-soft);
+  overflow: hidden;
 }
 
 .recipient-card input {
@@ -1498,6 +1518,8 @@ svg {
   display: grid;
   gap: 6px;
   width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .recipient-body strong {

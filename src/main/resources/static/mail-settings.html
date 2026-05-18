@@ -13,12 +13,12 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        返回首页
+        <span data-i18n="shared.backHome">返回首页</span>
       </a>
 
       <div class="brand-label" style="margin-right: auto;">
-        <strong>系统配置</strong>
-        <span>邮箱与发件服务中心</span>
+        <strong data-i18n="shared.systemSettings">系统配置</strong>
+        <span data-i18n="mail.brand.subtitle">邮箱与发件服务中心</span>
       </div>
 
       <div class="locale-switch" aria-label="语言切换">
@@ -27,66 +27,66 @@
       </div>
     </header>
 
-    <main class="system-page">
-      <div class="settings-shell">
-        <aside class="settings-sidebar">
+    <main class="system-page ref-settings-page">
+      <div class="settings-shell ref-settings-shell">
+        <aside class="settings-sidebar ref-settings-sidebar">
           <div class="settings-nav-group">
-            <h3>AI 模型</h3>
+            <h3 data-i18n="settings.nav.group.ai">AI 模型</h3>
             <a class="settings-link" data-settings-path="/ai-settings" href="/ai-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2 4 6v12l8 4 8-4V6l-8-4Zm0 2.2 5.8 2.9L12 10 6.2 7.1 12 4.2Zm-6 4.7 5 2.5v6.4l-5-2.5V8.9Zm7 8.9v-6.4l5-2.5v6.4l-5 2.5Z" />
               </svg>
-              模型配置
+              <span data-i18n="settings.nav.modelConfig">模型配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>搜索引擎</h3>
+            <h3 data-i18n="settings.nav.group.search">搜索引擎</h3>
             <a class="settings-link" data-settings-path="/crawler-settings" href="/crawler-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="6"></circle>
                 <path d="m20 20-4.2-4.2"></path>
               </svg>
-              搜索 API
+              <span data-i18n="settings.nav.searchApi">搜索 API</span>
             </a>
             <a class="settings-link" data-settings-path="/crawler-rules" href="/crawler-rules">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Z" />
               </svg>
-              爬虫配置
+              <span data-i18n="settings.nav.crawlerConfig">爬虫配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>邮件服务</h3>
+            <h3 data-i18n="settings.nav.group.mail">邮件服务</h3>
             <a class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
               </svg>
-              邮箱配置
+              <span data-i18n="settings.nav.mailConfig">邮箱配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>系统</h3>
+            <h3 data-i18n="settings.nav.group.system">系统</h3>
             <a class="settings-link" data-settings-path="/general-settings" href="/general-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M19.43 12.98 21.46 11.4a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 10.58a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58.04-.48-.04-.48ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
               </svg>
-              通用设置
+              <span data-i18n="settings.nav.generalSettings">通用设置</span>
             </a>
           </div>
         </aside>
 
-        <section class="settings-main">
-          <div class="settings-hero">
-            <h1>邮箱配置</h1>
-            <p>保存这里的配置后，开发信页默认发件人和发送接口中的默认邮箱身份会同步变化。</p>
+        <section class="settings-main ref-settings-main">
+          <div class="settings-hero ref-settings-hero">
+            <h1 data-i18n="mail.hero.title">邮箱配置</h1>
+            <p data-i18n="mail.hero.copy">保存这里的配置后，开发信页默认发件人和发送接口中的默认邮箱身份会同步变化。</p>
           </div>
 
-          <form id="mail-settings-form" class="settings-stack">
-            <article class="setting-section">
-              <div class="settings-section-head">
+          <form id="mail-settings-form" class="settings-stack ref-settings-stack">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -94,35 +94,35 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">发件身份</h2>
-                    <p class="summary-copy">配置真正用于发送开发信的默认身份。</p>
+                    <h2 class="settings-section-title" data-i18n="mail.section.identity.title">发件身份</h2>
+                    <p class="summary-copy" data-i18n="mail.section.identity.copy">配置真正用于发送开发信的默认身份。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group">
-                    <span>发件人姓名</span>
+                    <span data-i18n="mail.field.senderName">发件人姓名</span>
                     <input class="text-input" id="mail-sender-name" type="text" value="Zijian" />
                   </label>
                   <label class="input-group">
-                    <span>发件邮箱</span>
+                    <span data-i18n="mail.field.senderEmail">发件邮箱</span>
                     <input class="text-input" id="mail-sender-email" type="email" value="zijian@example.com" />
                   </label>
                   <label class="input-group">
-                    <span>回复邮箱</span>
+                    <span data-i18n="mail.field.replyTo">回复邮箱</span>
                     <input class="text-input" id="mail-reply-to-email" type="email" value="reply@example.com" />
                   </label>
                   <label class="input-group">
-                    <span>默认签名</span>
+                    <span data-i18n="mail.field.signature">默认签名</span>
                     <input class="text-input" id="mail-signature" type="text" value="Zijian | LeadFlow Studio" />
                   </label>
                 </div>
               </div>
             </article>
 
-            <article class="setting-section">
-              <div class="settings-section-head">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -130,17 +130,17 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">SMTP 服务</h2>
-                    <p class="summary-copy">为后续接入真实发送保留参数。</p>
+                    <h2 class="settings-section-title" data-i18n="mail.section.smtp.title">SMTP 服务</h2>
+                    <p class="summary-copy" data-i18n="mail.section.smtp.copy">为后续接入真实发送保留参数。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group">
-                    <span>服务商</span>
+                    <span data-i18n="mail.field.smtpProvider">服务商</span>
                     <select class="select-input" id="mail-smtp-provider">
-                      <option value="Custom SMTP">Custom SMTP</option>
+                      <option value="Custom SMTP" data-i18n="mail.smtpProvider.custom">Custom SMTP</option>
                       <option value="Gmail">Gmail</option>
                       <option value="Outlook">Outlook</option>
                       <option value="Tencent Mail">Tencent Mail</option>
@@ -148,15 +148,15 @@
                     </select>
                   </label>
                   <label class="input-group">
-                    <span>SMTP 主机</span>
+                    <span data-i18n="mail.field.smtpHost">SMTP 主机</span>
                     <input class="text-input" id="mail-smtp-host" type="text" value="smtp.example.com" />
                   </label>
                   <label class="input-group">
-                    <span>端口</span>
+                    <span data-i18n="mail.field.smtpPort">端口</span>
                     <input class="text-input" id="mail-smtp-port" type="number" min="1" value="587" />
                   </label>
                   <label class="input-group">
-                    <span>安全方式</span>
+                    <span data-i18n="mail.field.smtpSecurity">安全方式</span>
                     <select class="select-input" id="mail-smtp-security">
                       <option value="TLS">TLS</option>
                       <option value="STARTTLS">STARTTLS</option>
@@ -164,19 +164,19 @@
                     </select>
                   </label>
                   <label class="input-group">
-                    <span>SMTP 用户名</span>
+                    <span data-i18n="mail.field.smtpUsername">SMTP 用户名</span>
                     <input class="text-input" id="mail-smtp-username" type="text" value="zijian@example.com" />
                   </label>
                   <label class="input-group">
-                    <span>SMTP 密码 / 授权码</span>
+                    <span data-i18n="mail.field.smtpPassword">SMTP 密码 / 授权码</span>
                     <input class="text-input" id="mail-smtp-password" type="password" value="" />
                   </label>
                 </div>
               </div>
             </article>
 
-            <article class="setting-section">
-              <div class="settings-section-head">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -184,37 +184,37 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">发送规则</h2>
-                    <p class="summary-copy">限制默认发送节奏。</p>
+                    <h2 class="settings-section-title" data-i18n="mail.section.rules.title">发送规则</h2>
+                    <p class="summary-copy" data-i18n="mail.section.rules.copy">限制默认发送节奏。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group">
-                    <span>单次批量上限</span>
+                    <span data-i18n="mail.field.batchLimit">单次批量上限</span>
                     <input class="text-input" id="mail-batch-limit" type="number" min="1" value="50" />
                   </label>
                   <label class="input-group">
-                    <span>每小时上限</span>
+                    <span data-i18n="mail.field.hourlyLimit">每小时上限</span>
                     <input class="text-input" id="mail-hourly-limit" type="number" min="1" value="120" />
                   </label>
                   <label class="input-group">
-                    <span>失败重试次数</span>
+                    <span data-i18n="mail.field.retryCount">失败重试次数</span>
                     <input class="text-input" id="mail-retry-count" type="number" min="0" value="2" />
                   </label>
                   <label class="input-group">
-                    <span>发送模式</span>
+                    <span data-i18n="mail.field.sendMode">发送模式</span>
                     <select class="select-input" id="mail-send-mode">
-                      <option value="demo">演示发送</option>
-                      <option value="smtp">SMTP 发送</option>
+                      <option value="demo" data-i18n="mail.sendMode.demo">演示发送</option>
+                      <option value="smtp" data-i18n="mail.sendMode.smtp">SMTP 发送</option>
                     </select>
                   </label>
                 </div>
               </div>
               <div class="footer-actions right">
                 <div id="mail-settings-result" class="helper-note"></div>
-                <button class="action-button orange" type="submit">保存配置</button>
+                <button class="action-button orange" type="submit" data-i18n="settings.btn.save">保存配置</button>
               </div>
             </article>
           </form>
@@ -222,6 +222,88 @@
       </div>
     </main>
 
+    <script>
+      window.pageTranslations = {
+        "zh-CN": {
+          "__title": "邮箱配置 | 一分钟科技",
+          "mail.brand.subtitle": "邮箱与发件服务中心",
+          "settings.nav.group.ai": "AI 模型",
+          "settings.nav.modelConfig": "模型配置",
+          "settings.nav.group.search": "搜索引擎",
+          "settings.nav.searchApi": "搜索 API",
+          "settings.nav.crawlerConfig": "爬虫配置",
+          "settings.nav.group.mail": "邮件服务",
+          "settings.nav.mailConfig": "邮箱配置",
+          "settings.nav.group.system": "系统",
+          "settings.nav.generalSettings": "通用设置",
+          "settings.btn.save": "保存配置",
+          "mail.hero.title": "邮箱配置",
+          "mail.hero.copy": "保存这里的配置后，开发信页默认发件人和发送接口中的默认邮箱身份会同步变化。",
+          "mail.section.identity.title": "发件身份",
+          "mail.section.identity.copy": "配置真正用于发送开发信的默认身份。",
+          "mail.field.senderName": "发件人姓名",
+          "mail.field.senderEmail": "发件邮箱",
+          "mail.field.replyTo": "回复邮箱",
+          "mail.field.signature": "默认签名",
+          "mail.section.smtp.title": "SMTP 服务",
+          "mail.section.smtp.copy": "为后续接入真实发送保留参数。",
+          "mail.field.smtpProvider": "服务商",
+          "mail.smtpProvider.custom": "Custom SMTP",
+          "mail.field.smtpHost": "SMTP 主机",
+          "mail.field.smtpPort": "端口",
+          "mail.field.smtpSecurity": "安全方式",
+          "mail.field.smtpUsername": "SMTP 用户名",
+          "mail.field.smtpPassword": "SMTP 密码 / 授权码",
+          "mail.section.rules.title": "发送规则",
+          "mail.section.rules.copy": "限制默认发送节奏。",
+          "mail.field.batchLimit": "单次批量上限",
+          "mail.field.hourlyLimit": "每小时上限",
+          "mail.field.retryCount": "失败重试次数",
+          "mail.field.sendMode": "发送模式",
+          "mail.sendMode.demo": "演示发送",
+          "mail.sendMode.smtp": "SMTP 发送"
+        },
+        "en": {
+          "__title": "Mail Settings | One Minute Tech",
+          "mail.brand.subtitle": "Email & Sender Service",
+          "settings.nav.group.ai": "AI Model",
+          "settings.nav.modelConfig": "Model Config",
+          "settings.nav.group.search": "Search Engine",
+          "settings.nav.searchApi": "Search API",
+          "settings.nav.crawlerConfig": "Crawler Config",
+          "settings.nav.group.mail": "Mail Service",
+          "settings.nav.mailConfig": "Mail Config",
+          "settings.nav.group.system": "System",
+          "settings.nav.generalSettings": "General Settings",
+          "settings.btn.save": "Save",
+          "mail.hero.title": "Mail Settings",
+          "mail.hero.copy": "Changes here will update the default sender identity used on the outreach page and in the send API.",
+          "mail.section.identity.title": "Sender Identity",
+          "mail.section.identity.copy": "Configure the default identity used to send outreach emails.",
+          "mail.field.senderName": "Sender Name",
+          "mail.field.senderEmail": "Sender Email",
+          "mail.field.replyTo": "Reply-To Email",
+          "mail.field.signature": "Default Signature",
+          "mail.section.smtp.title": "SMTP Service",
+          "mail.section.smtp.copy": "Reserve parameters for connecting to a real send service.",
+          "mail.field.smtpProvider": "Provider",
+          "mail.smtpProvider.custom": "Custom SMTP",
+          "mail.field.smtpHost": "SMTP Host",
+          "mail.field.smtpPort": "Port",
+          "mail.field.smtpSecurity": "Security",
+          "mail.field.smtpUsername": "SMTP Username",
+          "mail.field.smtpPassword": "SMTP Password / App Password",
+          "mail.section.rules.title": "Sending Rules",
+          "mail.section.rules.copy": "Limit the default send rate.",
+          "mail.field.batchLimit": "Batch Limit",
+          "mail.field.hourlyLimit": "Hourly Limit",
+          "mail.field.retryCount": "Retry Count",
+          "mail.field.sendMode": "Send Mode",
+          "mail.sendMode.demo": "Demo Mode",
+          "mail.sendMode.smtp": "SMTP Send"
+        }
+      };
+    </script>
     <script src="/main.js?v=4"></script>
     <script src="/settings.js?v=3"></script>
   </body>

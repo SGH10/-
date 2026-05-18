@@ -13,12 +13,12 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        返回首页
+        <span data-i18n="shared.backHome">返回首页</span>
       </a>
 
       <div class="brand-label" style="margin-right: auto;">
-        <strong>系统配置</strong>
-        <span>爬虫与过滤规则中心</span>
+        <strong data-i18n="shared.systemSettings">系统配置</strong>
+        <span data-i18n="crawler.brand.subtitle">爬虫与过滤规则中心</span>
       </div>
 
       <div class="locale-switch" aria-label="语言切换">
@@ -27,66 +27,66 @@
       </div>
     </header>
 
-    <main class="system-page">
-      <div class="settings-shell">
-        <aside class="settings-sidebar">
+    <main class="system-page ref-settings-page">
+      <div class="settings-shell ref-settings-shell">
+        <aside class="settings-sidebar ref-settings-sidebar">
           <div class="settings-nav-group">
-            <h3>AI 模型</h3>
+            <h3 data-i18n="settings.nav.group.ai">AI 模型</h3>
             <a class="settings-link" data-settings-path="/ai-settings" href="/ai-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2 4 6v12l8 4 8-4V6l-8-4Zm0 2.2 5.8 2.9L12 10 6.2 7.1 12 4.2Zm-6 4.7 5 2.5v6.4l-5-2.5V8.9Zm7 8.9v-6.4l5-2.5v6.4l-5 2.5Z" />
               </svg>
-              模型配置
+              <span data-i18n="settings.nav.modelConfig">模型配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>搜索引擎</h3>
+            <h3 data-i18n="settings.nav.group.search">搜索引擎</h3>
             <a class="settings-link" data-settings-path="/crawler-settings" href="/crawler-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="6"></circle>
                 <path d="m20 20-4.2-4.2"></path>
               </svg>
-              搜索 API
+              <span data-i18n="settings.nav.searchApi">搜索 API</span>
             </a>
             <a class="settings-link" data-settings-path="/crawler-rules" href="/crawler-rules">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 3 4 7v5c0 5.25 3.44 10.23 8 11 4.56-.77 8-5.75 8-11V7l-8-4Z" />
               </svg>
-              爬虫配置
+              <span data-i18n="settings.nav.crawlerConfig">爬虫配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>邮件服务</h3>
+            <h3 data-i18n="settings.nav.group.mail">邮件服务</h3>
             <a class="settings-link" data-settings-path="/mail-settings" href="/mail-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.14.43L12 12.02l6.86-4.84A1.24 1.24 0 0 0 17.88 6H6.12a1.24 1.24 0 0 0-.98 1.18Z" />
               </svg>
-              邮箱配置
+              <span data-i18n="settings.nav.mailConfig">邮箱配置</span>
             </a>
           </div>
 
           <div class="settings-nav-group">
-            <h3>系统</h3>
+            <h3 data-i18n="settings.nav.group.system">系统</h3>
             <a class="settings-link" data-settings-path="/general-settings" href="/general-settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M19.43 12.98 21.46 11.4a.65.65 0 0 0 .15-.82l-1.92-3.32a.65.65 0 0 0-.78-.29l-2.39.96a7.2 7.2 0 0 0-.83-.48l-.36-2.54a.66.66 0 0 0-.65-.55h-3.84a.66.66 0 0 0-.65.55l-.36 2.54c-.29.13-.56.29-.83.48l-2.39-.96a.65.65 0 0 0-.78.29L2.38 10.58a.65.65 0 0 0 .15.82l2.03 1.58-.04.48.04.48-2.03 1.58a.65.65 0 0 0-.15.82l1.92 3.32c.17.29.52.41.83.29l2.39-.96c.27.19.54.35.83.48l.36 2.54c.05.32.32.55.65.55h3.84c.33 0 .6-.23.65-.55l.36-2.54c.29-.13.56-.29.83-.48l2.39.96c.31.12.66 0 .83-.29l1.92-3.32a.65.65 0 0 0-.15-.82l-2.03-1.58.04-.48-.04-.48ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
               </svg>
-              通用设置
+              <span data-i18n="settings.nav.generalSettings">通用设置</span>
             </a>
           </div>
         </aside>
 
-        <section class="settings-main">
-          <div class="settings-hero">
-            <h1>爬虫配置</h1>
-            <p>保存这里的配置后，客户搜索页的超时、候选池、抓取深度和评分逻辑会即时生效。</p>
+        <section class="settings-main ref-settings-main">
+          <div class="settings-hero ref-settings-hero">
+            <h1 data-i18n="crawler.hero.title">爬虫配置</h1>
+            <p data-i18n="crawler.hero.copy">保存这里的配置后，客户搜索页的超时、候选池、抓取深度和评分逻辑会即时生效。</p>
           </div>
 
-          <form id="crawler-settings-form" class="settings-stack">
-            <article class="setting-section">
-              <div class="settings-section-head">
+          <form id="crawler-settings-form" class="settings-stack ref-settings-stack">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -94,41 +94,41 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">抓取参数</h2>
-                    <p class="summary-copy">控制搜索运行速度和抓取深度。</p>
+                    <h2 class="settings-section-title" data-i18n="crawler.section.params.title">抓取参数</h2>
+                    <p class="summary-copy" data-i18n="crawler.section.params.copy">控制搜索运行速度和抓取深度。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group">
-                    <span>请求超时（毫秒）</span>
+                    <span data-i18n="crawler.field.timeout">请求超时（毫秒）</span>
                     <input class="text-input" id="crawler-request-timeout-ms" type="number" min="1000" value="8000" />
                   </label>
                   <label class="input-group">
-                    <span>候选池大小</span>
+                    <span data-i18n="crawler.field.candidateLimit">候选池大小</span>
                     <input class="text-input" id="crawler-candidate-limit" type="number" min="1" value="36" />
                   </label>
                   <label class="input-group">
-                    <span>邮箱提取深度</span>
+                    <span data-i18n="crawler.field.emailDepth">邮箱提取深度</span>
                     <select class="select-input" id="crawler-email-extraction-depth">
-                      <option value="HOME_ONLY">仅首页</option>
-                      <option value="HOME_AND_CONTACT">首页 + 联系页</option>
+                      <option value="HOME_ONLY" data-i18n="crawler.emailDepth.homeOnly">仅首页</option>
+                      <option value="HOME_AND_CONTACT" data-i18n="crawler.emailDepth.homeAndContact">首页 + 联系页</option>
                     </select>
                   </label>
                   <label class="input-group">
-                    <span>日志模式</span>
+                    <span data-i18n="crawler.field.logMode">日志模式</span>
                     <select class="select-input" id="crawler-log-mode">
-                      <option value="summary">摘要</option>
-                      <option value="detail">详细</option>
+                      <option value="summary" data-i18n="crawler.logMode.summary">摘要</option>
+                      <option value="detail" data-i18n="crawler.logMode.detail">详细</option>
                     </select>
                   </label>
                 </div>
               </div>
             </article>
 
-            <article class="setting-section">
-              <div class="settings-section-head">
+            <article class="setting-section ref-setting-panel">
+              <div class="settings-section-head ref-setting-head">
                 <div class="section-title-row">
                   <span class="section-icon">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -136,34 +136,34 @@
                     </svg>
                   </span>
                   <div>
-                    <h2 class="settings-section-title">评分权重</h2>
-                    <p class="summary-copy">控制高匹配客户的评分依据。</p>
+                    <h2 class="settings-section-title" data-i18n="crawler.section.weights.title">评分权重</h2>
+                    <p class="summary-copy" data-i18n="crawler.section.weights.copy">控制高匹配客户的评分依据。</p>
                   </div>
                 </div>
               </div>
               <div class="setting-body">
                 <div class="setting-field-grid">
                   <label class="input-group">
-                    <span>同域邮箱权重</span>
+                    <span data-i18n="crawler.field.sameDomainWeight">同域邮箱权重</span>
                     <input class="text-input" id="crawler-same-domain-weight" type="number" min="1" value="10" />
                   </label>
                   <label class="input-group">
-                    <span>市场匹配权重</span>
+                    <span data-i18n="crawler.field.marketWeight">市场匹配权重</span>
                     <input class="text-input" id="crawler-market-weight" type="number" min="1" value="8" />
                   </label>
                   <label class="input-group">
-                    <span>关键词匹配权重</span>
+                    <span data-i18n="crawler.field.keywordWeight">关键词匹配权重</span>
                     <input class="text-input" id="crawler-keyword-weight" type="number" min="1" value="6" />
                   </label>
                   <label class="input-group">
-                    <span>公司主体信号权重</span>
+                    <span data-i18n="crawler.field.companySignalWeight">公司主体信号权重</span>
                     <input class="text-input" id="crawler-company-signal-weight" type="number" min="1" value="8" />
                   </label>
                 </div>
               </div>
               <div class="footer-actions right">
                 <div id="crawler-settings-result" class="helper-note"></div>
-                <button class="action-button orange" type="submit">保存配置</button>
+                <button class="action-button orange" type="submit" data-i18n="settings.btn.save">保存配置</button>
               </div>
             </article>
           </form>
@@ -171,6 +171,74 @@
       </div>
     </main>
 
+    <script>
+      window.pageTranslations = {
+        "zh-CN": {
+          "__title": "爬虫配置 | 一分钟科技",
+          "crawler.brand.subtitle": "爬虫与过滤规则中心",
+          "settings.nav.group.ai": "AI 模型",
+          "settings.nav.modelConfig": "模型配置",
+          "settings.nav.group.search": "搜索引擎",
+          "settings.nav.searchApi": "搜索 API",
+          "settings.nav.crawlerConfig": "爬虫配置",
+          "settings.nav.group.mail": "邮件服务",
+          "settings.nav.mailConfig": "邮箱配置",
+          "settings.nav.group.system": "系统",
+          "settings.nav.generalSettings": "通用设置",
+          "settings.btn.save": "保存配置",
+          "crawler.hero.title": "爬虫配置",
+          "crawler.hero.copy": "保存这里的配置后，客户搜索页的超时、候选池、抓取深度和评分逻辑会即时生效。",
+          "crawler.section.params.title": "抓取参数",
+          "crawler.section.params.copy": "控制搜索运行速度和抓取深度。",
+          "crawler.field.timeout": "请求超时（毫秒）",
+          "crawler.field.candidateLimit": "候选池大小",
+          "crawler.field.emailDepth": "邮箱提取深度",
+          "crawler.emailDepth.homeOnly": "仅首页",
+          "crawler.emailDepth.homeAndContact": "首页 + 联系页",
+          "crawler.field.logMode": "日志模式",
+          "crawler.logMode.summary": "摘要",
+          "crawler.logMode.detail": "详细",
+          "crawler.section.weights.title": "评分权重",
+          "crawler.section.weights.copy": "控制高匹配客户的评分依据。",
+          "crawler.field.sameDomainWeight": "同域邮箱权重",
+          "crawler.field.marketWeight": "市场匹配权重",
+          "crawler.field.keywordWeight": "关键词匹配权重",
+          "crawler.field.companySignalWeight": "公司主体信号权重"
+        },
+        "en": {
+          "__title": "Crawler Settings | One Minute Tech",
+          "crawler.brand.subtitle": "Crawler & Filter Rules",
+          "settings.nav.group.ai": "AI Model",
+          "settings.nav.modelConfig": "Model Config",
+          "settings.nav.group.search": "Search Engine",
+          "settings.nav.searchApi": "Search API",
+          "settings.nav.crawlerConfig": "Crawler Config",
+          "settings.nav.group.mail": "Mail Service",
+          "settings.nav.mailConfig": "Mail Config",
+          "settings.nav.group.system": "System",
+          "settings.nav.generalSettings": "General Settings",
+          "settings.btn.save": "Save",
+          "crawler.hero.title": "Crawler Settings",
+          "crawler.hero.copy": "Changes take effect immediately on the customer search page after saving.",
+          "crawler.section.params.title": "Crawl Parameters",
+          "crawler.section.params.copy": "Control search speed and crawl depth.",
+          "crawler.field.timeout": "Request Timeout (ms)",
+          "crawler.field.candidateLimit": "Candidate Pool Size",
+          "crawler.field.emailDepth": "Email Extraction Depth",
+          "crawler.emailDepth.homeOnly": "Home Page Only",
+          "crawler.emailDepth.homeAndContact": "Home + Contact Page",
+          "crawler.field.logMode": "Log Mode",
+          "crawler.logMode.summary": "Summary",
+          "crawler.logMode.detail": "Detailed",
+          "crawler.section.weights.title": "Scoring Weights",
+          "crawler.section.weights.copy": "Control the scoring criteria for high-match leads.",
+          "crawler.field.sameDomainWeight": "Same-Domain Email Weight",
+          "crawler.field.marketWeight": "Market Match Weight",
+          "crawler.field.keywordWeight": "Keyword Match Weight",
+          "crawler.field.companySignalWeight": "Company Signal Weight"
+        }
+      };
+    </script>
     <script src="/main.js?v=4"></script>
     <script src="/settings.js?v=3"></script>
   </body>

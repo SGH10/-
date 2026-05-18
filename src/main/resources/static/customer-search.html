@@ -91,11 +91,13 @@
             <label class="input-group">
               <span data-i18n="search.industry">行业领域</span>
               <select class="select-input" name="industryPreset" id="industry-preset">
-                <option value="工业设备" selected data-i18n="search.industry.default">工业设备</option>
-                <option value="机床制造" data-i18n="search.industry.machineTool">机床制造</option>
-                <option value="自动化设备" data-i18n="search.industry.automation">自动化设备</option>
+                <option value="" selected data-i18n="search.industry.all">全部行业</option>
+                <option value="CNC/金属加工" data-i18n="search.industry.cncMetalworking">CNC/金属加工</option>
+                <option value="工业自动化" data-i18n="search.industry.automation">工业自动化</option>
+                <option value="工业零部件" data-i18n="search.industry.components">工业零部件</option>
+                <option value="通用机械设备" data-i18n="search.industry.machinery">通用机械设备</option>
                 <option value="电子制造" data-i18n="search.industry.electronics">电子制造</option>
-                <option value="工业自动化" data-i18n="search.industry.industrialAutomation">工业自动化</option>
+                <option value="医疗器械" data-i18n="search.industry.medical">医疗器械</option>
                 <option value="custom" data-i18n="search.industry.custom">自定义</option>
               </select>
             </label>
@@ -108,9 +110,9 @@
             <label class="input-group">
               <span data-i18n="search.companySize">公司规模</span>
               <select class="select-input" name="companySize">
-                <option data-i18n="search.companySize.all">全部规模</option>
+                <option selected data-i18n="search.companySize.all">全部规模</option>
                 <option data-i18n="search.companySize.s1">10-50人</option>
-                <option selected data-i18n="search.companySize.s2">50-200人</option>
+                <option data-i18n="search.companySize.s2">50-200人</option>
                 <option data-i18n="search.companySize.s3">200-500人</option>
                 <option data-i18n="search.companySize.s4">500人以上</option>
               </select>
@@ -256,11 +258,13 @@
           "search.market.us": "美国",
           "search.market.de": "德国",
           "search.industry": "行业领域",
-          "search.industry.default": "工业设备",
-          "search.industry.machineTool": "机床制造",
-          "search.industry.automation": "自动化设备",
+          "search.industry.all": "全部行业",
+          "search.industry.cncMetalworking": "CNC/金属加工",
+          "search.industry.automation": "工业自动化",
+          "search.industry.components": "工业零部件",
+          "search.industry.machinery": "通用机械设备",
           "search.industry.electronics": "电子制造",
-          "search.industry.industrialAutomation": "工业自动化",
+          "search.industry.medical": "医疗器械",
           "search.industry.custom": "自定义",
           "search.customIndustry": "自定义行业",
           "search.customIndustryPlaceholder": "输入自定义行业",
@@ -316,11 +320,13 @@
           "search.market.us": "United States",
           "search.market.de": "Germany",
           "search.industry": "Industry",
-          "search.industry.default": "Industrial Equipment",
-          "search.industry.machineTool": "Machine Tool Manufacturing",
-          "search.industry.automation": "Automation Equipment",
+          "search.industry.all": "All Industries",
+          "search.industry.cncMetalworking": "CNC / Metalworking",
+          "search.industry.automation": "Industrial Automation",
+          "search.industry.components": "Industrial Components",
+          "search.industry.machinery": "General Industrial Machinery",
           "search.industry.electronics": "Electronics Manufacturing",
-          "search.industry.industrialAutomation": "Industrial Automation",
+          "search.industry.medical": "Medical Devices",
           "search.industry.custom": "Custom",
           "search.customIndustry": "Custom Industry",
           "search.customIndustryPlaceholder": "Enter custom industry",
@@ -365,6 +371,6 @@
       };
     </script>
     <script src="/main.js?v=6"></script>
-    <script src="/customer-search.js?v=7"></script>
+    <script src="/customer-search.js?v=9"></script>
   </body>
 </html>

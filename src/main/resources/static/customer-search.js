@@ -34,8 +34,12 @@
     customers: [],
     selectedIds: new Set(),
     activeController: null,
-    requestedLimit: 50
+    requestedLimit: 50,
+    startTime: 0,
+    timerInterval: null
   };
+
+  const progressTrack = document.querySelector(".progress-track");
 
   init().catch((error) => {
     console.error("Customer search bootstrap failed:", error);
@@ -119,10 +123,19 @@
     searchState.activeController = controller;
     const timeoutId = window.setTimeout(() => controller.abort("timeout"), 180000);
 
+    // Build payload first so searchState.requestedLimit is updated before rendering stats
+    const payload = buildSearchPayload();
+
     resetSearchViewForPending();
     setSearchStatus("搜索中...", "running");
     submitButton.disabled = true;
     submitButton.textContent = "搜索中...";
+
+    // Start real timer and indeterminate progress bar
+    searchState.startTime = Date.now();
+    clearSearchTimer();
+    searchState.timerInterval = window.setInterval(updateRunningTimer, 100);
+    setProgressBar(null, true);
 
     renderLogs([
       { time: "进行中", message: "正在根据左侧配置组装真实搜索请求..." },
@@ -130,7 +143,6 @@
     ]);
 
     try {
-      const payload = buildSearchPayload();
       const response = await fetch("/api/customers/search", {
         method: "POST",
         headers: {
@@ -159,6 +171,7 @@
       setSearchStatus("搜索失败", "error");
     } finally {
       window.clearTimeout(timeoutId);
+      clearSearchTimer();
       if (searchState.activeController === controller) {
         searchState.activeController = null;
       }
@@ -257,6 +270,9 @@
   function resetSearchViewForPending() {
     searchState.customers = [];
     searchState.selectedIds = new Set();
+    searchState.startTime = Date.now();
+    clearSearchTimer();
+    setProgressBar(null, true);
     renderStats({
       totalCustomers: 0,
       emailCount: 0,
@@ -275,6 +291,9 @@
     searchState.customers = [];
     searchState.selectedIds = new Set();
     localStorage.removeItem(searchStorageKey);
+    clearSearchTimer();
+    searchState.startTime = 0;
+    setProgressBar(0, false);
     renderStats({
       totalCustomers: 0,
       emailCount: 0,
@@ -334,10 +353,23 @@
   }
 
   function renderStats(stats) {
-    statTotal.textContent = searchState.requestedLimit || stats.totalCustomers || 0;
-    statEmail.textContent = stats.totalCustomers || 0;
+    const target = searchState.requestedLimit || 1;
+    const found = stats.totalCustomers || 0;
+
+    statTotal.textContent = target;
+    statEmail.textContent = found;
     statMatch.textContent = stats.highMatchCount || 0;
-    statMarket.textContent = stats.totalCustomers ? "00:32" : "00:00";
+
+    // Calculate actual elapsed time
+    let elapsedMs = 0;
+    if (searchState.startTime > 0) {
+      elapsedMs = Date.now() - searchState.startTime;
+    }
+    statMarket.textContent = formatElapsedMs(elapsedMs);
+
+    // Update progress bar with real percentage
+    const progressPercent = Math.min(100, Math.round((found / target) * 100));
+    setProgressBar(progressPercent, false);
   }
 
   function renderResults(customers) {
@@ -490,5 +522,41 @@
       .replaceAll(">", "&gt;")
       .replaceAll("\"", "&quot;")
       .replaceAll("'", "&#39;");
+  }
+
+  function updateRunningTimer() {
+    const elapsed = Date.now() - searchState.startTime;
+    if (statMarket) {
+      statMarket.textContent = formatElapsedMs(elapsed);
+    }
+  }
+
+  function clearSearchTimer() {
+    if (searchState.timerInterval) {
+      window.clearInterval(searchState.timerInterval);
+      searchState.timerInterval = null;
+    }
+  }
+
+  function setProgressBar(percent, indeterminate) {
+    if (!progressTrack) {
+      return;
+    }
+    if (indeterminate) {
+      progressTrack.classList.add("is-indeterminate");
+      progressTrack.style.setProperty("--progress-width", "30%");
+    } else {
+      progressTrack.classList.remove("is-indeterminate");
+      if (percent !== null) {
+        progressTrack.style.setProperty("--progress-width", percent + "%");
+      }
+    }
+  }
+
+  function formatElapsedMs(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
   }
 })();

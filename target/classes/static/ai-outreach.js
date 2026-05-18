@@ -262,6 +262,7 @@
 
   function renderRecipients() {
     if (outreachState.recipients.length === 0) {
+      recipientList.className = "outreach-empty-recipient";
       recipientList.innerHTML = `
         <span class="empty-icon" aria-hidden="true">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -275,6 +276,7 @@
       return;
     }
 
+    recipientList.className = "outreach-recipient-list";
     recipientList.innerHTML = outreachState.recipients
       .map((recipient) => `
         <label class="recipient-card">
