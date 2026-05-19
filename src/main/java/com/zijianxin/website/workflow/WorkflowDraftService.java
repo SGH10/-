@@ -165,7 +165,8 @@ public class WorkflowDraftService {
                 - Do not fabricate impossible claims.
                 - Mention recipient context when available.
                 - End with a clear CTA.
-                - Keep proper nouns such as company names, personal names, websites, and email addresses exactly as provided.
+                - Keep non-Chinese proper nouns (e.g., English company names, personal names, websites, email addresses) exactly as provided.
+                - CRITICAL: If the target output language is NOT Chinese, ALL Chinese text used in the email (company names, product names, value propositions, descriptions, and any other Chinese phrases) must be translated into the target language. Do NOT leave any Chinese characters in the final email.
                 Current language code: %s
                 Current language name: %s
                 Current tone: %s
@@ -192,7 +193,8 @@ public class WorkflowDraftService {
                 - Respect the requested tone.
                 - Do not use markdown.
                 - Keep it concise and realistic.
-                - Keep proper nouns such as company names, personal names, websites, and email addresses exactly as provided.
+                - Keep non-Chinese proper nouns (e.g., English company names, personal names, websites, email addresses) exactly as provided.
+                - CRITICAL: If the target output language is NOT Chinese, ALL Chinese text used in the email (company names, product names, value propositions, descriptions, and any other Chinese phrases) must be translated into the target language. Do NOT leave any Chinese characters in the final email.
                 Current language code: %s
                 Current language name: %s
                 Current tone: %s
@@ -209,20 +211,29 @@ public class WorkflowDraftService {
             WorkflowModels.CustomerLead firstRecipient
     ) {
         String languageName = resolveLanguageName(language);
+        boolean nonChinese = isNonChineseTarget(language);
+        String translateDirective = nonChinese
+                ? "\nMANDATORY TRANSLATION DIRECTIVE: The fields marked with [TRANSLATE TO %s] below contain Chinese text. You MUST translate every Chinese character into %s when composing the email. Do NOT keep any Chinese characters in the final subject or body.\n".formatted(languageName, languageName)
+                : "";
+        String cnCompany = nonChinese && containsChinese(companyName) ? " [TRANSLATE TO " + languageName + "]" : "";
+        String cnProduct = nonChinese && containsChinese(productName) ? " [TRANSLATE TO " + languageName + "]" : "";
+        String cnValue = nonChinese && containsChinese(valueProposition) ? " [TRANSLATE TO " + languageName + "]" : "";
+        String cnCta = nonChinese && containsChinese(callToAction) ? " [TRANSLATE TO " + languageName + "]" : "";
+        String cnFit = nonChinese && containsChinese(firstRecipient.fitNote()) ? " [TRANSLATE TO " + languageName + "]" : "";
         return """
                 Target output language: %s (%s)
-                Final email rule: the subject and body must be fully written in %s only.
+                Final email rule: the subject and body must be fully written in %s only.%s
                                 
-                Sender company: %s
-                Product / solution: %s
-                Value proposition: %s
-                CTA: %s
+                Sender company: %s%s
+                Product / solution: %s%s
+                Value proposition: %s%s
+                CTA: %s%s
                 Recipient count: %s
                 Primary recipient company: %s
                 Primary recipient country: %s
                 Primary recipient contact: %s
                 Primary recipient email: %s
-                Fit note: %s
+                Fit note: %s%s
                                 
                 Please write a cold outreach email for the primary recipient while keeping it reusable for the selected batch.
                 Return only one final version in %s.
@@ -230,16 +241,17 @@ public class WorkflowDraftService {
                 languageName,
                 language,
                 languageName,
-                companyName,
-                productName,
-                valueProposition,
-                callToAction,
+                translateDirective,
+                companyName, cnCompany,
+                productName, cnProduct,
+                valueProposition, cnValue,
+                callToAction, cnCta,
                 recipients.size(),
                 firstRecipient.companyName(),
                 firstRecipient.country(),
                 fallback(firstRecipient.contactName(), "Business Contact"),
                 fallback(firstRecipient.email(), "N/A"),
-                fallback(firstRecipient.fitNote(), "Potential customer"),
+                fallback(firstRecipient.fitNote(), "Potential customer"), cnFit,
                 languageName
         );
     }
@@ -285,14 +297,22 @@ public class WorkflowDraftService {
             WorkflowModels.CustomerLead recipient
     ) {
         String languageName = resolveLanguageName(language);
+        boolean nonChinese = isNonChineseTarget(language);
+        String translateDirective = nonChinese
+                ? "\nMANDATORY TRANSLATION DIRECTIVE: The fields marked with [TRANSLATE TO %s] below contain Chinese text. You MUST translate every Chinese character into %s when composing the email. Do NOT keep any Chinese characters in the final subject or body.\n".formatted(languageName, languageName)
+                : "";
+        String cnCompany = nonChinese && containsChinese(companyName) ? " [TRANSLATE TO " + languageName + "]" : "";
+        String cnProduct = nonChinese && containsChinese(productName) ? " [TRANSLATE TO " + languageName + "]" : "";
+        String cnValue = nonChinese && containsChinese(valueProposition) ? " [TRANSLATE TO " + languageName + "]" : "";
+        String cnCta = nonChinese && containsChinese(callToAction) ? " [TRANSLATE TO " + languageName + "]" : "";
         return """
                 Target output language: %s (%s)
-                Final email rule: the optimized subject and body must be fully written in %s only.
+                Final email rule: the optimized subject and body must be fully written in %s only.%s
                                 
-                Sender company: %s
-                Product / solution: %s
-                Value proposition: %s
-                CTA: %s
+                Sender company: %s%s
+                Product / solution: %s%s
+                Value proposition: %s%s
+                CTA: %s%s
                 Recipient company: %s
                 Recipient country: %s
                 Recipient contact: %s
@@ -309,10 +329,11 @@ public class WorkflowDraftService {
                 languageName,
                 language,
                 languageName,
-                companyName,
-                productName,
-                valueProposition,
-                callToAction,
+                translateDirective,
+                companyName, cnCompany,
+                productName, cnProduct,
+                valueProposition, cnValue,
+                callToAction, cnCta,
                 recipient.companyName(),
                 recipient.country(),
                 fallback(recipient.contactName(), "Business Contact"),
@@ -389,6 +410,21 @@ public class WorkflowDraftService {
             case "pt", "pt-BR", "pt-PT" -> "Portuguese";
             default -> language.trim();
         };
+    }
+
+    private boolean isNonChineseTarget(String language) {
+        if (language == null || language.isBlank()) {
+            return false;
+        }
+        String trimmed = language.trim();
+        return !(trimmed.equals("zh") || trimmed.equals("zh-CN") || trimmed.equals("zh-Hans"));
+    }
+
+    private boolean containsChinese(String text) {
+        if (text == null || text.isBlank()) {
+            return false;
+        }
+        return text.codePoints().anyMatch(cp -> cp >= '\u4e00' && cp <= '\u9fff');
     }
 
     private List<WorkflowModels.CustomerLead> safeRecipients(List<WorkflowModels.CustomerLead> recipients) {
