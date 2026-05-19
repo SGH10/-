@@ -1,58 +1,58 @@
-﻿{
-    "ai":  {
-               "provider":  "Qwen",
-               "apiKey":  "sk-eecf2ab5ff5c4dcfb5b88bbee2ac3fd5",
-               "model":  "qwen-plus",
-               "baseUrl":  "https://dashscope.aliyuncs.com/compatible-mode/v1",
-               "defaultCompanyName":  "一分钟科技",
-               "defaultProductName":  "AI 外贸获客工作流",
-               "defaultValueProposition":  "我们帮助外贸团队把客户搜索、开发信生成和跟进触达放到同一条工作流里，减少人工整理时间并提升回复率。",
-               "defaultLanguage":  "zh-CN",
-               "defaultTone":  "professional",
-               "defaultCallToAction":  "如果方便的话，我们可以约 15 分钟简单聊一下，看看这套工作流是否适合你的团队。"
-           },
-    "search":  {
-                   "serpApiKey":  "",
-                   "defaultEngine":  "Google",
-                   "resultsPerPage":  12,
-                   "linkedinApiKey":  ""
-               },
-    "crawler":  {
-                    "requestTimeoutMs":  8000,
-                    "candidateLimit":  36,
-                    "emailExtractionDepth":  "HOME_AND_CONTACT",
-                    "logMode":  "summary",
-                    "sameDomainWeight":  10,
-                    "marketWeight":  9,
-                    "keywordWeight":  6,
-                    "companySignalWeight":  8
-                },
-    "mail":  {
-                 "senderName":  "Zijian",
-                 "senderEmail":  "3992717938@qq.com",
-                 "replyToEmail":  "3992717938@qq.com",
-                 "signature":  "Zijian | 一分钟科技",
-                 "smtpProvider":  "QQ Mail",
-                 "smtpHost":  "smtp.qq.com",
-                 "smtpPort":  587,
-                 "smtpSecurity":  "STARTTLS",
-                 "smtpUsername":  "3992717938@qq.com",
-                 "smtpPassword":  "oxgssrmuvmbucgga",
-                 "batchLimit":  50,
-                 "hourlyLimit":  120,
-                 "retryCount":  2,
-                 "sendMode":  "smtp"
-             },
-    "general":  {
-                    "language":  "zh-CN",
-                    "timezone":  "Asia/Shanghai",
-                    "dateFormat":  "YYYY-MM-DD",
-                    "numberFormat":  "1,234.56",
-                    "defaultLandingPage":  "/customer-search",
-                    "localCacheEnabled":  true,
-                    "autoSelectLeads":  true,
-                    "requireReviewBeforeSend":  true,
-                    "logRetentionDays":  30,
-                    "debugMode":  false
-                }
+{
+  "ai" : {
+    "provider" : "Qwen",
+    "apiKey" : "sk-eecf2ab5ff5c4dcfb5b88bbee2ac3fd5",
+    "model" : "qwen-plus",
+    "baseUrl" : "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "defaultCompanyName" : "一分钟科技",
+    "defaultProductName" : "AI 外贸获客工作流",
+    "defaultValueProposition" : "我们帮助外贸团队把客户搜索、开发信生成和跟进触达放到同一条工作流里，减少人工整理时间并提升回复率。",
+    "defaultLanguage" : "zh-CN",
+    "defaultTone" : "professional",
+    "defaultCallToAction" : "如果方便的话，我们可以约 15 分钟简单聊一下，看看这套工作流是否适合你的团队。"
+  },
+  "search" : {
+    "serpApiKey" : "",
+    "defaultEngine" : "Google",
+    "resultsPerPage" : 12,
+    "linkedinApiKey" : ""
+  },
+  "crawler" : {
+    "requestTimeoutMs" : 8000,
+    "candidateLimit" : 36,
+    "emailExtractionDepth" : "HOME_AND_CONTACT",
+    "logMode" : "summary",
+    "sameDomainWeight" : 10,
+    "marketWeight" : 9,
+    "keywordWeight" : 6,
+    "companySignalWeight" : 8
+  },
+  "mail" : {
+    "senderName" : "Zijian",
+    "senderEmail" : "3992717938@qq.com",
+    "replyToEmail" : "3992717938@qq.com",
+    "signature" : "Zijian | 一分钟科技",
+    "smtpProvider" : "QQ Mail",
+    "smtpHost" : "smtp.qq.com",
+    "smtpPort" : 587,
+    "smtpSecurity" : "STARTTLS",
+    "smtpUsername" : "3992717938@qq.com",
+    "smtpPassword" : "oxgssrmuvmbucgga",
+    "batchLimit" : 50,
+    "hourlyLimit" : 120,
+    "retryCount" : 2,
+    "sendMode" : "smtp"
+  },
+  "general" : {
+    "language" : "zh-CN",
+    "timezone" : "Asia/Shanghai",
+    "dateFormat" : "YYYY-MM-DD",
+    "numberFormat" : "1,234.56",
+    "defaultLandingPage" : "/customer-search",
+    "localCacheEnabled" : true,
+    "autoSelectLeads" : true,
+    "requireReviewBeforeSend" : true,
+    "logRetentionDays" : 30,
+    "debugMode" : false
+  }
 }

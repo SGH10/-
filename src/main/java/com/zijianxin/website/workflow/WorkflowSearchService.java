@@ -7,10 +7,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -118,12 +123,17 @@ public class WorkflowSearchService {
 
     private static final int SEARCH_ENGINE_PAGE_LIMIT = 2;
     private static final int MAX_PARALLEL_INSPECTIONS = 8;
+    private static final String SERPAPI_BASE_URL = "https://serpapi.com/search";
 
     private final SettingsService settingsService;
+    private final ObjectMapper objectMapper;
+    private final HttpClient httpClient;
     private volatile WorkflowModels.CustomerSearchResponse lastSearchResponse;
 
-    public WorkflowSearchService(SettingsService settingsService) {
+    public WorkflowSearchService(SettingsService settingsService, ObjectMapper objectMapper) {
         this.settingsService = settingsService;
+        this.objectMapper = objectMapper;
+        this.httpClient = HttpClient.newHttpClient();
     }
 
     public WorkflowModels.CustomerSearchResponse getLastSearchResponse() {
@@ -153,7 +163,7 @@ public class WorkflowSearchService {
         session.log("Search strategy: " + String.join(" | ", queries));
         session.log("Runtime config: limit=" + leadLimit + ", pool=" + candidatePoolLimit + ", timeout=" + timeoutMs + "ms");
 
-        List<SearchCandidate> candidates = fetchCandidates(queries, market, session, candidatePoolLimit, timeoutMs);
+        List<SearchCandidate> candidates = fetchCandidates(queries, market, session, candidatePoolLimit, timeoutMs, searchSettings);
         List<WorkflowModels.CustomerLead> leads = inspectCandidates(
                 candidates,
                 industry,
@@ -244,8 +254,16 @@ public class WorkflowSearchService {
             String market,
             SearchSession session,
             int candidatePoolLimit,
-            int timeoutMs
+            int timeoutMs,
+            SettingsModels.SearchSettings searchSettings
     ) {
+        String serpApiKey = searchSettings.serpApiKey();
+        if (serpApiKey != null && !serpApiKey.isBlank()) {
+            session.log("Mode: SerpAPI (engine=" + searchSettings.defaultEngine() + ")");
+            return fetchCandidatesFromSerpApi(queries, session, candidatePoolLimit, serpApiKey, searchSettings.defaultEngine());
+        }
+
+        session.log("Mode: Direct web scraping (Bing / DuckDuckGo / Baidu)");
         List<SearchCandidate> candidates = new ArrayList<>();
         Set<String> seenHosts = new LinkedHashSet<>();
 
@@ -264,6 +282,89 @@ public class WorkflowSearchService {
 
         session.log("Collected " + candidates.size() + " candidate websites.");
         return candidates;
+    }
+
+    private List<SearchCandidate> fetchCandidatesFromSerpApi(
+            List<String> queries,
+            SearchSession session,
+            int candidatePoolLimit,
+            String serpApiKey,
+            String engineName
+    ) {
+        List<SearchCandidate> candidates = new ArrayList<>();
+        Set<String> seenHosts = new LinkedHashSet<>();
+        String serpEngine = mapEngineName(engineName);
+        int resultsPerQuery = Math.min(candidatePoolLimit, 10);
+
+        for (String query : queries) {
+            if (candidates.size() >= candidatePoolLimit) {
+                break;
+            }
+            session.log("SerpAPI query: " + query);
+            try {
+                String apiUrl = SERPAPI_BASE_URL
+                        + "?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
+                        + "&api_key=" + serpApiKey
+                        + "&engine=" + serpEngine
+                        + "&num=" + resultsPerQuery;
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(apiUrl))
+                        .header("Accept", "application/json")
+                        .timeout(java.time.Duration.ofSeconds(30))
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() != 200) {
+                    session.log("SerpAPI returned HTTP " + response.statusCode() + " for query: " + query);
+                    continue;
+                }
+
+                JsonNode root = objectMapper.readTree(response.body());
+                JsonNode organicResults = root.get("organic_results");
+                if (organicResults == null || !organicResults.isArray()) {
+                    session.log("SerpAPI response has no organic_results for query: " + query);
+                    continue;
+                }
+
+                for (JsonNode result : organicResults) {
+                    String title = safeText(result, "title");
+                    String link = safeText(result, "link");
+                    String snippet = safeText(result, "snippet");
+                    addCandidate(candidates, seenHosts, title, link, snippet, "SerpAPI/" + serpEngine);
+                    if (candidates.size() >= candidatePoolLimit) {
+                        break;
+                    }
+                }
+                session.log("SerpAPI returned " + organicResults.size() + " results for: " + query);
+
+            } catch (Exception e) {
+                session.log("SerpAPI call failed for query '" + query + "': " + e.getMessage());
+                // Continue to next query instead of failing entirely
+            }
+        }
+
+        session.log("SerpAPI collected " + candidates.size() + " candidates.");
+        return candidates;
+    }
+
+    private String mapEngineName(String name) {
+        if (name == null) {
+            return "google";
+        }
+        return switch (name.trim().toLowerCase()) {
+            case "bing" -> "bing";
+            case "duckduckgo" -> "duckduckgo";
+            case "baidu" -> "baidu";
+            default -> "google"; // SerpAPI defaults to Google
+        };
+    }
+
+    private String safeText(JsonNode node, String field) {
+        JsonNode child = node.get(field);
+        return (child == null || child.isNull()) ? "" : cleanText(child.asText());
     }
 
     private void collectFromBingRss(
