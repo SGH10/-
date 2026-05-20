@@ -52,6 +52,8 @@
     }
   };
 
+  window.applyPageTranslations = applyPageTranslations;
+
   function bindLocaleSwitches() {
     document.querySelectorAll(".locale-switch [data-locale]").forEach((button) => {
       button.addEventListener("click", () => {

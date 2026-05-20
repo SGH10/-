@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Customer Search | One Minute Tech</title>
     <meta name="description" content="AI customer search workspace with configuration, progress tracking, and result review." />
-    <link rel="stylesheet" href="/styles.css?v=13" />
+    <link rel="stylesheet" href="/styles.css?v=17" />
   </head>
   <body class="site-body">
     <header class="topbar">
@@ -129,12 +129,38 @@
         </aside>
 
         <section class="workspace-main search-main-ref">
-          <div class="tab-strip ref-tab-strip">
-            <div class="tab-item is-active" data-i18n="search.tab.progress">实时进度</div>
-            <div class="tab-item" data-i18n="search.tab.log">运行日志</div>
-            <div class="tab-item">
-              <span data-i18n="search.tab.result">搜索结果</span>
-              <span class="soft-badge search-result-badge"><strong id="search-result-count">0</strong></span>
+          <div class="search-main-header">
+            <div class="tab-strip ref-tab-strip">
+              <div class="tab-item is-active" data-i18n="search.tab.progress">实时进度</div>
+              <div class="tab-item" data-i18n="search.tab.log">运行日志</div>
+              <div class="tab-item">
+                <span data-i18n="search.tab.result">搜索结果</span>
+                <span class="soft-badge search-result-badge"><strong id="search-result-count">0</strong></span>
+              </div>
+            </div>
+            <div class="search-history-wrap">
+              <button type="button" class="icon-button history-toggle" id="history-toggle" title="Search History" aria-expanded="false">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              </button>
+              <div class="history-panel is-hidden" id="history-panel">
+                <div class="history-panel-head">
+                  <h3 data-i18n="search.history.title">搜索历史</h3>
+                  <button type="button" class="history-clear" id="history-clear" data-i18n="search.history.clearAll">清空</button>
+                </div>
+                <ul class="history-list" id="history-list"></ul>
+                <div class="history-empty" id="history-empty">
+                  <span class="empty-icon-small" aria-hidden="true">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 6v6l4 2"></path>
+                    </svg>
+                  </span>
+                  <p data-i18n="search.history.empty">暂无搜索历史</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -142,6 +168,7 @@
             <div class="progress-card-head">
               <div>
                 <h2 data-i18n="search.progressTitle">AI客户搜索进度</h2>
+                <p id="search-time" class="search-time"></p>
                 <p id="search-summary" class="summary-copy">还没有结果，先运行一次客户搜索。</p>
               </div>
               <span id="search-status-chip" class="status-chip pending" data-i18n="search.status.pending">等待开始</span>
@@ -291,7 +318,12 @@
           "search.emptyCopy": "在左侧配置搜索条件，点击“开始AI搜索”按钮后，客户结果会在下方表格中出现。",
           "search.logTitle": "运行日志",
           "search.logCopy": "展示搜索入口请求、站点识别、公开邮箱提取、筛选过滤与异常回退摘要。",
-          "search.logEmpty": "等待你启动第一次客户搜索。"
+          "search.logEmpty": "等待你启动第一次客户搜索。",
+          "search.history.title": "搜索历史",
+          "search.history.clearAll": "清空",
+          "search.history.empty": "暂无搜索历史",
+          "search.history.restore": "恢复",
+          "search.history.resultCount": "{count} 位客户"
         },
         "en": {
           "__title": "Customer Search | One Minute Tech",
@@ -349,11 +381,16 @@
           "search.emptyCopy": "Set the search conditions on the left. After you click Start AI Search, the customer results will appear below.",
           "search.logTitle": "Run Logs",
           "search.logCopy": "Shows request entry points, site identification, public email extraction, filtering, and fallback summaries.",
-          "search.logEmpty": "Waiting for you to launch the first customer search."
+          "search.logEmpty": "Waiting for you to launch the first customer search.",
+          "search.history.title": "Search History",
+          "search.history.clearAll": "Clear All",
+          "search.history.empty": "No search history yet",
+          "search.history.restore": "Restore",
+          "search.history.resultCount": "{count} leads"
         }
       };
     </script>
-    <script src="/main.js?v=6"></script>
-    <script src="/customer-search.js?v=13"></script>
+    <script src="/main.js?v=7"></script>
+    <script src="/customer-search.js?v=19"></script>
   </body>
 </html>

@@ -2,6 +2,8 @@
   const searchStorageKey = "leadflow-search-response";
   const selectedCustomersKey = "leadflow-selected-customers";
   const outreachImportFlagKey = "leadflow-outreach-import-pending";
+  const searchHistoryKey = "leadflow-search-history";
+  const maxHistoryItems = 20;
 
   const searchForm = document.querySelector("#search-form");
   const targetDescription = document.querySelector("#target-description");
@@ -17,6 +19,7 @@
 
   const searchLogs = document.querySelector("#search-logs");
   const searchSummary = document.querySelector("#search-summary");
+  const searchTime = document.querySelector("#search-time");
   const searchStatusChip = document.querySelector("#search-status-chip");
   const resultsBody = document.querySelector("#results-body");
   const exportButton = document.querySelector("#export-results");
@@ -24,6 +27,12 @@
   const selectedCount = document.querySelector("#selected-count");
   const selectAll = document.querySelector("#select-all");
   const searchResultCount = document.querySelector("#search-result-count");
+
+  const historyToggle = document.querySelector("#history-toggle");
+  const historyPanel = document.querySelector("#history-panel");
+  const historyList = document.querySelector("#history-list");
+  const historyEmpty = document.querySelector("#history-empty");
+  const historyClear = document.querySelector("#history-clear");
 
   const statTotal = document.querySelector("#stat-total");
   const statEmail = document.querySelector("#stat-email");
@@ -55,6 +64,9 @@
     pushButton?.addEventListener("click", pushSelectedCustomers);
     resultsBody?.addEventListener("change", handleResultSelection);
     selectAll?.addEventListener("change", handleSelectAll);
+
+    bindHistoryPanel();
+    renderSearchHistory();
   }
 
   async function hydrateSettings() {
@@ -157,8 +169,10 @@
       }
 
       const data = await response.json();
+      data.timestamp = Date.now();
       localStorage.setItem(searchStorageKey, JSON.stringify(data));
       applySearchResponse(data);
+      saveSearchHistory(data, payload);
       setSearchStatus(data.customers?.length ? "已完成" : "无结果", data.customers?.length ? "complete" : "error");
     } catch (error) {
       console.error("Customer search failed:", error);
@@ -168,6 +182,7 @@
       clearSearchResults();
       renderLogs([{ time: "失败", message }]);
       searchSummary.textContent = message;
+      if (searchTime) searchTime.textContent = "";
       setSearchStatus("搜索失败", "error");
     } finally {
       window.clearTimeout(timeoutId);
@@ -233,6 +248,7 @@
     const cached = localStorage.getItem(searchStorageKey);
     if (!cached) {
       setSearchStatus("等待开始", "pending");
+      if (searchTime) searchTime.textContent = "";
       if (searchResultCount) {
         searchResultCount.textContent = "0";
       }
@@ -247,6 +263,7 @@
       localStorage.removeItem(searchStorageKey);
       renderLogs([]);
       setSearchStatus("等待开始", "pending");
+      if (searchTime) searchTime.textContent = "";
       if (searchResultCount) {
         searchResultCount.textContent = "0";
       }
@@ -258,6 +275,15 @@
     searchState.selectedIds = new Set(searchState.customers.map((customer) => customer.id));
 
     searchSummary.textContent = data.summary || "已完成搜索。";
+    if (searchTime) {
+      if (data.timestamp) {
+        const locale = typeof window.leadflowLocale?.locale === "string" ? window.leadflowLocale.locale : "zh-CN";
+        const label = locale === "en" ? "Search time: " : "搜索时间：";
+        searchTime.textContent = label + formatFullTime(new Date(data.timestamp));
+      } else {
+        searchTime.textContent = "";
+      }
+    }
     renderLogs(compactLogs(data.logs || [], data.summary || "已完成搜索。"));
     renderStats(data.stats || {});
     renderResults(searchState.customers);
@@ -282,6 +308,7 @@
     renderResults([]);
     refreshSelectionState();
     searchSummary.textContent = "正在抓取客户线索，请稍候...";
+    if (searchTime) searchTime.textContent = "";
     if (searchResultCount) {
       searchResultCount.textContent = "0";
     }
@@ -558,5 +585,237 @@
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+  }
+
+  /* ── Search History ── */
+
+  function bindHistoryPanel() {
+    if (!historyToggle || !historyPanel) return;
+
+    historyToggle.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const isHidden = historyPanel.classList.contains("is-hidden");
+      if (isHidden) {
+        renderSearchHistory();
+        historyPanel.classList.remove("is-hidden");
+        historyToggle.setAttribute("aria-expanded", "true");
+      } else {
+        historyPanel.classList.add("is-hidden");
+        historyToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    historyClear?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      localStorage.removeItem(searchHistoryKey);
+      renderSearchHistory();
+    });
+
+    historyPanel.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    document.addEventListener("click", () => {
+      if (!historyPanel.classList.contains("is-hidden")) {
+        historyPanel.classList.add("is-hidden");
+        historyToggle?.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function saveSearchHistory(data, payload) {
+    try {
+      const raw = localStorage.getItem(searchHistoryKey);
+      let list = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(list)) list = [];
+
+      const item = {
+        id: String(Date.now()) + "-" + Math.random().toString(36).slice(2, 7),
+        timestamp: Date.now(),
+        summary: buildHistorySummary(payload),
+        config: {
+          industry: payload.industry,
+          market: payload.market,
+          keywords: payload.keywords,
+          companySize: payload.companySize,
+          requestedLimit: payload.requestedLimit
+        },
+        resultCount: data.customers?.length || 0,
+        customers: data.customers || []
+      };
+
+      list.unshift(item);
+      if (list.length > maxHistoryItems) {
+        list = list.slice(0, maxHistoryItems);
+      }
+
+      localStorage.setItem(searchHistoryKey, JSON.stringify(list));
+    } catch (error) {
+      console.error("Failed to save search history:", error);
+    }
+  }
+
+  function buildHistorySummary(payload) {
+    const parts = [];
+    if (payload.industry) parts.push(payload.industry);
+    if (payload.market && payload.market !== "全部") parts.push(payload.market);
+    if (parts.length === 0) return payload.keywords || "AI搜索";
+    return parts.join(" · ");
+  }
+
+  function renderSearchHistory() {
+    if (!historyList || !historyEmpty) return;
+
+    let list = [];
+    try {
+      const raw = localStorage.getItem(searchHistoryKey);
+      if (raw) list = JSON.parse(raw);
+    } catch {
+      list = [];
+    }
+    if (!Array.isArray(list)) list = [];
+
+    const locale = typeof window.leadflowLocale?.locale === "string"
+      ? window.leadflowLocale.locale
+      : "zh-CN";
+    const countLabel = locale === "en"
+      ? (count) => `${count} leads`
+      : (count) => `${count} 位客户`;
+
+    if (list.length === 0) {
+      historyList.innerHTML = "";
+      historyList.classList.add("is-hidden");
+      historyEmpty.classList.remove("is-hidden");
+      return;
+    }
+
+    historyEmpty.classList.add("is-hidden");
+    historyList.classList.remove("is-hidden");
+
+    historyList.innerHTML = list
+      .map((item) => {
+        const date = new Date(item.timestamp);
+        const timeText = formatFullTime(date);
+        const countText = countLabel(item.resultCount || 0);
+        const tagsHtml = buildHistoryTagsHtml(item.config);
+        return `
+          <li class="history-item" data-history-id="${escapeHtml(item.id)}">
+            <div class="history-item-row">
+              <span class="history-time">${escapeHtml(timeText)}</span>
+              <button type="button" class="history-restore" data-history-id="${escapeHtml(item.id)}" data-i18n="search.history.restore">恢复</button>
+            </div>
+            <div class="history-item-row">
+              <div class="history-item-tags">${tagsHtml}</div>
+              <span class="history-tag orange">${escapeHtml(countText)}</span>
+            </div>
+          </li>
+        `;
+      })
+      .join("");
+
+    historyList.querySelectorAll(".history-item").forEach((el) => {
+      el.addEventListener("click", (event) => {
+        const button = event.target.closest(".history-restore");
+        if (!button) {
+          const id = el.dataset.historyId;
+          restoreSearchHistory(id);
+        }
+      });
+    });
+
+    historyList.querySelectorAll(".history-restore").forEach((btn) => {
+      btn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        restoreSearchHistory(btn.dataset.historyId);
+      });
+    });
+
+    if (typeof window.applyPageTranslations === "function") {
+      window.applyPageTranslations(locale);
+    }
+  }
+
+  function buildHistoryTagsHtml(config) {
+    const tags = [];
+    if (config.industry) tags.push(config.industry);
+    if (config.market && config.market !== "全部") tags.push(config.market);
+    if (config.companySize) tags.push(config.companySize);
+    if (!tags.length && config.keywords) tags.push(config.keywords.slice(0, 20));
+    return tags
+      .map((t) => `<span class="history-tag">${escapeHtml(t)}</span>`)
+      .join("");
+  }
+
+  function formatHistoryTime(date) {
+    const now = new Date();
+    const isToday =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    const pad = (n) => String(n).padStart(2, "0");
+    const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+
+    if (isToday) return time;
+
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    return `${month}-${day} ${time}`;
+  }
+
+  function formatFullTime(date) {
+    const pad = (n) => String(n).padStart(2, "0");
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    return `${year}-${month}-${day} ${time}`;
+  }
+
+  function restoreSearchHistory(id) {
+    let list = [];
+    try {
+      const raw = localStorage.getItem(searchHistoryKey);
+      if (raw) list = JSON.parse(raw);
+    } catch {
+      list = [];
+    }
+    if (!Array.isArray(list)) return;
+
+    const item = list.find((h) => h.id === id);
+    if (!item) return;
+
+    const data = {
+      summary: item.summary,
+      timestamp: item.timestamp,
+      stats: {
+        totalCustomers: item.resultCount,
+        emailCount: item.resultCount,
+        highMatchCount: item.resultCount,
+        marketCoverage: 0
+      },
+      logs: [
+        {
+          time: formatHistoryTime(new Date(item.timestamp)),
+          message: `从历史记录恢复：${item.summary}`
+        }
+      ],
+      customers: item.customers || []
+    };
+
+    localStorage.setItem(searchStorageKey, JSON.stringify(data));
+    applySearchResponse(data);
+    const locale = typeof window.leadflowLocale?.locale === "string" ? window.leadflowLocale.locale : "zh-CN";
+    const restoredLabel = locale === "en" ? "Restored" : "已恢复";
+    const restoredSummary = locale === "en"
+      ? `Restored from history: ${item.summary} (${item.resultCount} leads)`
+      : `从历史记录恢复：${item.summary}（${item.resultCount} 位客户）`;
+    setSearchStatus(restoredLabel, "complete");
+    searchSummary.textContent = restoredSummary;
+
+    if (historyPanel && !historyPanel.classList.contains("is-hidden")) {
+      historyPanel.classList.add("is-hidden");
+      historyToggle?.setAttribute("aria-expanded", "false");
+    }
   }
 })();
