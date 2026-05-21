@@ -148,7 +148,7 @@ public class WorkflowSearchService {
 
         String industry = normalizeInput(fallback(request.industry(), "industrial equipment"));
         String market = normalizeMarket(fallback(request.market(), "China"));
-        String keywords = normalizeInput(fallback(request.keywords(), "machine tool"));
+        String keywords = normalizeInput(fallback(request.keywords(), ""));
         String companySize = normalizeInput(fallback(request.companySize(), "50-200"));
 
         int leadLimit = normalizePositive(request.requestedLimit(), searchSettings.resultsPerPage(), 10);
@@ -202,10 +202,15 @@ public class WorkflowSearchService {
         LinkedHashSet<String> queries = new LinkedHashSet<>();
         List<String> industryHints = buildSearchHints(industry);
         List<String> keywordHints = buildSearchHints(keywords);
+        boolean hasKeywordHints = !keywordHints.isEmpty();
         String primaryIndustryHint = firstQueryHint(industryHints, toEnglishHint(industry));
-        String primaryKeywordHint = firstQueryHint(keywordHints, toEnglishHint(keywords));
+        String primaryKeywordHint = hasKeywordHints
+                ? firstQueryHint(keywordHints, toEnglishHint(keywords))
+                : "";
         String nativeIndustryHint = firstNativeHint(industryHints, industry);
-        String nativeKeywordHint = firstNativeHint(keywordHints, keywords);
+        String nativeKeywordHint = hasKeywordHints
+                ? firstNativeHint(keywordHints, keywords)
+                : "";
 
         if ("China".equalsIgnoreCase(market)) {
             queries.add(joinQuery("site:.cn", primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
@@ -931,9 +936,14 @@ public class WorkflowSearchService {
         String lower = text.toLowerCase(Locale.ROOT);
         List<String> keywordHints = buildSearchHints(keywords);
         List<String> industryHints = buildSearchHints(industry);
+        boolean hasKeywordHints = !keywordHints.isEmpty();
+
+        boolean industryMatched = industryHints.stream().anyMatch(hint -> containsMeaningfulPhrase(lower, hint));
+        if (!hasKeywordHints) {
+            return industryMatched || isBroadIndustry(industry);
+        }
 
         boolean keywordMatched = keywordHints.stream().anyMatch(hint -> containsMeaningfulPhrase(lower, hint));
-        boolean industryMatched = industryHints.stream().anyMatch(hint -> containsMeaningfulPhrase(lower, hint));
 
         if (keywordMatched && (industryMatched || isBroadIndustry(industry))) {
             return true;

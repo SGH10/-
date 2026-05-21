@@ -215,21 +215,13 @@
     let resolvedMarket = market;
 
     if (description) {
-      resolvedKeywords = description;
+      resolvedKeywords = resolvedKeywords || description;
       if (description.includes("中国")) {
         resolvedMarket = "中国";
       } else if (description.includes("美国")) {
         resolvedMarket = "美国";
       } else if (description.includes("德国")) {
         resolvedMarket = "德国";
-      }
-
-      if (description.includes("机床")) {
-        resolvedIndustry = "机床制造";
-      } else if (description.includes("自动化")) {
-        resolvedIndustry = "工业自动化";
-      } else if (description.includes("电子")) {
-        resolvedIndustry = "电子制造";
       }
     }
 
