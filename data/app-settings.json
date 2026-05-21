@@ -12,7 +12,7 @@
     "defaultCallToAction" : "如果方便的话，我们可以约 15 分钟简单聊一下，看看这套工作流是否适合你的团队。"
   },
   "search" : {
-    "serpApiKey" : "378685a035c953d609c768eca23ba3357bfd08a902047302b263ffb76178496c",
+    "serpApiKey" : "",
     "defaultEngine" : "Google",
     "resultsPerPage" : 12,
     "linkedinApiKey" : ""

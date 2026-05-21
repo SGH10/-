@@ -165,13 +165,14 @@
       });
 
       if (!response.ok) {
-        throw new Error("Search API returned a non-OK response.");
+        const errorText = await response.text().catch(() => "");
+        throw new Error(errorText || "Search API returned a non-OK response.");
       }
 
       const data = await response.json();
       data.timestamp = Date.now();
-      localStorage.setItem(searchStorageKey, JSON.stringify(data));
       applySearchResponse(data);
+      cacheSearchResponse(data);
       saveSearchHistory(data, payload);
       setSearchStatus(data.customers?.length ? "已完成" : "无结果", data.customers?.length ? "complete" : "error");
     } catch (error) {
@@ -234,6 +235,14 @@
       companySize,
       requestedLimit
     };
+  }
+
+  function cacheSearchResponse(data) {
+    try {
+      localStorage.setItem(searchStorageKey, JSON.stringify(data));
+    } catch (error) {
+      console.error("Failed to cache search response:", error);
+    }
   }
 
   function hydrateSearchResult() {
