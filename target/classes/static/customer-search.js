@@ -212,11 +212,9 @@
     const depth = String(searchDepth?.value || "standard");
 
     let resolvedIndustry = industry;
-    let resolvedKeywords = keywords;
     let resolvedMarket = market;
 
     if (description) {
-      resolvedKeywords = resolvedKeywords || description;
       if (description.includes("中国")) {
         resolvedMarket = "中国";
       } else if (description.includes("美国")) {
@@ -231,7 +229,8 @@
     return {
       industry: resolvedIndustry,
       market: resolvedMarket,
-      keywords: resolvedKeywords,
+      keywords,
+      targetDescription: description,
       companySize,
       requestedLimit
     };
