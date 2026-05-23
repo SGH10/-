@@ -6,6 +6,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 @Service
 public class WorkflowSearchService {
 
+    private static final Logger log = LoggerFactory.getLogger(WorkflowSearchService.class);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}", Pattern.CASE_INSENSITIVE);
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -107,9 +110,21 @@ public class WorkflowSearchService {
     private static final List<String> COMPANY_TEXT_HINTS = List.of(
             "company", "manufacturer", "factory", "supplier", "products", "solutions", "contact us", "about us",
             "co., ltd", "limited", "corporation", "inc", "llc", "gmbh",
-            "\u6709\u9650\u516c\u53f8", "\u96c6\u56e2", "\u673a\u68b0", "\u8bbe\u5907", "\u673a\u5e8a",
-            "\u5de5\u5382", "\u5236\u9020", "\u4ea7\u54c1", "\u8054\u7cfb\u6211\u4eec", "\u5173\u4e8e\u6211\u4eec",
-            "\u5de5\u4e1a", "\u6570\u63a7"
+            "\u6709\u9650\u516c\u53f8", "\u96c6\u56e2", "\u5de5\u5382", "\u5236\u9020", "\u4ea7\u54c1",
+            "\u8054\u7cfb\u6211\u4eec", "\u5173\u4e8e\u6211\u4eec", "\u5b98\u7f51", "\u5b98\u65b9\u7f51\u7ad9"
+    );
+
+    private static final List<String> STRONG_COMPANY_HINTS = List.of(
+            "co., ltd", "co ltd", "limited", "corporation", "inc", "llc", "gmbh", "official website", "official site",
+            "\u6709\u9650\u516c\u53f8", "\u80a1\u4efd\u6709\u9650\u516c\u53f8", "\u96c6\u56e2", "\u5b98\u7f51", "\u5b98\u65b9\u7f51\u7ad9",
+            "\u8054\u7cfb\u6211\u4eec", "\u5173\u4e8e\u6211\u4eec"
+    );
+
+    private static final List<String> REFERENCE_HOST_HINTS = List.of(
+            "dict", "dictionary", "translate", "translation", "wiki", "baike", "news", "blog", "forum",
+            "zhidao", "csdn", "bilibili", "hujiang", "zhuaniao", "yingyuqiao", "cqvip", "sciencedirect", "ieee",
+            "sohu", "sina", "xueqiu", "ncss", "wenku", "36kr", "toutiao", "baijiahao", "ifeng", "eastmoney",
+            "cailian", "yicai", "jiemian"
     );
 
     private static final List<String> PERSON_TITLE_HINTS = List.of(
@@ -123,6 +138,9 @@ public class WorkflowSearchService {
 
     private static final int SEARCH_ENGINE_PAGE_LIMIT = 2;
     private static final int MAX_PARALLEL_INSPECTIONS = 8;
+    private static final int GOOGLE_FALLBACK_QUERY_LIMIT = 2;
+    private static final int GOOGLE_FALLBACK_PAGE_LIMIT = 1;
+    private static final int GOOGLE_FALLBACK_TIMEOUT_MS = 5000;
     private static final String SERPAPI_BASE_URL = "https://serpapi.com/search";
 
     private final SettingsService settingsService;
@@ -163,7 +181,7 @@ public class WorkflowSearchService {
         session.log("Search strategy: " + String.join(" | ", queries));
         session.log("Runtime config: limit=" + leadLimit + ", pool=" + candidatePoolLimit + ", timeout=" + timeoutMs + "ms");
 
-        List<SearchCandidate> candidates = fetchCandidates(queries, market, session, candidatePoolLimit, timeoutMs, searchSettings);
+        List<SearchCandidate> candidates = fetchCandidates(queries, market, session, leadLimit, candidatePoolLimit, timeoutMs, searchSettings);
         List<WorkflowModels.CustomerLead> leads = inspectCandidates(
                 candidates,
                 industry,
@@ -258,6 +276,7 @@ public class WorkflowSearchService {
             List<String> queries,
             String market,
             SearchSession session,
+            int leadLimit,
             int candidatePoolLimit,
             int timeoutMs,
             SettingsModels.SearchSettings searchSettings
@@ -285,8 +304,30 @@ public class WorkflowSearchService {
             }
         }
 
+        if (candidates.size() < leadLimit) {
+            session.log("Google fallback enabled because primary sources returned only " + candidates.size() + " candidates.");
+            collectGoogleFallback(queries, candidates, seenHosts, candidatePoolLimit, timeoutMs);
+        }
+
         session.log("Collected " + candidates.size() + " candidate websites.");
         return candidates;
+    }
+
+    private void collectGoogleFallback(
+            List<String> queries,
+            List<SearchCandidate> candidates,
+            Set<String> seenHosts,
+            int candidatePoolLimit,
+            int timeoutMs
+    ) {
+        int queryLimit = Math.min(queries.size(), GOOGLE_FALLBACK_QUERY_LIMIT);
+        int googleTimeoutMs = Math.min(timeoutMs, GOOGLE_FALLBACK_TIMEOUT_MS);
+        for (int index = 0; index < queryLimit; index++) {
+            if (candidates.size() >= candidatePoolLimit) {
+                return;
+            }
+            collectFromGoogle(queries.get(index), candidates, seenHosts, candidatePoolLimit, googleTimeoutMs, GOOGLE_FALLBACK_PAGE_LIMIT);
+        }
     }
 
     private List<SearchCandidate> fetchCandidatesFromSerpApi(
@@ -320,6 +361,7 @@ public class WorkflowSearchService {
                         .GET()
                         .build();
 
+                log.info("Crawler fetch: {}", apiUrl);
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() != 200) {
@@ -385,6 +427,7 @@ public class WorkflowSearchService {
 
         String searchUrl = "https://www.bing.com/search?format=rss&q=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
         try {
+            log.info("Crawler fetch: {}", searchUrl);
             Document document = Jsoup.connect(searchUrl)
                     .userAgent(USER_AGENT)
                     .referrer("https://www.bing.com/")
@@ -415,6 +458,57 @@ public class WorkflowSearchService {
         }
     }
 
+    private void collectFromGoogle(
+            String query,
+            List<SearchCandidate> candidates,
+            Set<String> seenHosts,
+            int candidatePoolLimit,
+            int timeoutMs,
+            int pageLimit
+    ) {
+        for (int pageIndex = 0; pageIndex < pageLimit; pageIndex++) {
+            if (candidates.size() >= candidatePoolLimit) {
+                return;
+            }
+
+            int offset = pageIndex * 10;
+            String searchUrl = "https://www.google.com/search?num=10&hl=en&filter=0&q="
+                    + URLEncoder.encode(query, StandardCharsets.UTF_8)
+                    + "&start=" + offset;
+            try {
+                log.info("Crawler fetch: {}", searchUrl);
+                Document document = Jsoup.connect(searchUrl)
+                        .userAgent(USER_AGENT)
+                        .referrer("https://www.google.com/")
+                        .timeout(timeoutMs)
+                        .get();
+
+                for (Element link : document.select("a[href*='/url?']:has(h3), a[href^='https://www.google.com/url?']:has(h3)")) {
+                    Element titleElement = link.selectFirst("h3");
+                    if (titleElement == null) {
+                        continue;
+                    }
+                    String resolved = resolveGoogleUrl(link.absUrl("href"), link.attr("href"));
+                    String snippet = cleanText(link.parent() == null ? "" : link.parent().text());
+                    addCandidate(
+                            candidates,
+                            seenHosts,
+                            cleanText(titleElement.text()),
+                            resolved,
+                            snippet,
+                            "Google"
+                    );
+                    if (candidates.size() >= candidatePoolLimit) {
+                        break;
+                    }
+                }
+            } catch (IOException ignored) {
+            } catch (Exception exception) {
+                log.info("Google query failed for: {} ({})", query, exception.getMessage());
+            }
+        }
+    }
+
     private void collectFromBingHtml(
             String query,
             List<SearchCandidate> candidates,
@@ -431,6 +525,7 @@ public class WorkflowSearchService {
             String searchUrl = "https://www.bing.com/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
                     + "&first=" + (offset + 1);
             try {
+                log.info("Crawler fetch: {}", searchUrl);
                 Document document = Jsoup.connect(searchUrl)
                         .userAgent(USER_AGENT)
                         .referrer("https://www.bing.com/")
@@ -472,6 +567,7 @@ public class WorkflowSearchService {
 
         String searchUrl = "https://html.duckduckgo.com/html/?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
         try {
+            log.info("Crawler fetch: {}", searchUrl);
             Document document = Jsoup.connect(searchUrl)
                     .userAgent(USER_AGENT)
                     .referrer("https://duckduckgo.com/")
@@ -506,6 +602,7 @@ public class WorkflowSearchService {
             String searchUrl = "https://www.baidu.com/s?wd=" + URLEncoder.encode(query, StandardCharsets.UTF_8)
                     + "&pn=" + offset;
             try {
+                log.info("Crawler fetch: {}", searchUrl);
                 Document document = Jsoup.connect(searchUrl)
                         .userAgent(USER_AGENT)
                         .referrer("https://www.baidu.com/")
@@ -526,16 +623,18 @@ public class WorkflowSearchService {
     }
 
     private void addCandidate(List<SearchCandidate> candidates, Set<String> seenHosts, String title, String url, String snippet, String source) {
-        if (url.isBlank() || !url.startsWith("http")) {
+        String normalizedUrl = cleanText(url);
+        if (normalizedUrl.isBlank() || !normalizedUrl.startsWith("http")) {
             return;
         }
 
-        String host = normalizeHost(hostOf(url));
-        if (host.isBlank() || !seenHosts.add(host) || isBlockedHost(host)) {
+        String host = normalizeHost(hostOf(normalizedUrl));
+        String combined = (cleanText(title) + " " + cleanText(snippet)).toLowerCase(Locale.ROOT);
+        if (host.isBlank() || !seenHosts.add(host) || isBlockedHost(host) || looksLikeReferenceHost(host) || looksLikeBlockedContent(normalizedUrl, combined)) {
             return;
         }
 
-        candidates.add(new SearchCandidate(title, url, snippet, source));
+        candidates.add(new SearchCandidate(title, rootUrlOf(normalizedUrl), snippet, source));
     }
 
     private List<WorkflowModels.CustomerLead> inspectCandidates(
@@ -645,12 +744,13 @@ public class WorkflowSearchService {
             SettingsModels.CrawlerSettings crawlerSettings
     ) {
         try {
-            Document document = fetchDocument(candidate.url(), timeoutMs);
+            String homepageCandidate = rootUrlOf(candidate.url());
+            Document document = fetchDocument(homepageCandidate, timeoutMs);
             if (document == null) {
                 return null;
             }
 
-            String finalUrl = document.location().isBlank() ? candidate.url() : document.location();
+            String finalUrl = document.location().isBlank() ? homepageCandidate : document.location();
             String host = normalizeHost(hostOf(finalUrl));
             String title = cleanText(document.title());
             String text = cleanText(document.text());
@@ -757,6 +857,9 @@ public class WorkflowSearchService {
             if (!matchesKeywords(industry, keywords, combined)) {
                 continue;
             }
+            if (!hasStrongCompanySignal(host, combined)) {
+                continue;
+            }
 
             acceptedHosts.add(host);
             leads.add(new WorkflowModels.CustomerLead(
@@ -773,6 +876,7 @@ public class WorkflowSearchService {
     }
 
     private Document fetchDocument(String url, int timeoutMs) throws IOException {
+        log.info("Crawler fetch: {}", url);
         Connection.Response response = Jsoup.connect(url)
                 .userAgent(USER_AGENT)
                 .timeout(timeoutMs)
@@ -967,7 +1071,8 @@ public class WorkflowSearchService {
 
     private boolean looksLikeBlockedContent(String url, String combined) {
         String lowerUrl = cleanText(url).toLowerCase(Locale.ROOT);
-        return EDITORIAL_URL_PATTERNS.stream().anyMatch(lowerUrl::contains)
+        return looksLikeReferenceHost(hostOf(url))
+                || EDITORIAL_URL_PATTERNS.stream().anyMatch(lowerUrl::contains)
                 || NON_COMPANY_TEXT_HINTS.stream().anyMatch(combined::contains);
     }
 
@@ -975,9 +1080,38 @@ public class WorkflowSearchService {
         if (host.isBlank()) {
             return false;
         }
+        if (looksLikeReferenceHost(host)) {
+            return false;
+        }
         boolean companyHint = COMPANY_TEXT_HINTS.stream().anyMatch(combined::contains);
         boolean corporateDomain = host.endsWith(".cn") || host.endsWith(".com.cn") || host.endsWith(".de") || host.endsWith(".us");
-        return companyHint || corporateDomain;
+        return companyHint || (corporateDomain && hasStrongCompanySignal(host, combined));
+    }
+
+    private boolean hasStrongCompanySignal(String host, String combined) {
+        if (host.isBlank()) {
+            return false;
+        }
+        if (looksLikeReferenceHost(host)) {
+            return false;
+        }
+        String lowerHost = host.toLowerCase(Locale.ROOT);
+        String lowerCombined = combined.toLowerCase(Locale.ROOT);
+        return STRONG_COMPANY_HINTS.stream().anyMatch(lowerCombined::contains)
+                || lowerHost.contains("-auto")
+                || lowerHost.contains("automation")
+                || lowerHost.contains("medical")
+                || lowerHost.contains("machinery")
+                || lowerHost.contains("robot")
+                || lowerHost.contains("tech");
+    }
+
+    private boolean looksLikeReferenceHost(String host) {
+        String normalizedHost = normalizeHost(host);
+        if (normalizedHost.isBlank()) {
+            return false;
+        }
+        return REFERENCE_HOST_HINTS.stream().anyMatch(normalizedHost::contains);
     }
 
     private boolean isBlockedHost(String host) {
@@ -1148,8 +1282,38 @@ public class WorkflowSearchService {
         return candidate;
     }
 
+    private String resolveGoogleUrl(String absoluteHref, String rawHref) {
+        String candidate = absoluteHref == null || absoluteHref.isBlank() ? rawHref : absoluteHref;
+        if (candidate == null || candidate.isBlank()) {
+            return "";
+        }
+
+        try {
+            URI uri = URI.create(candidate);
+            String query = uri.getRawQuery() == null ? "" : uri.getRawQuery();
+            for (String part : query.split("&")) {
+                int equalsIndex = part.indexOf('=');
+                if (equalsIndex <= 0) {
+                    continue;
+                }
+                String key = part.substring(0, equalsIndex);
+                String value = part.substring(equalsIndex + 1);
+                if ("q".equalsIgnoreCase(key) || "url".equalsIgnoreCase(key)) {
+                    String decoded = URLDecoder.decode(value, StandardCharsets.UTF_8);
+                    if (!decoded.isBlank()) {
+                        return decoded;
+                    }
+                }
+            }
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        return candidate;
+    }
+
     private String followRedirectUrl(String url, int timeoutMs) {
         try {
+            log.info("Crawler fetch: {}", url);
             Connection.Response response = Jsoup.connect(url)
                     .userAgent(USER_AGENT)
                     .timeout(timeoutMs)
