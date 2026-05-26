@@ -176,9 +176,7 @@ public class WorkflowSearchService {
         );
         int timeoutMs = normalizePositive(crawlerSettings.requestTimeoutMs(), 8000, 8000);
 
-        String targetDescription = normalizeInput(fallback(request.targetDescription(), ""));
-
-        List<String> queries = buildSearchQueries(industry, market, keywords, targetDescription, companySize);
+        List<String> queries = buildSearchQueries(industry, market, keywords, companySize);
         session.log("Received search task.");
         session.log("Search strategy: " + String.join(" | ", queries));
         session.log("Runtime config: limit=" + leadLimit + ", pool=" + candidatePoolLimit + ", timeout=" + timeoutMs + "ms");
@@ -218,66 +216,58 @@ public class WorkflowSearchService {
         return response;
     }
 
-    private List<String> buildSearchQueries(String industry, String market, String keywords, String targetDescription, String companySize) {
+    private List<String> buildSearchQueries(String industry, String market, String keywords, String companySize) {
         LinkedHashSet<String> queries = new LinkedHashSet<>();
         List<String> industryHints = buildSearchHints(industry);
         List<String> keywordHints = buildSearchHints(keywords);
-        List<String> descriptionHints = buildSearchHints(targetDescription);
         boolean hasKeywordHints = !keywordHints.isEmpty();
-        boolean hasDescriptionHints = !descriptionHints.isEmpty();
         String primaryIndustryHint = firstQueryHint(industryHints, toEnglishHint(industry));
         String primaryKeywordHint = hasKeywordHints
                 ? firstQueryHint(keywordHints, toEnglishHint(keywords))
-                : "";
-        String primaryDescriptionHint = hasDescriptionHints
-                ? firstQueryHint(descriptionHints, toEnglishHint(targetDescription))
                 : "";
         String nativeIndustryHint = firstNativeHint(industryHints, industry);
         String nativeKeywordHint = hasKeywordHints
                 ? firstNativeHint(keywordHints, keywords)
                 : "";
-        String nativeDescriptionHint = hasDescriptionHints
-                ? firstNativeHint(descriptionHints, targetDescription)
-                : "";
 
         if ("China".equalsIgnoreCase(market)) {
-            queries.add(joinQuery("site:.cn", primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "manufacturer", "official website"));
-            queries.add(joinQuery("site:.com.cn", primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "company"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "manufacturer", "contact email"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "factory", "contact us"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "supplier", "sales email"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "company profile"));
+            queries.add(joinQuery("site:.cn", primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
+            queries.add(joinQuery("site:.com.cn", primaryKeywordHint, primaryIndustryHint, "company"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "manufacturer", "contact email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "factory", "contact us"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "supplier", "sales email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "company profile"));
             queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "官网"));
             queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "厂家", "联系方式"));
             queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "公司", "邮箱"));
             queries.add(joinQuery(nativeKeywordHint, nativeIndustryHint, "有限公司"));
             if (!"ALL".equalsIgnoreCase(companySize)) {
-                queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, companySize, "company"));
+                queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, companySize, "company"));
             }
             return new ArrayList<>(queries);
         }
 
         if ("ALL".equalsIgnoreCase(market)) {
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "manufacturer", "official website"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "supplier", "contact"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "factory", "email"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "company profile"));
-            queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "sales email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "supplier", "contact"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "factory", "email"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "company profile"));
+            queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, "sales email"));
             if (!"ALL".equalsIgnoreCase(companySize)) {
-                queries.add(joinQuery(primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, companySize, "company"));
+                queries.add(joinQuery(primaryKeywordHint, primaryIndustryHint, companySize, "company"));
             }
             return new ArrayList<>(queries);
         }
 
         String marketAlias = marketAlias(market);
         String marketSite = marketSite(market);
-        queries.add(joinQuery(marketSite, primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "manufacturer", "official website"));
-        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "supplier", "contact"));
-        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "factory", "email"));
-        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "company profile"));
-        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, "sales email"));
+        queries.add(joinQuery(marketSite, primaryKeywordHint, primaryIndustryHint, "manufacturer", "official website"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "supplier", "contact"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "factory", "email"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "company profile"));
+        queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, "sales email"));
         if (!"ALL".equalsIgnoreCase(companySize)) {
-            queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryDescriptionHint, primaryIndustryHint, companySize, "company"));
+            queries.add(joinQuery(marketAlias, primaryKeywordHint, primaryIndustryHint, companySize, "company"));
         }
         return new ArrayList<>(queries);
     }

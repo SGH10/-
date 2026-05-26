@@ -11,7 +11,6 @@ public final class WorkflowModels {
             String industry,
             String market,
             String keywords,
-            String targetDescription,
             String companySize,
             Integer requestedLimit
     ) {
