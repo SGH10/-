@@ -133,7 +133,7 @@
 
     const controller = new AbortController();
     searchState.activeController = controller;
-    const timeoutId = window.setTimeout(() => controller.abort("timeout"), 300000);
+    const timeoutId = window.setTimeout(() => controller.abort("timeout"), 180000);
 
     // Build payload first so searchState.requestedLimit is updated before rendering stats
     const payload = buildSearchPayload();
